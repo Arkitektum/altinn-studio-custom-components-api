@@ -1,6 +1,6 @@
 // Dependencies
 import { JSDOM } from "jsdom";
-import fs from "fs";
+import fs from "node:fs";
 
 // Data
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
@@ -9,6 +9,8 @@ import subforms from "../data/subforms.mjs";
 // Utils
 import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 
+const defaultTextResourcesFilePath = "node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json";
+const defaultTextResources = JSON.parse(fs.readFileSync(defaultTextResourcesFilePath, "utf8"));
 const resourceValueLanguages = ["nb", "nn"];
 
 /**
@@ -272,8 +274,7 @@ export async function getAppResourceValues() {
  */
 export async function getDefaultTextResources() {
     try {
-        const fileContent = fs.readFileSync("./api/data/resources.json", "utf8");
-        return JSON.parse(fileContent);
+        return defaultTextResources;
     } catch (error) {
         console.error("Error reading default text resources:", error);
         return null;
