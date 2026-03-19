@@ -64,11 +64,11 @@ app.get("/api/resources", async (req, res) => {
 
 app.get("/api/altinnStudioForms", (req, res) => {
     try {
-        const altinnStudioApps = getAltinnStudioForms();
-        res.json(altinnStudioApps);
+        const altinnStudioForms = getAltinnStudioForms();
+        res.json(altinnStudioForms);
     } catch (error) {
-        console.error("Error fetching Altinn Studio apps:", error);
-        res.status(500).json({ error: "Failed to fetch Altinn Studio apps" });
+        console.error("Error fetching Altinn Studio forms:", error);
+        res.status(500).json({ error: "Failed to fetch Altinn Studio forms" });
     }
 });
 
