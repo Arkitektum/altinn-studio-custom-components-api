@@ -1,4 +1,12 @@
 {
   "name": "altinn-studio-custom-components-api",
-  "packageManager": "yarn@4.5.0"
+  "packageManager": "yarn@4.5.0",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "eslint": "^10.0.3",
+    "express": "^5.2.1",
+    "globals": "^17.4.0"
+  }
 }
