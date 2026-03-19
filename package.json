@@ -1,19 +1,22 @@
 {
-  "name": "altinn-studio-custom-components-api",
-  "packageManager": "yarn@4.5.0",
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "eslint": "^10.0.3",
-    "express": "^5.2.1",
-    "fast-xml-parser": "^5.5.6",
-    "globals": "^17.4.0",
-    "jsdom": "^29.0.0",
-    "libxmljs2": "^0.37.0"
-  },
-  "dependencies": {
-    "@arkitektum/altinn-studio-custom-components": "^13.11.0",
-    "@arkitektum/altinn-studio-custom-components-utils": "^1.2.0"
-  }
+    "name": "altinn-studio-custom-components-api",
+    "packageManager": "yarn@4.5.0",
+    "scripts": {
+        "start": "node api/index.mjs"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "cors": "^2.8.6",
+        "dotenv": "^17.3.1",
+        "eslint": "^10.0.3",
+        "express": "^5.2.1",
+        "fast-xml-parser": "^5.5.6",
+        "globals": "^17.4.0",
+        "jsdom": "^29.0.0",
+        "libxmljs2": "^0.37.0"
+    },
+    "dependencies": {
+        "@arkitektum/altinn-studio-custom-components": "^13.11.0",
+        "@arkitektum/altinn-studio-custom-components-utils": "^1.2.0"
+    }
 }
