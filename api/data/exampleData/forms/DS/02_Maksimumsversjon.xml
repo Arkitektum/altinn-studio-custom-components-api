@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dispensasjonsoversikt
+    xmlns="https://skjema.ft.dibk.no/dispensasjonsoversikt/v1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/dispensasjonsoversikt/v1 dispensasjonsoversikt.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10006" dataFormatVersion="1">
+    <metadata>
+      <fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+      <ftbId>FTB123</ftbId>
+      <prosjektnavn>Vinterpalasset</prosjektnavn>
+      <prosjektnr>2024-54-A</prosjektnr>
+      <foretrukketSpraak>
+        <kodeverdi>nb</kodeverdi>
+        <kodebeskrivelse>Bokmål</kodebeskrivelse>
+      </foretrukketSpraak>    
+    </metadata>
+    <kommunensSaksnummer>
+      <saksaar>2024</saksaar>
+      <sakssekvensnummer>12345</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <soeknadGjelder>
+      <type>
+        <kode>
+          <kodeverdi>nyttbyggunder70m2</kodeverdi>
+          <kodebeskrivelse>Nytt bygg - Under 70 m2 - ikke boligformål</kodebeskrivelse>
+        </kode>
+      </type>
+      <foelgebrev>Se vedlagte planer.</foelgebrev>
+    </soeknadGjelder>
+    <eiendomByggested>
+      <eiendom>
+        <eiendomsidentifikasjon>
+          <kommunenummer>9997</kommunenummer>
+          <gaardsnummer>208</gaardsnummer>
+          <bruksnummer>391</bruksnummer>
+          <festenummer>0</festenummer>
+          <seksjonsnummer>0</seksjonsnummer>
+        </eiendomsidentifikasjon>
+        <adresse>
+          <adresselinje1>Mariboes gate 13</adresselinje1>
+          <adresselinje2></adresselinje2>
+          <adresselinje3></adresselinje3>
+          <postnr>0183</postnr>
+          <poststed>Oslo</poststed>
+          <landkode>NO</landkode>
+          <gatenavn>Mariboes gate</gatenavn>
+          <husnr>13</husnr>
+          <bokstav></bokstav>
+        </adresse>
+        <bygningsnummer>81099618</bygningsnummer>
+        <bolignummer>H0101</bolignummer>
+        <kommunenavn>Oslo</kommunenavn>
+      </eiendom>
+    </eiendomByggested>
+    <generelleVilkaar>
+      <norskSvenskDansk>true</norskSvenskDansk>
+    </generelleVilkaar>
+    <varsling>
+      <fritattFraNabovarsling>false</fritattFraNabovarsling>
+      <!-- <redegjorelseFritak>Derfor</redegjorelseFritak> -->
+      <foreliggerMerknader>true</foreliggerMerknader>
+      <antallMerknader>12</antallMerknader>
+      <vurderingAvMerknader>besvart i vedlegg</vurderingAvMerknader>
+      <soeknadensHjemmeside></soeknadensHjemmeside>
+    </varsling>
+    <tiltakshaver>
+     <partstype>
+        <kodeverdi>Organisasjon</kodeverdi>
+        <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+      </partstype>
+      <foedselsnummer></foedselsnummer>
+      <organisasjonsnummer>911455307</organisasjonsnummer>
+      <navn>Tiltakshaver 1</navn>
+      <adresse>
+        <adresselinje1>Gateadresse 789</adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3></adresselinje3>
+        <postnr>0123</postnr>
+        <poststed>Oslo</poststed>
+        <landkode>NO</landkode>
+      </adresse>
+      <telefonnummer>12345678</telefonnummer>
+      <mobilnummer>98765432</mobilnummer>
+      <epost>tiltakshaver1@example.com</epost>
+      <kontaktperson>
+        <navn>Kontaktperson 1</navn>
+        <telefonnummer>11111111</telefonnummer>
+        <mobilnummer>22222222</mobilnummer>
+        <epost>kontaktperson1@example.com</epost>
+      </kontaktperson>
+    </tiltakshaver>
+    <fakturamottaker>
+      <partstype>
+        <kodeverdi>Organisasjon</kodeverdi>
+        <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+      </partstype>
+      <organisasjonsnummer>911455307</organisasjonsnummer>
+      <bestillerreferanse>Ludvig Moholt</bestillerreferanse>
+      <fakturareferanse>Ref999</fakturareferanse>
+      <prosjektnummer>4</prosjektnummer>
+      <navn>Ludvig Moholt</navn>
+      <adresse>
+        <adresselinje1>Gateveien 1</adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3 xsi:nil="true" />
+        <postnr>0123</postnr>
+        <poststed>Oslo</poststed>
+        <landkode>NO</landkode>
+      </adresse>
+      <epost>test-fana.hafslo.revisjon@arkitektum.no</epost>
+    </fakturamottaker>
+    <dispensasjonOversikt>
+      <dispensasjon>
+        <dispensasjonReferanse>9164de62-4fba-492f-bb52-e9f76c7060ad</dispensasjonReferanse>
+        <dispensasjonKategori>
+          <kodeverdi>andrePlanbestemmelser</kodeverdi>
+          <kodebeskrivelse>Andre bestemmelser i gjeldende plan</kodebeskrivelse>         
+        </dispensasjonKategori>
+        <dispensasjonTittel>
+          <kodeverdi>andrePlanbestemmelser</kodeverdi>
+          <kodebeskrivelse>Andre bestemmelser i gjeldende plan</kodebeskrivelse>         
+        </dispensasjonTittel>
+        <bestemmelserType>
+          <kodeverdi>REG</kodeverdi>
+          <kodebeskrivelse>Reguleringsplan</kodebeskrivelse>         
+        </bestemmelserType>
+      </dispensasjon>
+      <dispensasjon>
+        <dispensasjonReferanse>9264de62-4fba-492f-bb52-e9f76c7060ad</dispensasjonReferanse>
+        <dispensasjonKategori>
+          <kodeverdi>plassering</kodeverdi>
+          <kodebeskrivelse>Plassering</kodebeskrivelse>         
+        </dispensasjonKategori>
+        <dispensasjonTittel>
+          <kodeverdi>ByggegrenseMotVeg</kodeverdi>
+          <kodebeskrivelse>Byggegrense mot vei</kodebeskrivelse>         
+        </dispensasjonTittel>
+        <bestemmelserType>
+          <kodeverdi>REG</kodeverdi>
+          <kodebeskrivelse>Reguleringsplan</kodebeskrivelse>         
+        </bestemmelserType>
+      </dispensasjon>
+      <dispensasjon>
+        <dispensasjonReferanse>9164de62-4fba-492f-bb52-e9f76c7060ad</dispensasjonReferanse>
+        <dispensasjonKategori>
+          <kodeverdi>andrePlanbestemmelser</kodeverdi>
+          <kodebeskrivelse>Andre bestemmelser i gjeldende plan</kodebeskrivelse>         
+        </dispensasjonKategori>
+        <dispensasjonTittel>
+          <kodeverdi>andrePlanbestemmelser</kodeverdi>
+          <kodebeskrivelse>Andre bestemmelser i gjeldende plan</kodebeskrivelse>         
+        </dispensasjonTittel>
+        <bestemmelserType>
+          <kodeverdi>REG</kodeverdi>
+          <kodebeskrivelse>Reguleringsplan</kodebeskrivelse>         
+        </bestemmelserType>
+      </dispensasjon>
+      <dispensasjon>
+        <dispensasjonReferanse>9164de62-4fba-492f-bb52-e9f76c7060ad</dispensasjonReferanse>
+        <dispensasjonKategori>
+          <kodeverdi>andrePlanbestemmelser</kodeverdi>
+          <kodebeskrivelse>Andre bestemmelser i gjeldende plan</kodebeskrivelse>         
+        </dispensasjonKategori>
+        <dispensasjonTittel>
+          <kodeverdi>andrePlanbestemmelser</kodeverdi>
+          <kodebeskrivelse>Andre bestemmelser i gjeldende plan</kodebeskrivelse>         
+        </dispensasjonTittel>
+        <bestemmelserType>
+          <kodeverdi>REG</kodeverdi>
+          <kodebeskrivelse>Reguleringsplan</kodebeskrivelse>         
+        </bestemmelserType>
+      </dispensasjon>
+    </dispensasjonOversikt>
+</dispensasjonsoversikt>

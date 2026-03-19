@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<igangsettingstillatelse xmlns="https://skjema.ft.dibk.no/igangsettingstillatelse/v4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://skjema.ft.dibk.no/igangsettingstillatelse/v4 igangsettingstillatelse.xsd" dataFormatProvider="DIBK" dataFormatId="10003" dataFormatVersion="4">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9999</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>391</bruksnummer>
+				<festenummer>0</festenummer>
+				<seksjonsnummer>0</seksjonsnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 13</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>13</husnr>
+			</adresse>
+			<bygningsnummer>81099618</bygningsnummer>
+			<bolignummer />
+			<kommunenavn>Oslo</kommunenavn>
+		</eiendom>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>389</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 11</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>11</husnr>
+			</adresse>
+			<bygningsnummer>80477813</bygningsnummer>
+			<bolignummer />
+			<kommunenavn>Oslo</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<ftbId>FTB123</ftbId>
+		<prosjektnavn>Sentrumsløftet</prosjektnavn>
+		<prosjektnr>123</prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi>nb</kodeverdi>
+			<kodebeskrivelse>Bokmål</kodebeskrivelse>
+		</foretrukketSpraak>
+		<fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+	</metadata>
+	<generelleVilkaar>
+		<beroererArbeidsplasser>true</beroererArbeidsplasser>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<delsoeknader>
+		<delsoeknad>
+			<delAvTiltaket>Rivearbeider</delAvTiltaket>
+			<tillatelsedato>2024-07-16</tillatelsedato>
+			<delsoeknadsnummer>1</delsoeknadsnummer>
+			<kommentar>Alt i 1. IG er revet</kommentar>
+			<type>
+				<kode>
+					<kodeverdi>endringbyggannet</kodeverdi>
+					<kodebeskrivelse>Endring av bygg - Annet</kodebeskrivelse>
+				</kode>
+			</type>
+		</delsoeknad>
+	</delsoeknader>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>endringbyggannet</kodeverdi>
+				<kodebeskrivelse>Endring av bygg - Annet</kodebeskrivelse>
+			</kode>
+		</type>
+		<foelgebrev>Se vedlagte følgebrev.</foelgebrev>
+		<gjelderHeleTiltaket>false</gjelderHeleTiltaket>
+		<delAvTiltaket>Oppsetting av nye vegger</delAvTiltaket>
+		<delsoeknadsnummer>2</delsoeknadsnummer>
+	</soeknadGjelder>
+	<utfallBesvarelse>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>4c0c9653-fd00-4ed3-a123-76c388ab8d4a</utfallId>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Er vilkår om betaling av gebyr oppfylt?</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>18.18</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Gebyr må være betalt før igangsettingstillatelse kan gis.</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Gebyr er ikke betalt og må betales før IG kan gis.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer />
+					<vedleggstype>
+						<kodeverdi />
+						<kodebeskrivelse />
+					</vedleggstype>
+					<versjonsdato xsi:nil="true" />
+					<filnavn />
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>SamtykkeArbeidstilsynet</kodeverdi>
+						<kodebeskrivelse>Samtykke fra Arbeidstilsynet</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>vedlegg2.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>f35caa6e-0ea5-4684-9ce3-1db842b5e99e</utfallId>
+			<tema>
+				<kodeverdi>Parkering</kodeverdi>
+				<kodebeskrivelse>Parkering</kodebeskrivelse>
+			</tema>
+			<tittel>Er vilkår for dispensasjon fra krav til parkering oppfylt?</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>15.10</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Det må sendes inn dokumentasjon på at vilkår for dispensasjon fra frav til parkering er oppfylt.</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>true</erUtfallBesvart>
+			<kommentar>vilkår for dispensasjon fra frav til parkering er oppfylt, se vedlegg</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>vedlegg1.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+	</utfallBesvarelse>
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Organisasjon</kodeverdi>
+			<kodebeskrivelse>Organisasjon</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer />
+		<organisasjonsnummer>910065203</organisasjonsnummer>
+		<navn>Arkitekt Flink</navn>
+		<adresse>
+			<adresselinje1>Munkegata 1</adresselinje1>
+			<postnr>7013</postnr>
+			<poststed>Trondheim</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>ansvarligsoker@mail.com</epost>
+		<kontaktperson>
+			<navn>Ludvig Moholt</navn>
+			<telefonnummer>11223344</telefonnummer>
+			<mobilnummer>99887766</mobilnummer>
+			<epost>kontaktperson.ansvarligsoker@mail.com</epost>
+		</kontaktperson>
+	</ansvarligSoeker>
+	<ansvarForByggesaken>
+		<kodeverdi>medAnsvar</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse til tiltak med ansvarlige foretak</kodebeskrivelse>
+	</ansvarForByggesaken>
+</igangsettingstillatelse>

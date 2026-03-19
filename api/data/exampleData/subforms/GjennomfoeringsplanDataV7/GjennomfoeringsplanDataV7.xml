@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Gjennomfoeringsplan
+	xmlns="https://skjema.ft.dibk.no/gjennomfoeringsplan/v7"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://skjema.ft.dibk.no/gjennomfoeringsplan/v7 gjennomfoeringsplan.xsd"
+	dataFormatId="10016" dataFormatProvider="DIBK" dataFormatVersion="7">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>4020</kommunenummer>
+				<gaardsnummer>55</gaardsnummer>
+				<bruksnummer>40</bruksnummer>
+				<festenummer>0</festenummer>
+				<seksjonsnummer>0</seksjonsnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Kyrkjevegen 6</adresselinje1>
+				<postnr>3800</postnr>
+				<poststed>BØ I TELEMARK</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Kyrkjevegen</gatenavn>
+				<husnr>6</husnr>
+			</adresse>
+			<bygningsnummer>8625743</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>MIDT-TELEMARK</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2004</saksaar>
+		<sakssekvensnummer>456</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<versjon>1.0</versjon>
+	<ansvarligSoekerTiltaksklasse>
+		<kodeverdi>1</kodeverdi>
+		<kodebeskrivelse>1</kodebeskrivelse>
+	</ansvarligSoekerTiltaksklasse>
+	<gjennomfoeringsplan>
+		<ansvarsomraade>
+			<funksjon>
+				<kodeverdi>KONTROLL</kodeverdi>
+				<kodebeskrivelse>Ansvarlig kontrollerende</kodebeskrivelse>
+			</funksjon>
+			<ansvarsomraade>test</ansvarsomraade>
+			<tiltaksklasse>
+				<kodeverdi>1</kodeverdi>
+				<kodebeskrivelse>1</kodebeskrivelse>
+			</tiltaksklasse>
+			<foretak>
+				<partstype>
+					<kodeverdi>Foretak</kodeverdi>
+					<kodebeskrivelse>Foretak</kodebeskrivelse>
+				</partstype>
+				<foedselsnummer>12345678910</foedselsnummer>
+				<kontaktperson>
+					<navn>Jane Smith</navn>
+					<telefonnummer>11223344</telefonnummer>
+					<mobilnummer>44332211</mobilnummer>
+					<epost>jane.smith@example.com</epost>
+				</kontaktperson>
+				<organisasjonsnummer>910467905</organisasjonsnummer>
+				<navn>noko</navn>
+				<adresse>
+					<adresselinje1>testgate 1</adresselinje1>
+					<adresselinje2>Street 2</adresselinje2>
+					<adresselinje3>Street 3</adresselinje3>
+					<postnr>1234</postnr>
+					<poststed>teststed</poststed>
+					<landkode>NO</landkode>
+				</adresse>
+				<telefonnummer>12345678</telefonnummer>
+				<mobilnummer>98765432</mobilnummer>
+				<epost>jane.smith@example.com</epost>
+			</foretak>
+			<samsvarKontrollPlanlagtVedRammetillatelse>true</samsvarKontrollPlanlagtVedRammetillatelse>
+			<samsvarKontrollPlanlagtVedIgangsettingstillatelse>true</samsvarKontrollPlanlagtVedIgangsettingstillatelse>
+			<samsvarKontrollPlanlagtVedMidlertidigBrukstillatelse>true</samsvarKontrollPlanlagtVedMidlertidigBrukstillatelse>
+			<samsvarKontrollPlanlagtVedFerdigattest>true</samsvarKontrollPlanlagtVedFerdigattest>
+			<samsvarKontrollForeliggerVedRammetillatelse>2023-05-28</samsvarKontrollForeliggerVedRammetillatelse>
+			<samsvarKontrollForeliggerVedIgangsettingstillatelse>2023-06-28</samsvarKontrollForeliggerVedIgangsettingstillatelse>
+			<samsvarKontrollForeliggerVedMidlertidigBrukstillatelse>2023-07-28</samsvarKontrollForeliggerVedMidlertidigBrukstillatelse>
+			<samsvarKontrollForeliggerVedFerdigattest>2023-08-28</samsvarKontrollForeliggerVedFerdigattest>
+			<ansvarsomraadetAvsluttet>false</ansvarsomraadetAvsluttet>
+			<erklaeringArkivreferanse>Ref1234</erklaeringArkivreferanse>
+			<erklaeringSignert>true</erklaeringSignert>
+			<sluttbrukersystemReferanse>SysRef1234</sluttbrukersystemReferanse>
+			<sluttbrukersystemStatus>Status1</sluttbrukersystemStatus>
+			<ansvarsomraadeSistEndret>2023-05-28T00:00:00</ansvarsomraadeSistEndret>
+			<filnavnVedlegg>vedlegg.pdf</filnavnVedlegg>
+			<ansvarsomraadeStatus>
+				<kodeverdi>avsluttet</kodeverdi>
+				<kodebeskrivelse>Avsluttet</kodebeskrivelse>
+			</ansvarsomraadeStatus>
+		</ansvarsomraade>
+		<ansvarsomraade>
+			<funksjon>
+				<kodeverdi>KONTROLL</kodeverdi>
+				<kodebeskrivelse>Ansvarlig kontrollerende</kodebeskrivelse>
+			</funksjon>
+			<ansvarsomraade>test</ansvarsomraade>
+			<tiltaksklasse>
+				<kodeverdi>1</kodeverdi>
+				<kodebeskrivelse>1</kodebeskrivelse>
+			</tiltaksklasse>
+			<foretak>
+				<partstype>
+					<kodeverdi>Foretak</kodeverdi>
+					<kodebeskrivelse>Foretak</kodebeskrivelse>
+				</partstype>
+				<foedselsnummer>12345678910</foedselsnummer>
+				<kontaktperson>
+					<navn>Jane Smith</navn>
+					<telefonnummer>11223344</telefonnummer>
+					<mobilnummer>44332211</mobilnummer>
+					<epost>jane.smith@example.com</epost>
+				</kontaktperson>
+				<organisasjonsnummer>910467905</organisasjonsnummer>
+				<navn>noko</navn>
+				<adresse>
+					<adresselinje1>testgate 1</adresselinje1>
+					<adresselinje2>Street 2</adresselinje2>
+					<adresselinje3>Street 3</adresselinje3>
+					<postnr>1234</postnr>
+					<poststed>teststed</poststed>
+					<landkode>NO</landkode>
+				</adresse>
+				<telefonnummer>12345678</telefonnummer>
+				<mobilnummer>98765432</mobilnummer>
+				<epost>jane.smith@example.com</epost>
+			</foretak>
+			<samsvarKontrollPlanlagtVedRammetillatelse>true</samsvarKontrollPlanlagtVedRammetillatelse>
+			<samsvarKontrollPlanlagtVedIgangsettingstillatelse>true</samsvarKontrollPlanlagtVedIgangsettingstillatelse>
+			<samsvarKontrollPlanlagtVedMidlertidigBrukstillatelse>true</samsvarKontrollPlanlagtVedMidlertidigBrukstillatelse>
+			<samsvarKontrollPlanlagtVedFerdigattest>true</samsvarKontrollPlanlagtVedFerdigattest>
+			<samsvarKontrollForeliggerVedRammetillatelse>2023-05-28</samsvarKontrollForeliggerVedRammetillatelse>
+			<samsvarKontrollForeliggerVedIgangsettingstillatelse>2023-06-28</samsvarKontrollForeliggerVedIgangsettingstillatelse>
+			<samsvarKontrollForeliggerVedMidlertidigBrukstillatelse>2023-07-28</samsvarKontrollForeliggerVedMidlertidigBrukstillatelse>
+			<samsvarKontrollForeliggerVedFerdigattest>2023-08-28</samsvarKontrollForeliggerVedFerdigattest>
+			<ansvarsomraadetAvsluttet>false</ansvarsomraadetAvsluttet>
+			<erklaeringArkivreferanse>Ref1234</erklaeringArkivreferanse>
+			<erklaeringSignert>true</erklaeringSignert>
+			<sluttbrukersystemReferanse>SysRef1234</sluttbrukersystemReferanse>
+			<sluttbrukersystemStatus>Status1</sluttbrukersystemStatus>
+			<ansvarsomraadeSistEndret>2023-05-28T00:00:00</ansvarsomraadeSistEndret>
+			<filnavnVedlegg>vedlegg.pdf</filnavnVedlegg>
+			<ansvarsomraadeStatus>
+				<kodeverdi>avsluttet</kodeverdi>
+				<kodebeskrivelse>Avsluttet</kodebeskrivelse>
+			</ansvarsomraadeStatus>
+		</ansvarsomraade>
+		<ansvarsomraade>
+			<funksjon>
+				<kodeverdi>KONTROLL</kodeverdi>
+				<kodebeskrivelse>Ansvarlig kontrollerende</kodebeskrivelse>
+			</funksjon>
+			<ansvarsomraade>test</ansvarsomraade>
+			<tiltaksklasse>
+				<kodeverdi>1</kodeverdi>
+				<kodebeskrivelse>1</kodebeskrivelse>
+			</tiltaksklasse>
+			<foretak>
+				<partstype>
+					<kodeverdi>Foretak</kodeverdi>
+					<kodebeskrivelse>Foretak</kodebeskrivelse>
+				</partstype>
+				<foedselsnummer>12345678910</foedselsnummer>
+				<kontaktperson>
+					<navn>Jane Smith</navn>
+					<telefonnummer>11223344</telefonnummer>
+					<mobilnummer>44332211</mobilnummer>
+					<epost>jane.smith@example.com</epost>
+				</kontaktperson>
+				<organisasjonsnummer>910467905</organisasjonsnummer>
+				<navn>noko</navn>
+				<adresse>
+					<adresselinje1>testgate 1</adresselinje1>
+					<adresselinje2>Street 2</adresselinje2>
+					<adresselinje3>Street 3</adresselinje3>
+					<postnr>1234</postnr>
+					<poststed>teststed</poststed>
+					<landkode>NO</landkode>
+				</adresse>
+				<telefonnummer>12345678</telefonnummer>
+				<mobilnummer>98765432</mobilnummer>
+				<epost>jane.smith@example.com</epost>
+			</foretak>
+			<samsvarKontrollPlanlagtVedRammetillatelse>true</samsvarKontrollPlanlagtVedRammetillatelse>
+			<samsvarKontrollPlanlagtVedIgangsettingstillatelse>true</samsvarKontrollPlanlagtVedIgangsettingstillatelse>
+			<samsvarKontrollPlanlagtVedMidlertidigBrukstillatelse>true</samsvarKontrollPlanlagtVedMidlertidigBrukstillatelse>
+			<samsvarKontrollPlanlagtVedFerdigattest>true</samsvarKontrollPlanlagtVedFerdigattest>
+			<samsvarKontrollForeliggerVedRammetillatelse>2023-05-28</samsvarKontrollForeliggerVedRammetillatelse>
+			<samsvarKontrollForeliggerVedIgangsettingstillatelse>2023-06-28</samsvarKontrollForeliggerVedIgangsettingstillatelse>
+			<samsvarKontrollForeliggerVedMidlertidigBrukstillatelse>2023-07-28</samsvarKontrollForeliggerVedMidlertidigBrukstillatelse>
+			<samsvarKontrollForeliggerVedFerdigattest>2023-08-28</samsvarKontrollForeliggerVedFerdigattest>
+			<ansvarsomraadetAvsluttet>false</ansvarsomraadetAvsluttet>
+			<erklaeringArkivreferanse>Ref1234</erklaeringArkivreferanse>
+			<erklaeringSignert>true</erklaeringSignert>
+			<sluttbrukersystemReferanse>SysRef1234</sluttbrukersystemReferanse>
+			<sluttbrukersystemStatus>Status1</sluttbrukersystemStatus>
+			<ansvarsomraadeSistEndret>2023-05-28T00:00:00</ansvarsomraadeSistEndret>
+			<filnavnVedlegg>vedlegg.pdf</filnavnVedlegg>
+			<ansvarsomraadeStatus>
+				<kodeverdi>avsluttet</kodeverdi>
+				<kodebeskrivelse>Avsluttet</kodebeskrivelse>
+			</ansvarsomraadeStatus>
+		</ansvarsomraade>
+	</gjennomfoeringsplan>
+	<metadata>
+		<fraSluttbrukersystem>SystemX</fraSluttbrukersystem>
+		<ftbId>ID1234</ftbId>
+		<prosjektnavn>Prosjekt X</prosjektnavn>
+		<prosjektnr>PNR-2025</prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi>nb</kodeverdi>
+			<kodebeskrivelse>Bokmål</kodebeskrivelse>
+		</foretrukketSpraak>
+	</metadata>
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Privatperson</kodeverdi>
+			<kodebeskrivelse>Privatperson</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>01899699552</foedselsnummer>
+		<kontaktperson>
+			<navn>Jane Smith</navn>
+			<telefonnummer>11223344</telefonnummer>
+			<mobilnummer>44332211</mobilnummer>
+			<epost>jane.smith@example.com</epost>
+		</kontaktperson>
+		<organisasjonsnummer>911455307</organisasjonsnummer>
+		<navn>Arkitekt Flink</navn>		
+		<adresse>
+			<adresselinje1>testgate 1</adresselinje1>
+			<adresselinje2>Street 2</adresselinje2>
+			<adresselinje3>Street 3</adresselinje3>
+			<postnr>1234</postnr>
+			<poststed>teststed</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>jane.smith@example.com</epost>	
+	</ansvarligSoeker>
+</Gjennomfoeringsplan>

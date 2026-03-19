@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppleringAvSoeknad
+	xmlns="https://skjema.ft.dibk.no/suppleringavsoeknad/v2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://skjema.ft.dibk.no/suppleringavsoeknad/v2 suppleringavsoeknad.xsd"
+	dataFormatProvider="DIBK" dataFormatId="10008" dataFormatVersion="2">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>391</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 13</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>13</husnr>
+			</adresse>
+			<bygningsnummer>81099618</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Oslo</kommunenavn>
+		</eiendom>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>389</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 11</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>11</husnr>
+			</adresse>
+			<bygningsnummer>80477813</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Oslo</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<foretrukketSpraak>
+			<kodeverdi>nb</kodeverdi>
+			<kodebeskrivelse>Bokmål</kodebeskrivelse>
+		</foretrukketSpraak>
+		<fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+	</metadata>
+	<generelleVilkaar>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>bruksendring</kodeverdi>
+				<kodebeskrivelse>Bruksendring</kodebeskrivelse>
+			</kode>
+		</type>
+		<foelgebrev>Se vedlagte følgebrev.</foelgebrev>
+	</soeknadGjelder>
+	<ettersendinger>
+		<ettersending>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Geologisk undersøkelse</tittel>
+			<kommentar>Se vedlegg.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>RedegjoerelseGrunnforhold</kodeverdi>
+						<kodebeskrivelse>Redegjørelse grunnforhold</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>grunnforhold.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</ettersending>
+		<ettersending>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Oppdaterte tegninger</tittel>
+			<kommentar>Se vedlagte tegninger.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V2</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>TegningNyFasade</kodeverdi>
+						<kodebeskrivelse>Tegning ny fasade</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>fasade2.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>V2</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>TegningNyttSnitt</kodeverdi>
+						<kodebeskrivelse>Tegning nytt snitt</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>oppdatert-snitt.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</ettersending>
+	</ettersendinger>
+	<utfallBesvarelse>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>MG</kodeverdi>
+				<kodebeskrivelse>Mangel</kodebeskrivelse>
+			</utfallType>
+			<utfallId>123456</utfallId>
+			<tema>
+				<kodeverdi>generelt</kodeverdi>
+				<kodebeskrivelse>Generelt</kodebeskrivelse>
+			</tema>
+			<tittel>Bygningsnummer mangler</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>1.6</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Tiltaket berører en eksisterende bygning, og du må oppgi bygningsnummeret for denne bygningen. Bygningsnummeret finner du i matrikkelen under Se eiendom: https://seeiendom.kartverket.no/</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>true</erUtfallBesvart>
+			<kommentar>Dette er besvart tidligere.</kommentar>
+			<vedleggsliste>
+			</vedleggsliste>
+		</utfallSvar>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>MG</kodeverdi>
+				<kodebeskrivelse>Mangel</kodebeskrivelse>
+			</utfallType>
+			<utfallId>123457</utfallId>
+			<tema>
+				<kodeverdi>generelt</kodeverdi>
+				<kodebeskrivelse>Generelt</kodebeskrivelse>
+			</tema>
+			<tittel>Frisiktlinjer for utkjørsel mangler</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>1.36</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Det er krav om fri sikt når du skal kjøre ut fra eiendommen til offentlig vei. Frisiktslinjene må tegnes inn på situasjonsplanen.</beskrivelse>
+			<erUtfallBesvaresSenere>true</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Jeg sender denne neste uke</kommentar>
+			<vedleggsliste>
+			</vedleggsliste>
+		</utfallSvar>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>MG</kodeverdi>
+				<kodebeskrivelse>Mangel</kodebeskrivelse>
+			</utfallType>
+			<utfallId>123458</utfallId>
+			<tema>
+				<kodeverdi>nabovarsel</kodeverdi>
+				<kodebeskrivelse>Nabovarsel</kodebeskrivelse>
+			</tema>
+			<tittel>Krav om utvidet nabovarsling</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>2.5</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Tiltaket utløser krav til utvidet nabovarsling fordi tiltaket medfører økt tungtransport og støy for eiendommene i Mariboes gate. Du må sende inn en ny kvittering for nabovarsel når utvidet varsel er gjennomført. Eiere og festere av følgede eiendommer må varsles: Alle adresser i Mariboes gate.</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Se vedlagt nabovarsel med merknader og min kommentar.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>KvitteringNabovarsel</kodeverdi>
+						<kodebeskrivelse>Kvittering for nabovarsel</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>Kvittering for nabovarsel Mariboes gate.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>Nabomerknader</kodeverdi>
+						<kodebeskrivelse>Nabomerknader</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>Merknader fra Mariboes gate.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>KommentarNabomerknader</kodeverdi>
+						<kodebeskrivelse>Kommentar til nabomerknader</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>min kommentar.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+	</utfallBesvarelse>
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Organisasjon</kodeverdi>
+			<kodebeskrivelse>Organisasjon</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer></foedselsnummer>
+		<organisasjonsnummer>910065203</organisasjonsnummer>
+		<navn>Arkitekt Flink</navn>
+		<adresse>
+			<adresselinje1>Munkegata 1</adresselinje1>
+			<postnr>7013</postnr>
+			<poststed>Trondheim</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>ansvarligsoker@mail.com</epost>
+		<kontaktperson>
+			<navn>Ludvig Moholt</navn>
+			<telefonnummer>11223344</telefonnummer>
+			<mobilnummer>99887766</mobilnummer>
+			<epost>kontaktperson.ansvarligsoker@mail.com</epost>
+		</kontaktperson>
+	</ansvarligSoeker>
+	<ansvarForByggesaken>
+		<kodeverdi>medAnsvar</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse til tiltak med ansvarlige foretak</kodebeskrivelse>
+	</ansvarForByggesaken>
+</suppleringAvSoeknad>

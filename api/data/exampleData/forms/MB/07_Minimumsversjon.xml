@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<midlertidigbrukstillatelse
+    xmlns="https://skjema.ft.dibk.no/midlertidigbrukstillatelse/v4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/midlertidigbrukstillatelse/v4 midlertidigbrukstillatelse.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10004" dataFormatVersion="4">
+    <eiendomByggested>
+        <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>9998</kommunenummer>
+                <gaardsnummer>208</gaardsnummer>
+                <bruksnummer>391</bruksnummer>
+                <festenummer>0</festenummer>
+                <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+                <adresselinje1></adresselinje1>
+                <postnr></postnr>
+                <poststed></poststed>
+                <landkode></landkode>
+                <gatenavn></gatenavn>
+                <husnr></husnr>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn></kommunenavn>
+        </eiendom>
+    </eiendomByggested>
+    <kommunensSaksnummer>
+        <saksaar>2024</saksaar>
+        <sakssekvensnummer>12345</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <metadata>
+        <ftbId></ftbId>
+        <prosjektnavn></prosjektnavn>
+        <prosjektnr></prosjektnr>
+        <foretrukketSpraak>
+            <kodeverdi></kodeverdi>
+            <kodebeskrivelse></kodebeskrivelse>
+        </foretrukketSpraak>
+        <fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+    </metadata>
+    <generelleVilkaar>
+        <norskSvenskDansk>true</norskSvenskDansk>
+    </generelleVilkaar>
+    <soeknadGjelder>
+        <type>
+            <kode>
+                <kodeverdi>bruksendringhoveddel</kodeverdi>
+                <kodebeskrivelse>Bruksendring fra tilleggsdel til hoveddel</kodebeskrivelse>
+            </kode>
+        </type>
+        <foelgebrev></foelgebrev>
+        <gjelderHeleTiltaket>true</gjelderHeleTiltaket>
+        <delAvTiltaket></delAvTiltaket>
+        <delsoeknadsnummer>1</delsoeknadsnummer>
+    </soeknadGjelder>
+    <delsoeknader>
+        <delsoeknad>
+            <delAvTiltaket></delAvTiltaket>
+            <tillatelsedato xsi:nil="true" />
+            <delsoeknadsnummer></delsoeknadsnummer>
+            <kommentar></kommentar>
+            <type>
+                <kode>
+                    <kodeverdi></kodeverdi>
+                    <kodebeskrivelse></kodebeskrivelse>
+                </kode>
+            </type>
+        </delsoeknad>
+    </delsoeknader>
+    <utfallBesvarelse xsi:nil="true" />
+    <tiltakshaver>
+        <partstype>
+            <kodeverdi>Privatperson</kodeverdi>
+            <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <foedselsnummer>28044102120</foedselsnummer>
+        <organisasjonsnummer></organisasjonsnummer>
+        <navn>Byggmester Bob</navn>
+        <adresse>
+            <adresselinje1></adresselinje1>
+            <postnr></postnr>
+            <poststed></poststed>
+            <landkode></landkode>
+        </adresse>
+        <telefonnummer></telefonnummer>
+        <mobilnummer>222222</mobilnummer>
+        <epost></epost>
+        <kontaktperson>
+            <navn></navn>
+            <telefonnummer></telefonnummer>
+            <mobilnummer></mobilnummer>
+            <epost></epost>
+        </kontaktperson>
+    </tiltakshaver>
+    <datoFerdigattest>2024-03-16</datoFerdigattest>
+    <gjenstaaendeArbeider>
+        <gjenstaaendeInnenfor>små ting</gjenstaaendeInnenfor>
+    </gjenstaaendeArbeider>
+    <sikkerhetsnivaa>
+        <harTilstrekkeligSikkerhet>true</harTilstrekkeligSikkerhet>
+        <typeArbeider>WorkType</typeArbeider>
+        <utfoertInnen>2024-03-17</utfoertInnen>
+        <bekreftelseInnen>2024-03-18</bekreftelseInnen>
+    </sikkerhetsnivaa>
+    <ansvarForByggesaken>
+        <kodeverdi>utenAnsvar</kodeverdi>
+        <kodebeskrivelse>Søknad om tillatelse uten ansvarsrett etter pbl § 20-4</kodebeskrivelse>
+    </ansvarForByggesaken>
+</midlertidigbrukstillatelse>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<igangsettingstillatelse
+    xmlns="https://skjema.ft.dibk.no/igangsettingstillatelse/v4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/igangsettingstillatelse/v4 igangsettingstillatelse.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10003" dataFormatVersion="4">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9997</kommunenummer>
+				<gaardsnummer>55</gaardsnummer>
+				<bruksnummer>40</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Kyrkjevegen 6</adresselinje1>
+				<postnr>3803</postnr>
+				<poststed>Bø</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Kyrkjevegen</gatenavn>
+				<husnr>6</husnr>
+			</adresse>
+			<bygningsnummer>8625743</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Snekkre kommune (Sikri)</kommunenavn>
+		</eiendom>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>55</gaardsnummer>
+				<bruksnummer>40</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Kyrkjevegen 6</adresselinje1>
+				<postnr>3803</postnr>
+				<poststed>Bø</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Kyrkjevegen</gatenavn>
+				<husnr>6</husnr>
+			</adresse>
+			<bygningsnummer>165679733</bygningsnummer>
+			<bolignummer>H0102</bolignummer>
+			<kommunenavn>Midt-Telemark</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<ftbId>FTB123</ftbId>
+		<prosjektnavn>Eksempelprosjekt</prosjektnavn>
+		<prosjektnr>123456</prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi>NN</kodeverdi>
+			<kodebeskrivelse>Nynorsk</kodebeskrivelse>
+		</foretrukketSpraak>
+		<fraSluttbrukersystem>SystemX</fraSluttbrukersystem>
+	</metadata>
+	<generelleVilkaar>
+		<beroererArbeidsplasser>false</beroererArbeidsplasser>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<delsoeknader>
+		<delsoeknad>
+			<delAvTiltaket>Bygging av garasje</delAvTiltaket>
+			<tillatelsedato>2024-02-16</tillatelsedato>
+			<delsoeknadsnummer>2</delsoeknadsnummer>
+			<kommentar>Eksempelkommentar</kommentar>
+			<type>
+				<kode>
+					<kodeverdi>rivingdelerbygg</kodeverdi>
+					<kodebeskrivelse>Riving av deler av bygget</kodebeskrivelse>
+				</kode>
+			</type>
+		</delsoeknad>
+	</delsoeknader>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>rivingdelerbygg</kodeverdi>
+				<kodebeskrivelse>Riving av deler av bygget</kodebeskrivelse>
+			</kode>
+			<kode>
+        <kodeverdi>nyttbyggover70m2</kodeverdi>
+        <kodebeskrivelse>Nytt bygg - Over 70 m2 -Ikke boligformål</kodebeskrivelse>
+      </kode>
+		</type>
+		<foelgebrev>Her er et følgebrev</foelgebrev>
+		<gjelderHeleTiltaket>true</gjelderHeleTiltaket>
+		<delAvTiltaket>Bygning av bolig</delAvTiltaket>
+		<delsoeknadsnummer>456</delsoeknadsnummer>
+	</soeknadGjelder>
+	<utfallBesvarelse>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>123456</utfallId>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Utfall 1 tittel</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>1.1</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Dette er utfall 1</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Utfall 1 kommentar</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>vedlegg1.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>SamtykkeArbeidstilsynet</kodeverdi>
+						<kodebeskrivelse>Samtykke fra Arbeidstilsynet</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>vedlegg2.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>			
+		</utfallSvar>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>123456</utfallId>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Utfall 1 tittel</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>1.1</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Dette er utfall 1</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Utfall 1 kommentar</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>vedlegg1.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>		
+		</utfallSvar>
+	</utfallBesvarelse>
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Organisasjon</kodeverdi>
+			<kodebeskrivelse>Organisasjon</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>12345678910</foedselsnummer>
+		<kontaktperson>
+			<navn>Per Hansen</navn>
+			<telefonnummer>12345678</telefonnummer>
+			<mobilnummer>98765432</mobilnummer>
+			<epost>per@example.com</epost>
+		</kontaktperson>
+		<organisasjonsnummer>910467905</organisasjonsnummer>
+		<navn>Eksempelfirma AS</navn>
+		<adresse>
+			<adresselinje1>Eksempelet 1</adresselinje1>
+			<postnr>3803</postnr>
+			<poststed>BØ I TELEMARK</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>post@eksempel.no</epost>
+	</ansvarligSoeker>
+	<ansvarForByggesaken>
+		<kodeverdi>selvbygger</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse til tiltak hvor selvbygger har alt ansvar</kodebeskrivelse>
+	</ansvarForByggesaken>
+</igangsettingstillatelse>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ferdigattest
+    xmlns="https://skjema.ft.dibk.no/ferdigattest/v4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/ferdigattest/v4 ferdigattest.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10005" dataFormatVersion="4">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9999</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>391</bruksnummer>
+				<festenummer>0</festenummer>
+				<seksjonsnummer>0</seksjonsnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 13</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>13</husnr>
+			</adresse>
+			<bygningsnummer>81099618</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Oslo</kommunenavn>
+		</eiendom>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>389</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 11</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>11</husnr>
+			</adresse>
+			<bygningsnummer>80477813</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Oslo</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<fraSluttbrukersystem>SystemX</fraSluttbrukersystem>
+		<ftbId>98765</ftbId>
+		<prosjektnavn>Sentrumsløftet</prosjektnavn>
+		<prosjektnr>1A</prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi>nn</kodeverdi>
+			<kodebeskrivelse>Nynorsk</kodebeskrivelse>
+		</foretrukketSpraak>
+	</metadata>
+	<generelleVilkaar>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>mikrohus</kodeverdi>
+				<kodebeskrivelse>Mikrohus til boligformål - Inntil 30 m2 BRA</kodebeskrivelse>
+			</kode>
+			<kode>
+				<kodeverdi>nyttbyggunder70m2</kodeverdi>
+				<kodebeskrivelse>Nytt bygg - Under 70 m2 - ikke boligformål</kodebeskrivelse>
+			</kode>	
+		</type>
+		<foelgebrev>Dette er et følgebrev med utfyllende informasjon om søknaden om ferdigattest.</foelgebrev>
+	</soeknadGjelder>
+	<utfallBesvarelse>
+		<utfallSvar>
+			<utfallId>123</utfallId>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>1.1</sjekkpunktId>
+				<sjekkpunktEier>Sjekkpunkteier 1</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Utfall 1 tittel</tittel>
+			<beskrivelse>Dette er utfall 1</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Utfall 1 kommentar</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-03-12</versjonsdato>
+					<filnavn>File1.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>2</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-03-13</versjonsdato>
+					<filnavn>File2.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+		<utfallSvar>
+			<utfallId>456</utfallId>
+			<utfallType>
+				<kodeverdi>MKV</kodeverdi>
+				<kodebeskrivelse>Oppfølgingspunkt i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>1.1</sjekkpunktId>
+				<sjekkpunktEier>Sjekkpunkteier 2</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Title2</tittel>
+			<beskrivelse>Description2</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Comment2</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>3</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-03-14</versjonsdato>
+					<filnavn>File3.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>4</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>Annet</kodeverdi>
+						<kodebeskrivelse>Annet</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-03-15</versjonsdato>
+					<filnavn>File4.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+	</utfallBesvarelse>
+	<kravFerdigattest>
+		<tilfredsstillerTiltaketKraveneFerdigattest>false</tilfredsstillerTiltaketKraveneFerdigattest>
+		<utfoertInnen>2025-03-01</utfoertInnen>
+		<typeArbeider>Alt</typeArbeider>
+		<bekreftelseInnen>2025-03-01</bekreftelseInnen>
+	</kravFerdigattest>
+	<foretattIkkeSoeknadspliktigeJusteringer>false</foretattIkkeSoeknadspliktigeJusteringer>
+	<tilstrekkeligDokumentasjonOverlevertEier>true</tilstrekkeligDokumentasjonOverlevertEier>
+	<varmesystem>
+		<varmefordeling>
+			<kode>
+				<kodeverdi>vannbarenGulvvarme</kodeverdi>
+				<kodebeskrivelse>Vannbåren gulvvarme</kodebeskrivelse>
+			</kode>
+			<kode>
+				<kodeverdi>ikkeRelevant</kodeverdi>
+				<kodebeskrivelse>Ikke relevant</kodebeskrivelse>
+			</kode>
+		</varmefordeling>
+		<energiforsyning>
+			<kode>
+				<kodeverdi>solenergi</kodeverdi>
+				<kodebeskrivelse>Solenergi</kodebeskrivelse>
+			</kode>
+			<kode>
+				<kodeverdi>fjernvarme</kodeverdi>
+				<kodebeskrivelse>Fjernvarme spillvarme</kodebeskrivelse>
+			</kode>
+		</energiforsyning>
+	<relevant>true</relevant>
+
+	</varmesystem>
+	<tiltakshaver>
+		<partstype>
+			<kodeverdi>Privatperson</kodeverdi>
+			<kodebeskrivelse>Privatperson</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>25125401530</foedselsnummer>
+		<organisasjonsnummer></organisasjonsnummer>
+		<navn>Filip Mohammed</navn>
+		<adresse>
+			<adresselinje1>Storgata 1</adresselinje1>
+			<postnr>0155</postnr>
+			<poststed>Oslo</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>tiltakshaver@epost.no</epost>
+		<kontaktperson>
+			<navn></navn>
+			<telefonnummer></telefonnummer>
+			<mobilnummer></mobilnummer>
+			<epost></epost>
+		</kontaktperson>
+	</tiltakshaver>
+	<ansvarForByggesaken>
+		<kodeverdi>utenAnsvarMedKontroll</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse uten ansvarsrett etter pbl § 20-4, men med uavhengig kontroll</kodebeskrivelse>
+	</ansvarForByggesaken>
+</ferdigattest>

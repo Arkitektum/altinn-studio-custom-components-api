@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ansvarserklaeringDirekte xmlns="https://skjema.ft.dibk.no/ansvarserklaeringdirekte/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://skjema.ft.dibk.no/ansvarserklaeringdirekte/v2 ansvarserklaeringdirekte.xsd" dataFormatProvider="DIBK" dataFormatId="10019" dataFormatVersion="2">
+  <metadata>
+   <fraSluttbrukersystem>Fellestjenester BYGG testmotor</fraSluttbrukersystem>
+    <ftbId></ftbId>
+    <prosjektnavn></prosjektnavn>
+    <prosjektnr></prosjektnr>
+    <foretrukketSpraak>
+      <kodeverdi>nb</kodeverdi>
+      <kodebeskrivelse>Bokmål</kodebeskrivelse>
+    </foretrukketSpraak>
+  </metadata>
+  <kommunensSaksnummer>
+    <saksaar xsi:nil="true" />
+    <sakssekvensnummer xsi:nil="true" />
+  </kommunensSaksnummer>
+  <eiendomByggested>
+    <eiendom>
+      <adresse>
+        <adresselinje1></adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3></adresselinje3>
+        <postnr></postnr>
+        <poststed></poststed>
+        <landkode></landkode>
+        <gatenavn></gatenavn>
+        <husnr></husnr>
+        <bokstav></bokstav>
+      </adresse>
+      <eiendomsidentifikasjon>
+        <kommunenummer>5001</kommunenummer>
+        <gaardsnummer>79</gaardsnummer>
+        <bruksnummer>91</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <bygningsnummer></bygningsnummer>
+      <bolignummer></bolignummer>
+      <kommunenavn></kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <ansvarligSoeker>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>310973513</organisasjonsnummer>
+    <navn>VERDIFULL FALSK APE</navn>
+    <adresse>
+      <adresselinje1></adresselinje1>
+      <postnr></postnr>
+      <poststed></poststed>
+      <landkode></landkode>
+    </adresse>
+    <telefonnummer></telefonnummer>
+    <mobilnummer></mobilnummer>
+    <epost></epost>
+    <kontaktperson>
+      <navn></navn>
+      <telefonnummer></telefonnummer>
+      <mobilnummer></mobilnummer>
+      <epost></epost>
+    </kontaktperson>
+  </ansvarligSoeker>
+   <ansvarligForetak>
+     <partstype>
+      <kodeverdi>Foretak</kodeverdi>
+      <kodebeskrivelse>Foretak</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>310973513</organisasjonsnummer>
+    <navn>VERDIFULL FALSK APE</navn>
+    <adresse>
+      <adresselinje1></adresselinje1>
+      <postnr></postnr>
+      <poststed></poststed>
+      <landkode></landkode>
+    </adresse>
+    <telefonnummer></telefonnummer>
+    <mobilnummer></mobilnummer>
+    <epost></epost>
+    <kontaktperson>
+      <navn>Tradisjonsbunden Bagasje</navn>
+      <telefonnummer></telefonnummer>
+      <mobilnummer></mobilnummer>
+      <epost></epost>
+   </kontaktperson>
+   <harSentralGodkjenning>false</harSentralGodkjenning>
+  </ansvarligForetak>
+  <ansvarsomraader>
+    <ansvarsomraade>
+      <funksjon>
+        <kodeverdi>PRO</kodeverdi>
+        <kodebeskrivelse>Ansvarlig prosjekterende</kodebeskrivelse>
+      </funksjon>
+      <beskrivelseAvAnsvarsomraadet>Prosjektering av planløsning, plassering og visuell profil.</beskrivelseAvAnsvarsomraadet>
+      <tiltaksklasse>
+        <kodeverdi>1</kodeverdi>
+        <kodebeskrivelse>1</kodebeskrivelse>
+      </tiltaksklasse>
+      <dekkesOmraadeAvSentralGodkjenning>true</dekkesOmraadeAvSentralGodkjenning>
+      <faseSamsvarKontroll>
+        <harSamsvarKontrollVedRammetillatelse>true</harSamsvarKontrollVedRammetillatelse>
+        <harSamsvarKontrollVedIgangsettingstillatelse>false</harSamsvarKontrollVedIgangsettingstillatelse>
+        <harSamsvarKontrollVedMidlertidigBrukstillatelse>false</harSamsvarKontrollVedMidlertidigBrukstillatelse>
+        <harSamsvarKontrollVedFerdigattest>false</harSamsvarKontrollVedFerdigattest>
+      </faseSamsvarKontroll>
+      <soeknadssystemetsReferanse>67a20b95-1eeb-44e3-a105-f2a5286358ee</soeknadssystemetsReferanse>
+    </ansvarsomraade>
+  </ansvarsomraader>
+  <erklaering>
+    <harErklaeringAnsvarligProsjekterende>true</harErklaeringAnsvarligProsjekterende>
+    <harErklaeringAnsvarligUtfoerende>false</harErklaeringAnsvarligUtfoerende>
+    <harErklaeringAnsvarligKontrollerende>false</harErklaeringAnsvarligKontrollerende>
+  </erklaering>
+</ansvarserklaeringDirekte>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ferdigattest
+    xmlns="https://skjema.ft.dibk.no/ferdigattest/v4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/ferdigattest/v4 ferdigattest.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10005" dataFormatVersion="4"><eiendomByggested>
+        <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>9999</kommunenummer>
+                <gaardsnummer>208</gaardsnummer>
+                <bruksnummer>391</bruksnummer>
+                <festenummer>0</festenummer>
+                <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+                <adresselinje1>Mariboes gate 13</adresselinje1>
+                <postnr>0183</postnr>
+                <poststed>Oslo</poststed>
+                <landkode>NO</landkode>
+                <gatenavn>Mariboes gate</gatenavn>
+                <husnr>13</husnr>
+            </adresse>
+            <bygningsnummer>81099618</bygningsnummer>
+            <bolignummer>H0101</bolignummer>
+            <kommunenavn>Oslo</kommunenavn>
+        </eiendom>
+        <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>9998</kommunenummer>
+                <gaardsnummer>208</gaardsnummer>
+                <bruksnummer>389</bruksnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+                <adresselinje1>Mariboes gate 11</adresselinje1>
+                <postnr>0183</postnr>
+                <poststed>Oslo</poststed>
+                <landkode>NO</landkode>
+                <gatenavn>Mariboes gate</gatenavn>
+                <husnr>11</husnr>
+            </adresse>
+            <bygningsnummer>80477813</bygningsnummer>
+            <bolignummer>H0101</bolignummer>
+            <kommunenavn>Oslo</kommunenavn>
+        </eiendom>
+    </eiendomByggested>
+    <kommunensSaksnummer>
+        <saksaar>2024</saksaar>
+        <sakssekvensnummer>12345</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <metadata>
+        <fraSluttbrukersystem>SystemX</fraSluttbrukersystem>
+        <ftbId>98765</ftbId>
+        <prosjektnavn>Prosjektnavn</prosjektnavn>
+        <prosjektnr>54321</prosjektnr>
+        <foretrukketSpraak>
+            <kodeverdi>nn</kodeverdi>
+            <kodebeskrivelse>Nynorsk</kodebeskrivelse>
+        </foretrukketSpraak>
+    </metadata>
+    <generelleVilkaar>
+        <norskSvenskDansk>true</norskSvenskDansk>
+    </generelleVilkaar>
+    <soeknadGjelder>
+        <type>
+            <kode>
+                <kodeverdi>rivingdelerbygg</kodeverdi>
+                <kodebeskrivelse>Riving av deler av bygget</kodebeskrivelse>
+            </kode>
+            <kode>
+                <kodeverdi>nyttbyggover70m2</kodeverdi>
+                <kodebeskrivelse>Nytt bygg - Over 70 m2 -Ikke boligformål</kodebeskrivelse>
+            </kode>
+        </type>
+        <foelgebrev>Dette er et følgebrev med utfyllende informasjon om søknaden om ferdigattest.</foelgebrev>
+    </soeknadGjelder>
+    <utfallBesvarelse>
+        <utfallSvar>
+            <utfallId>123</utfallId>
+            <utfallType>
+                <kodeverdi>MKV</kodeverdi>
+                <kodebeskrivelse>Oppfølgingspunkt i vedtak</kodebeskrivelse>
+            </utfallType>
+            <utloestFraSjekkpunkt>
+                <sjekkpunktId>13.9</sjekkpunktId>
+                <sjekkpunktEier>dibk</sjekkpunktEier>
+            </utloestFraSjekkpunkt>
+            <tema>
+                <kodeverdi>utvalgteNaturtyper</kodeverdi>
+                <kodebeskrivelse>Utvalgte naturtyper og ivaretakelse av miljø</kodebeskrivelse>
+            </tema>
+            <tittel>Ivaretakelse av utvalgte naturtyper</tittel>
+            <beskrivelse>Tillatelsen innvilges på vilkår av at det treffes følgende tiltak for å ta vare på berørt(e) naturtype(r): send dokumentasjon om myr</beskrivelse>
+            <erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+            <erUtfallBesvart>true</erUtfallBesvart>
+            <kommentar>jeg sender med dokumentasjon nå</kommentar>
+            <vedleggsliste>
+                <vedlegg>
+                    <versjonsnummer>1</versjonsnummer>
+                    <vedleggstype>
+                        <kodeverdi>AndreRedegjoerelser</kodeverdi>
+                        <kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+                    </vedleggstype>
+                    <versjonsdato>2024-03-12</versjonsdato>
+                    <filnavn>ivaretakelseavnatur.pdf</filnavn>
+                </vedlegg>
+                <vedlegg>
+                    <versjonsnummer>2</versjonsnummer>
+                    <vedleggstype>
+                        <kodeverdi>AndreRedegjoerelser</kodeverdi>
+                        <kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+                    </vedleggstype>
+                    <versjonsdato>2024-03-13</versjonsdato>
+                    <filnavn>analyseavnatur.pdf</filnavn>
+                </vedlegg>
+            </vedleggsliste>
+        </utfallSvar>
+        <utfallSvar>
+            <utfallId>456</utfallId>
+            <utfallType>
+                <kodeverdi>SVV</kodeverdi>
+                <kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+            </utfallType>
+            <utloestFraSjekkpunkt>
+                <sjekkpunktId>17.10</sjekkpunktId>
+                <sjekkpunktEier>dibk</sjekkpunktEier>
+            </utloestFraSjekkpunkt>
+            <tema>
+                <kodeverdi>ansvar</kodeverdi>
+                <kodebeskrivelse>Ansvar og gjennomføring</kodebeskrivelse>
+            </tema>
+            <tittel>Gjennomføringsplan og erklæringer om ansvar</tittel>
+            <beskrivelse>Det må sendes inn en ny gjennomføringsplan hvor det er samsvar mellom erklæringer om ansvarsrett og gjennomføringsplanen.</beskrivelse>
+            <erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+            <erUtfallBesvart>true</erUtfallBesvart>
+            <kommentar>Jeg har lagt ved gjennomføringsplan og erklæring om ansvsar</kommentar>
+            <vedleggsliste>
+                <vedlegg>
+                    <versjonsnummer>5</versjonsnummer>
+                    <vedleggstype>
+                        <kodeverdi>Gjennomfoeringsplan</kodeverdi>
+                        <kodebeskrivelse>Gjennomføringsplan</kodebeskrivelse>
+                    </vedleggstype>
+                    <versjonsdato>2024-03-14</versjonsdato>
+                    <filnavn>Gjennomføringsplan.pdf</filnavn>
+                </vedlegg>
+                <vedlegg>
+                    <versjonsnummer>7</versjonsnummer>
+                    <vedleggstype>
+                        <kodeverdi>ErklaeringAnsvarsrett</kodeverdi>
+                        <kodebeskrivelse>Erklæring om ansvarsrett</kodebeskrivelse>
+                    </vedleggstype>
+                    <versjonsdato>2024-03-15</versjonsdato>
+                    <filnavn>Erklæring om ansvarsrett.pdf</filnavn>
+                </vedlegg>
+            </vedleggsliste>
+        </utfallSvar>
+    </utfallBesvarelse>
+    <kravFerdigattest>
+        <tilfredsstillerTiltaketKraveneFerdigattest>false</tilfredsstillerTiltaketKraveneFerdigattest>
+        <utfoertInnen>2025-02-22</utfoertInnen>
+        <typeArbeider>Alt arbeid gjenstår</typeArbeider>
+        <bekreftelseInnen>2025-02-22</bekreftelseInnen>
+    </kravFerdigattest>
+    <foretattIkkeSoeknadspliktigeJusteringer>true</foretattIkkeSoeknadspliktigeJusteringer>
+    <tilstrekkeligDokumentasjonOverlevertEier>true</tilstrekkeligDokumentasjonOverlevertEier>
+    <varmesystem>
+        <varmefordeling>
+            <kode>
+                <kodeverdi>vannbarenGulvvarme</kodeverdi>
+                <kodebeskrivelse>Vannbåren gulvvarme</kodebeskrivelse>
+            </kode>
+            <kode>
+                <kodeverdi>ikkeRelevant</kodeverdi>
+                <kodebeskrivelse>Ikke relevant</kodebeskrivelse>
+            </kode>
+        </varmefordeling>
+        <energiforsyning>
+            <kode>
+                <kodeverdi>solenergi</kodeverdi>
+                <kodebeskrivelse>Solenergi</kodebeskrivelse>
+            </kode>
+            <kode>
+                <kodeverdi>fjernvarme</kodeverdi>
+                <kodebeskrivelse>Fjernvarme spillvarme</kodebeskrivelse>
+            </kode>
+        </energiforsyning>
+    <relevant>true</relevant>
+
+    </varmesystem>
+    <tiltakshaver>
+        <partstype>
+            <kodeverdi>Privatperson</kodeverdi>
+            <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <foedselsnummer>12345678910</foedselsnummer>
+        <organisasjonsnummer></organisasjonsnummer>
+        <navn>Filip Mohammed</navn>
+        <adresse>
+            <adresselinje1>Storgata 1</adresselinje1>
+            <postnr>0155</postnr>
+            <poststed>Oslo</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>12345678</telefonnummer>
+        <mobilnummer>98765432</mobilnummer>
+        <epost>tiltakshaver@epost.no</epost>
+        <kontaktperson>
+            <navn></navn>
+            <telefonnummer></telefonnummer>
+            <mobilnummer></mobilnummer>
+            <epost></epost>
+        </kontaktperson>
+    </tiltakshaver>
+    <ansvarligSoeker>
+        <partstype>
+            <kodeverdi>Organisasjon</kodeverdi>
+            <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <foedselsnummer></foedselsnummer>
+        <organisasjonsnummer>910297937</organisasjonsnummer>
+        <navn>FANA OG HAFSLO REVISJON</navn>
+        <adresse>
+            <adresselinje1>Gateadresse 101</adresselinje1>
+            <postnr>3183</postnr>
+            <poststed>HORTEN</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>11111111</telefonnummer>
+        <mobilnummer>22222222</mobilnummer>
+        <epost>arkitekt@flink.no</epost>
+        <kontaktperson>
+            <navn>Per kontaktesen</navn>
+            <telefonnummer>33333333</telefonnummer>
+            <mobilnummer>44444444</mobilnummer>
+            <epost>kontakt@ansvarligsoker.no</epost>
+        </kontaktperson>
+    </ansvarligSoeker>
+    <ansvarForByggesaken>
+        <kodeverdi>medAnsvar</kodeverdi>
+        <kodebeskrivelse>Søknad om tillatelse til tiltak med ansvarlige foretak</kodebeskrivelse>
+    </ansvarForByggesaken>
+</ferdigattest>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<forespoerselTiltakshaversSamtykke xmlns="https://skjema.ft.dibk.no/forespoerseltiltakshaverssamtykke/v1" dataFormatProvider="DIBK" dataFormatId="10017" dataFormatVersion="1">
+  <tiltakshaverNavn>UINTERESSERT LYSEBLÅ TIGER AS</tiltakshaverNavn>
+  <tiltakshaverOrgnr>314039688</tiltakshaverOrgnr>
+  <tiltakshaverPartstypeKode>
+    <kodeverdi>Organisasjon</kodeverdi>
+    <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+  </tiltakshaverPartstypeKode>
+  <ansvarligSoekerNavn>SORGLØS OFFISIELL KATT BOKS</ansvarligSoekerNavn>
+  <ansvarligSoekerOrganisasjonsnummer>310473812</ansvarligSoekerOrganisasjonsnummer>
+  <prosjektnavn>Eksempelprosjekt</prosjektnavn>
+  <fraSluttbrukerSystem>SystemX</fraSluttbrukerSystem>
+  <eiendomByggested>
+    <eiendom>
+      <eiendomsidentifikasjon>
+        <kommunenummer>9997</kommunenummer>
+        <gaardsnummer>55</gaardsnummer>
+        <bruksnummer>40</bruksnummer>
+      </eiendomsidentifikasjon>
+      <adresse>
+        <adresselinje1>Kyrkjevegen 6</adresselinje1>
+        <postnr>3803</postnr>
+        <poststed>Bø</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Kyrkjevegen</gatenavn>
+        <husnr>6</husnr>
+      </adresse>
+      <bygningsnummer>8625743</bygningsnummer>
+      <bolignummer>H0101</bolignummer>
+      <kommunenavn>Snekkre kommune (Sikri)</kommunenavn>
+    </eiendom>
+    <eiendom>
+      <eiendomsidentifikasjon>
+        <kommunenummer>4020</kommunenummer>
+        <gaardsnummer>55</gaardsnummer>
+        <bruksnummer>40</bruksnummer>
+      </eiendomsidentifikasjon>
+      <adresse>
+        <adresselinje1>Kyrkjevegen 6</adresselinje1>
+        <postnr>3803</postnr>
+        <poststed>Bø</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Kyrkjevegen</gatenavn>
+        <husnr>6</husnr>
+      </adresse>
+      <bygningsnummer>165679733</bygningsnummer>
+      <bolignummer>H0102</bolignummer>
+      <kommunenavn>Midt-Telemark</kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <tiltakstyper>
+    <kode>
+      <kodeverdi>rivingdelerbygg</kodeverdi>
+      <kodebeskrivelse>Riving av deler av bygget</kodebeskrivelse>
+    </kode>
+    <kode>
+      <kodeverdi>nyttbyggover70m2</kodeverdi>
+      <kodebeskrivelse>Nytt bygg - Over 70 m2 -Ikke boligformål</kodebeskrivelse>
+    </kode>
+  </tiltakstyper>
+</forespoerselTiltakshaversSamtykke>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<igangsettingstillatelse xmlns="https://skjema.ft.dibk.no/igangsettingstillatelse/v4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://skjema.ft.dibk.no/igangsettingstillatelse/v4 igangsettingstillatelse.xsd" dataFormatProvider="DIBK" dataFormatId="10003" dataFormatVersion="4">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>391</bruksnummer>
+				<festenummer>0</festenummer>
+				<seksjonsnummer>0</seksjonsnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 13</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>13</husnr>
+			</adresse>
+			<bygningsnummer>81099618</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Snekkre kommune (Sikri)</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<ftbId>FTB123</ftbId>
+		<prosjektnavn>Sentrumsboligen</prosjektnavn>
+		<prosjektnr>123</prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi>nb</kodeverdi>
+			<kodebeskrivelse>Bokmål</kodebeskrivelse>
+		</foretrukketSpraak>
+		<fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+	</metadata>
+	<generelleVilkaar>
+		<beroererArbeidsplasser>false</beroererArbeidsplasser>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<delsoeknader>
+		<delsoeknad>
+			<delAvTiltaket>Garasje</delAvTiltaket>
+			<tillatelsedato>2024-07-16</tillatelsedato>
+			<delsoeknadsnummer>1</delsoeknadsnummer>
+			<kommentar>Det er tidligere søkt om og gitt igangsettingstillatelse for garasjen</kommentar>
+			<type>
+				<kode>
+					<kodeverdi>nyttbyggunder70m2</kodeverdi>
+					<kodebeskrivelse>Nytt bygg - Under 70 m2 - ikke boligformål</kodebeskrivelse>
+				</kode>
+			</type>
+		</delsoeknad>
+	</delsoeknader>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>nyttbyggboligformal</kodeverdi>
+				<kodebeskrivelse>Nytt bygg - Boligformål</kodebeskrivelse>
+			</kode>
+		</type>
+		<foelgebrev>Se vedlagte følgebrev.</foelgebrev>
+		<gjelderHeleTiltaket>false</gjelderHeleTiltaket>
+		<delAvTiltaket>Fundamentering av enebolig</delAvTiltaket>
+		<delsoeknadsnummer>2</delsoeknadsnummer>
+	</soeknadGjelder>
+	<utfallBesvarelse>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>f35caa6e-0ea5-4684-9ce3-1db842b5e99e</utfallId>
+			<tema>
+				<kodeverdi>Plan</kodeverdi>
+				<kodebeskrivelse>Plan</kodebeskrivelse>
+			</tema>
+			<tittel>Er vilkår om erverv av fellesareal oppfylt?</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>3.34</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Det er stilt vilkår om erverv av fellesareal før igangsettingstillatelse for boligen kan gis. Du må sende inn dokumentasjon på at vilkåret er oppfylt.</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>true</erUtfallBesvart>
+			<kommentar>Dokumentasjon på erverv av fellesareal er vedlagt.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>Kvittering på erverv av fellesareal</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>c90d6d7d-f970-41a7-93a2-4a33092f4bcd</utfallId>
+			<tema>
+				<kodeverdi>ansvar</kodeverdi>
+				<kodebeskrivelse>Ansvar og gjennomføring</kodebeskrivelse>
+			</tema>
+			<tittel>Søkes det om ansvar for selvbygger?</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>17.17</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Det søkes om ansvarsrett for selvbygger for utførelse av grunnmur.</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>true</erUtfallBesvart>
+			<kommentar>Vedlagt ligger søknad om ansvarsrett for selvbygger</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>Søknad om ansvarsrett for selvbygger</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+	</utfallBesvarelse>
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Privatperson</kodeverdi>
+			<kodebeskrivelse>Privatperson</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>28044102120</foedselsnummer>
+		<organisasjonsnummer />
+		<navn>Selvbygger Ludvig Moholt</navn>
+		<adresse>
+			<adresselinje1>Munkegata 1</adresselinje1>
+			<postnr>7013</postnr>
+			<poststed>Trondheim</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>selvbygger@mail.com</epost>
+		<kontaktperson>
+			<navn>Ludvig Moholt</navn>
+			<telefonnummer>11223344</telefonnummer>
+			<mobilnummer>99887766</mobilnummer>
+			<epost>kontaktperson.selvbygger@mail.com</epost>
+		</kontaktperson>
+	</ansvarligSoeker>
+	<ansvarForByggesaken>
+		<kodeverdi>selvbygger</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse til tiltak hvor selvbygger har alt ansvar</kodebeskrivelse>
+	</ansvarForByggesaken>
+</igangsettingstillatelse>

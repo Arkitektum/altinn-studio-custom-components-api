@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<igangsettingstillatelse
+    xmlns="https://skjema.ft.dibk.no/igangsettingstillatelse/v4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/igangsettingstillatelse/v4 igangsettingstillatelse.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10003" dataFormatVersion="4">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>391</bruksnummer>
+				<festenummer>0</festenummer>
+				<seksjonsnummer>0</seksjonsnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1></adresselinje1>
+				<postnr></postnr>
+				<poststed></poststed>
+				<landkode></landkode>
+				<gatenavn></gatenavn>
+				<husnr></husnr>
+			</adresse>
+			<bygningsnummer></bygningsnummer>
+			<bolignummer></bolignummer>
+			<kommunenavn></kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<ftbId></ftbId>
+		<prosjektnavn></prosjektnavn>
+		<prosjektnr></prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi></kodeverdi>
+			<kodebeskrivelse></kodebeskrivelse>
+		</foretrukketSpraak>
+		<fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+	</metadata>
+	<generelleVilkaar>
+		<beroererArbeidsplasser>false</beroererArbeidsplasser>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>nyttbyggboligformal</kodeverdi>
+				<kodebeskrivelse>Nytt bygg - Boligformål</kodebeskrivelse>
+			</kode>
+		</type>
+		<foelgebrev></foelgebrev>
+		<gjelderHeleTiltaket>true</gjelderHeleTiltaket>
+		<delAvTiltaket></delAvTiltaket>
+		<delsoeknadsnummer>1</delsoeknadsnummer>
+	</soeknadGjelder>
+	<delsoeknader>
+		<delsoeknad>
+			<delAvTiltaket></delAvTiltaket>
+			<tillatelsedato xsi:nil="true" />
+			<delsoeknadsnummer></delsoeknadsnummer>
+			<kommentar></kommentar>
+			<type>
+				<kode>
+					<kodeverdi></kodeverdi>
+					<kodebeskrivelse></kodebeskrivelse>
+				</kode>
+			</type>
+		</delsoeknad>
+	</delsoeknader>
+	<utfallBesvarelse xsi:nil="true" />
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Organisasjon</kodeverdi>
+			<kodebeskrivelse>Organisasjon</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer></foedselsnummer>
+		<organisasjonsnummer>910065203</organisasjonsnummer>
+		<navn>Arkitekt Flink</navn>
+		<adresse>
+			<adresselinje1></adresselinje1>
+			<postnr></postnr>
+			<poststed></poststed>
+			<landkode></landkode>
+		</adresse>
+		<telefonnummer></telefonnummer>
+		<mobilnummer></mobilnummer>
+		<epost></epost>
+		<kontaktperson>
+			<navn></navn>
+			<telefonnummer></telefonnummer>
+			<mobilnummer></mobilnummer>
+			<epost></epost>
+		</kontaktperson>
+	</ansvarligSoeker>
+	<ansvarForByggesaken>
+		<kodeverdi>medAnsvar</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse til tiltak med ansvarlige foretak</kodebeskrivelse>
+	</ansvarForByggesaken>
+</igangsettingstillatelse>

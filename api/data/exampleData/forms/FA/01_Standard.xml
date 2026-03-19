@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ferdigattest
+    xmlns="https://skjema.ft.dibk.no/ferdigattest/v4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/ferdigattest/v4 ferdigattest.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10005" dataFormatVersion="4">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9997</kommunenummer>
+				<gaardsnummer>55</gaardsnummer>
+				<bruksnummer>40</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Kyrkjevegen 6</adresselinje1>
+				<postnr>3803</postnr>
+				<poststed>Bø</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Kyrkjevegen</gatenavn>
+				<husnr>6</husnr>
+			</adresse>
+			<bygningsnummer>8625743</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Eksempelkommune</kommunenavn>
+		</eiendom>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>55</gaardsnummer>
+				<bruksnummer>40</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Kyrkjevegen 6</adresselinje1>
+				<postnr>3803</postnr>
+				<poststed>Bø</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Kyrkjevegen</gatenavn>
+				<husnr>6</husnr>
+			</adresse>
+			<bygningsnummer>165679733</bygningsnummer>
+			<bolignummer>H0102</bolignummer>
+			<kommunenavn>Midt-Telemark</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<fraSluttbrukersystem>SystemX</fraSluttbrukersystem>
+		<ftbId>98765</ftbId>
+		<prosjektnavn>Prosjektnavn</prosjektnavn>
+		<prosjektnr>54321</prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi>nn</kodeverdi>
+			<kodebeskrivelse>Nynorsk</kodebeskrivelse>
+		</foretrukketSpraak>
+	</metadata>
+	<generelleVilkaar>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>rivingdelerbygg</kodeverdi>
+				<kodebeskrivelse>Riving av deler av bygget</kodebeskrivelse>
+			</kode>
+			<kode>
+				<kodeverdi>nyttbyggover70m2</kodeverdi>
+				<kodebeskrivelse>Nytt bygg - Over 70 m2 -Ikke boligformål</kodebeskrivelse>
+			</kode>
+		</type>
+		<foelgebrev>Her er et følgebrev</foelgebrev>
+	</soeknadGjelder>
+	<utfallBesvarelse>
+		<utfallSvar>
+			<utfallId>123</utfallId>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>1.1</sjekkpunktId>
+				<sjekkpunktEier>Sjekkpunkteier 1</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Utfall 1 tittel</tittel>
+			<beskrivelse>Dette er utfall 1</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Utfall 1 kommentar</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-03-12</versjonsdato>
+					<filnavn>File1.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>2</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-03-13</versjonsdato>
+					<filnavn>File2.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+		<utfallSvar>
+			<utfallId>456</utfallId>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>1.1</sjekkpunktId>
+				<sjekkpunktEier>Sjekkpunkteier 2</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Title2</tittel>
+			<beskrivelse>Description2</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Comment2</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>3</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-03-14</versjonsdato>
+					<filnavn>File3.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>4</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>Annet</kodeverdi>
+						<kodebeskrivelse>Annet</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-03-15</versjonsdato>
+					<filnavn>File4.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+	</utfallBesvarelse>
+	<kravFerdigattest>
+		<tilfredsstillerTiltaketKraveneFerdigattest>false</tilfredsstillerTiltaketKraveneFerdigattest>
+		<utfoertInnen>2025-02-25</utfoertInnen>
+		<typeArbeider>Alt</typeArbeider>
+		<bekreftelseInnen>2025-02-25</bekreftelseInnen>
+	</kravFerdigattest>
+	<foretattIkkeSoeknadspliktigeJusteringer>false</foretattIkkeSoeknadspliktigeJusteringer>
+	<tilstrekkeligDokumentasjonOverlevertEier>true</tilstrekkeligDokumentasjonOverlevertEier>
+	<varmesystem>
+		<varmefordeling>
+			<kode>
+				<kodeverdi>Annet</kodeverdi>
+				<kodebeskrivelse>Annet</kodebeskrivelse>
+			</kode>
+			<kode>
+				<kodeverdi>Annet</kodeverdi>
+				<kodebeskrivelse>Annet</kodebeskrivelse>
+			</kode>
+		</varmefordeling>
+		<energiforsyning>
+			<kode>
+				<kodeverdi>Annet</kodeverdi>
+				<kodebeskrivelse>Annet</kodebeskrivelse>
+			</kode>
+			<kode>
+				<kodeverdi>Annet</kodeverdi>
+				<kodebeskrivelse>Annet</kodebeskrivelse>
+			</kode>
+		</energiforsyning>
+		<relevant>true</relevant>
+	</varmesystem>
+	<tiltakshaver>
+		<partstype>
+			<kodeverdi>Organisasjon</kodeverdi>
+			<kodebeskrivelse>Organisasjon</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>12345678910</foedselsnummer>
+		<organisasjonsnummer>987654321</organisasjonsnummer>
+		<navn>Tiltakshaver 1</navn>
+		<adresse>
+			<adresselinje1>Gateadresse 789</adresselinje1>
+			<postnr>3802</postnr>
+			<poststed>Bø i Telemark</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>tiltakshaver1@example.com</epost>
+		<kontaktperson>
+			<navn>Kontaktperson 1</navn>
+			<telefonnummer>11111111</telefonnummer>
+			<mobilnummer>22222222</mobilnummer>
+			<epost>kontaktperson1@example.com</epost>
+		</kontaktperson>
+	</tiltakshaver>
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Organisasjon</kodeverdi>
+			<kodebeskrivelse>Organisasjon</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>25125401530</foedselsnummer>
+		<organisasjonsnummer>910467905</organisasjonsnummer>
+		<navn>Ansvarlig Søker 1</navn>
+		<adresse>
+			<adresselinje1>Gateadresse 101</adresselinje1>
+			<postnr>3803</postnr>
+			<poststed>BØ I TELEMARK</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>99999999</telefonnummer>
+		<mobilnummer>88888888</mobilnummer>
+		<epost>ansvarligsoeker1@example.com</epost>
+		<kontaktperson>
+			<navn>Kontaktperson 2</navn>
+			<telefonnummer>33333333</telefonnummer>
+			<mobilnummer>44444444</mobilnummer>
+			<epost>kontaktperson2@example.com</epost>
+		</kontaktperson>
+	</ansvarligSoeker>
+	<ansvarForByggesaken>
+		<kodeverdi>selvbygger</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse til tiltak hvor selvbygger har alt ansvar</kodebeskrivelse>
+	</ansvarForByggesaken>
+</ferdigattest>

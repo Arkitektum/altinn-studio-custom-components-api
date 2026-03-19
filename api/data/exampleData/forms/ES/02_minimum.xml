@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<endring xmlns="https://skjema.ft.dibk.no/endring/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://skjema.ft.dibk.no/endring/v2 endring.xsd" dataFormatId="10015" dataFormatProvider="DIBK" dataFormatVersion="2">
+  <metadata>
+    <fraSluttbrukersystem>Fellestjenester bygg testmotor</fraSluttbrukersystem>
+    <ftbId></ftbId>
+    <prosjektnavn></prosjektnavn>
+    <prosjektnr></prosjektnr>
+    <foretrukketSpraak>
+      <kodeverdi>nb</kodeverdi>
+      <kodebeskrivelse>Bokmål</kodebeskrivelse>
+    </foretrukketSpraak>
+  </metadata>
+  <generelleVilkaar>
+    <norskSvenskDansk>true</norskSvenskDansk>
+    <beroererArbeidsplasser>true</beroererArbeidsplasser>
+  </generelleVilkaar>
+  <soeknadGjelder>
+    <type>
+      <kode>
+        <kodeverdi>nyttbyggboligformal</kodeverdi>
+        <kodebeskrivelse>Nytt bygg - Boligformål</kodebeskrivelse>
+      </kode>
+    </type>
+    <bruk>
+      <tiltaksformaal>
+        <kode>
+          <kodeverdi>Bolig</kodeverdi>
+          <kodebeskrivelse>Bolig</kodebeskrivelse>
+        </kode>
+      </tiltaksformaal>
+      <beskrivTidligereFormaal></beskrivTidligereFormaal>
+      <beskrivPlanlagtFormaal></beskrivPlanlagtFormaal>
+    <bygningstype>
+        <kodeverdi></kodeverdi>
+        <kodebeskrivelse></kodebeskrivelse>
+      </bygningstype>
+      <naeringsgruppe>
+        <kodeverdi></kodeverdi>
+        <kodebeskrivelse></kodebeskrivelse>
+      </naeringsgruppe>
+    </bruk>
+    <foelgebrev>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</foelgebrev>
+  </soeknadGjelder>
+  <kommunensSaksnummer>
+    <saksaar>2025</saksaar>
+    <sakssekvensnummer>12345</sakssekvensnummer>
+  </kommunensSaksnummer>
+  <ansvarForByggesaken>
+    <kodeverdi>medAnsvar</kodeverdi>
+    <kodebeskrivelse>Søknad om tillatelse til tiltak med ansvarlige foretak</kodebeskrivelse>
+  </ansvarForByggesaken>
+  <endringenGjelder>
+    <endringstype>
+       <kode>
+        <kodeverdi>endringUtformingInnvendig</kodeverdi>
+        <kodebeskrivelse>Endring av planløsning</kodebeskrivelse>
+      </kode>
+    </endringstype>
+    <beskrivelse></beskrivelse>
+  </endringenGjelder>
+  <eiendomByggested>
+    <eiendom>
+      <adresse>
+        <adresselinje1>Christian Eggens veg 43</adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3></adresselinje3>
+        <postnr>7033</postnr>
+        <poststed>Trondheim</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Christian Eggens veg</gatenavn>
+        <husnr>43</husnr>
+        <bokstav></bokstav>
+      </adresse>
+      <eiendomsidentifikasjon>
+        <kommunenummer>5001</kommunenummer>
+        <gaardsnummer>79</gaardsnummer>
+        <bruksnummer>91</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <bygningsnummer>182752762</bygningsnummer>
+      <bolignummer></bolignummer>
+      <kommunenavn></kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <varsling>
+    <fritattFraNabovarsling>true</fritattFraNabovarsling>
+    <redegjorelseFritak>Kun innvendige endring</redegjorelseFritak>
+    <foreliggerMerknader>false</foreliggerMerknader>
+    <antallMerknader xsi:nil="true" />
+    <vurderingAvMerknader></vurderingAvMerknader>
+    <soeknadensHjemmeside></soeknadensHjemmeside>
+    <harPengeheftelser xsi:nil="true" />
+  </varsling>
+  <planer>
+    <gjeldendePlan>
+      <formaal>Arealformål</formaal>
+      <navn>Kommuneplanens arealdel: Kommuneplanens arealdel 2022-2034</navn>
+        <plantype>
+          <kodeverdi>KP</kodeverdi>
+          <kodebeskrivelse>Arealdel av kommuneplan</kodebeskrivelse>
+        </plantype>
+      <beregningsregelGradAvUtnytting>
+        <kodeverdi>BYA</kodeverdi>
+        <kodebeskrivelse>Bebygd areal</kodebeskrivelse>
+      </beregningsregelGradAvUtnytting>
+      <utnyttingsgrad>160</utnyttingsgrad>
+    </gjeldendePlan>
+    <andrePlaner>
+      <plan>
+        <navn></navn>
+        <plantype>
+          <kodeverdi></kodeverdi>
+          <kodebeskrivelse></kodebeskrivelse>
+        </plantype>
+      </plan>
+    </andrePlaner>
+    <andreRelevanteKrav></andreRelevanteKrav>
+  </planer>
+  <rammebetingelser>
+    <adkomst>
+      <erNyEllerEndretAdkomst xsi:nil="true" />
+      <vegtype>
+        <kode>
+          <kodeverdi></kodeverdi>
+          <kodebeskrivelse></kodebeskrivelse>
+        </kode>
+      </vegtype>
+      <erTillatelseGittRiksFylkesveg xsi:nil="true" />
+      <erTillatelseGittKommunalVeg xsi:nil="true" />
+      <erTillatelseGittPrivatVeg xsi:nil="true" />
+    </adkomst>
+    <arealdisponering>
+      <tomtearealByggeomraade xsi:nil="true" />
+      <tomtearealSomTrekkesFra xsi:nil="true" />
+      <tomtearealSomLeggesTil xsi:nil="true" />
+      <tomtearealBeregnet xsi:nil="true" />
+      <beregnetMaksByggeareal xsi:nil="true" />
+      <arealBebyggelseEksisterende xsi:nil="true" />
+      <arealBebyggelseSomSkalRives xsi:nil="true" />
+      <arealBebyggelseNytt xsi:nil="true" />
+      <parkeringsarealTerreng xsi:nil="true" />
+      <arealSumByggesak xsi:nil="true" />
+      <beregnetGradAvUtnytting xsi:nil="true" />
+    </arealdisponering>
+    <kravTilByggegrunn>
+      <muligeOmraadeRisikoer>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi></kodeverdi>
+            <kodebeskrivelse></kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi></kodeverdi>
+            <kodebeskrivelse></kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+      </muligeOmraadeRisikoer>
+      <harMiljoeforhold xsi:nil="true" />
+    </kravTilByggegrunn>
+    <loefteinnretninger>
+      <erLoefteinnretningIBygning xsi:nil="true" />
+      <planleggesLoefteinnretningIBygning xsi:nil="true" />
+      <planleggesHeis xsi:nil="true" />
+      <planleggesTrappeheis xsi:nil="true" />
+      <planleggesRulletrapp xsi:nil="true" />
+      <planleggesLoefteplattform xsi:nil="true" />
+    </loefteinnretninger>
+    <plassering>
+      <erKonfliktMedHoeyspentkraftlinje xsi:nil="true" />
+      <erKonfliktMedVannOgAvloep xsi:nil="true" />
+    </plassering>
+  </rammebetingelser>
+  <dispensasjonOversikt>
+    <dispensasjon>
+      <dispensasjonReferanse></dispensasjonReferanse>
+      <dispensasjonKategori>
+        <kodeverdi></kodeverdi>
+        <kodebeskrivelse></kodebeskrivelse>
+      </dispensasjonKategori>
+      <dispensasjonTittel>
+        <kodeverdi></kodeverdi>
+        <kodebeskrivelse></kodebeskrivelse>
+      </dispensasjonTittel>
+      <bestemmelserType>
+        <kodeverdi></kodeverdi>
+        <kodebeskrivelse></kodebeskrivelse>
+      </bestemmelserType>
+    </dispensasjon>
+  </dispensasjonOversikt>
+   <tiltakshaver>
+    <partstype>
+      <kodeverdi>Privatperson</kodeverdi>
+      <kodebeskrivelse>Privatperson</kodebeskrivelse>
+    </partstype>
+    <foedselsnummer></foedselsnummer>
+    <organisasjonsnummer></organisasjonsnummer>
+    <navn>OPPLAGT PRESIS HAMSTER</navn>
+    <adresse>
+      <adresselinje1></adresselinje1>
+      <postnr></postnr>
+      <poststed></poststed>
+      <landkode></landkode>
+    </adresse>
+    <mobilnummer>98765432</mobilnummer>
+    <telefonnummer></telefonnummer>
+    <epost></epost>
+    <kontaktperson>
+      <navn></navn>
+      <telefonnummer></telefonnummer>
+      <mobilnummer></mobilnummer>
+      <epost></epost>
+    </kontaktperson>
+  </tiltakshaver>
+  <ansvarligSoeker>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>310973513</organisasjonsnummer>
+    <foedselsnummer></foedselsnummer>
+    <navn>VERDIFULL FALSK APE</navn>
+    <adresse>
+      <adresselinje1></adresselinje1>
+      <postnr></postnr>
+      <poststed></poststed>
+      <landkode></landkode>
+    </adresse>
+    <telefonnummer></telefonnummer>
+    <mobilnummer></mobilnummer>
+    <epost></epost>
+    <kontaktperson>
+      <navn></navn>
+      <telefonnummer></telefonnummer>
+      <mobilnummer></mobilnummer>
+      <epost></epost>
+    </kontaktperson>
+  </ansvarligSoeker>
+</endring>

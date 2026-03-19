@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gjenpartnabovarsel xmlns="https://skjema.ft.dibk.no/gjenpartnabovarsel/v3"
+	xsi:schemaLocation="https://skjema.ft.dibk.no/gjenpartnabovarsel/v3 gjenpartnabovarsel.xsd"
+	dataFormatProvider="DIBK" dataFormatId="10011" dataFormatVersion="3"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<metadata>
+		<fraSluttbrukersystem>Systemnavn</fraSluttbrukersystem>
+		<ftbId>98765</ftbId>
+		<prosjektnavn>Prosjektnavn</prosjektnavn>
+		<prosjektnr>54321</prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi>NO</kodeverdi>
+			<kodebeskrivelse>Norsk</kodebeskrivelse>
+		</foretrukketSpraak>
+	</metadata>
+	<generelleVilkaar>
+		<norskSvenskDansk>1</norskSvenskDansk>
+	</generelleVilkaar>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>Code1</kodeverdi>
+				<kodebeskrivelse>Description1</kodebeskrivelse>
+			</kode>
+			<kode>
+				<kodeverdi>Code2</kodeverdi>
+				<kodebeskrivelse>Description2</kodebeskrivelse>
+			</kode>
+		</type>
+		<foelgebrev>Her er et følgebrev</foelgebrev>
+		<bruk>
+			<tiltaksformaal>
+				<kode>
+					<kodeverdi>Code1</kodeverdi>
+					<kodebeskrivelse>Description1</kodebeskrivelse>
+				</kode>
+			</tiltaksformaal>
+			<beskrivTidligereFormaal>Beskriv tidligere formaal tekst</beskrivTidligereFormaal>
+			<beskrivPlanlagtFormaal>Beskriv planlagt formaal tekst</beskrivPlanlagtFormaal>
+		</bruk>
+	</soeknadGjelder>
+	<ansvarForByggesaken>
+		<kodeverdi>Code3</kodeverdi>
+		<kodebeskrivelse>Description3</kodebeskrivelse>
+	</ansvarForByggesaken>
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>1234</kommunenummer>
+				<gaardsnummer>567</gaardsnummer>
+				<bruksnummer>8</bruksnummer>
+				<festenummer>1</festenummer>
+				<seksjonsnummer>2</seksjonsnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Gateadresse 123</adresselinje1>
+				<postnr>1234</postnr>
+				<poststed>Poststed</poststed>
+				<landkode>NO</landkode>
+			</adresse>
+			<bygningsnummer>123</bygningsnummer>
+			<bolignummer>1</bolignummer>
+			<kommunenavn>Kommune</kommunenavn>
+		</eiendom>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>5678</kommunenummer>
+				<gaardsnummer>910</gaardsnummer>
+				<bruksnummer>11</bruksnummer>
+				<festenummer>0</festenummer>
+				<seksjonsnummer>0</seksjonsnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Gateadresse 456</adresselinje1>
+				<postnr>5678</postnr>
+				<poststed>Poststed 2</poststed>
+				<landkode>NO</landkode>
+			</adresse>
+			<bygningsnummer>456</bygningsnummer>
+			<bolignummer>2</bolignummer>
+			<kommunenavn>Annen Kommune</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<planer>
+		<gjeldendePlan>
+			<navn>Navn på plan</navn>
+			<plantype>
+				<kodeverdi>Code 4</kodeverdi>
+				<kodebeskrivelse>Description 4</kodebeskrivelse>
+			</plantype>
+		</gjeldendePlan>
+		<andrePlaner>
+			<plan>
+				<navn>Navn på annen plan</navn>
+				<plantype>
+					<kodeverdi>Code 5</kodeverdi>
+					<kodebeskrivelse>Description 5</kodebeskrivelse>
+				</plantype>
+			</plan>
+			<plan>
+				<navn>Navn på tredje plan</navn>
+				<plantype>
+					<kodeverdi>Code 6</kodeverdi>
+					<kodebeskrivelse>Description 6</kodebeskrivelse>
+				</plantype>
+			</plan>
+		</andrePlaner>
+	</planer>
+	<naboGjenboerEiendommer>
+		<naboGjenboerEiendom>
+			<eier>
+				<partstype>
+					<kodeverdi>TYPE3</kodeverdi>
+					<kodebeskrivelse>Type 3</kodebeskrivelse>
+				</partstype>
+				<foedselsnummer>12345678910</foedselsnummer>
+				<organisasjonsnummer>987654321</organisasjonsnummer>
+				<navn>Nabo 1</navn>
+				<adresse>
+					<adresselinje1>Gateadresse 789</adresselinje1>
+					<postnr>9876</postnr>
+					<poststed>Poststed 3</poststed>
+					<landkode>NO</landkode>
+				</adresse>
+				<telefonnummer>12345678</telefonnummer>
+				<mobilnummer>98765432</mobilnummer>
+				<epost>Nabo 1@example.com</epost>
+				<kontaktperson>
+					<navn>Kontaktperson Nabo 1</navn>
+					<telefonnummer>11111111</telefonnummer>
+					<mobilnummer>22222222</mobilnummer>
+					<epost>kontaktperson1@example.com</epost>
+				</kontaktperson>
+			</eier>
+			<eiendommer>
+				<eiendom>
+					<matrikkelinformasjon>
+						<eiendomsidentifikasjon>
+							<kommunenummer>5678</kommunenummer>
+							<gaardsnummer>1010</gaardsnummer>
+							<bruksnummer>10</bruksnummer>
+							<festenummer>0</festenummer>
+							<seksjonsnummer>0</seksjonsnummer>
+						</eiendomsidentifikasjon>
+						<adresse>
+							<adresselinje1>Gateadresse Nabo 123</adresselinje1>
+							<postnr>5678</postnr>
+							<poststed>Poststed 2</poststed>
+							<landkode>NO</landkode>
+						</adresse>
+						<bygningsnummer>123</bygningsnummer>
+						<bolignummer>2</bolignummer>
+						<kommunenavn>Annen Kommune</kommunenavn>
+					</matrikkelinformasjon>
+					<sluttbrukersystemReferanse>nabo 1 referanse 1</sluttbrukersystemReferanse>
+				</eiendom>
+				<eiendom>
+					<matrikkelinformasjon>
+						<eiendomsidentifikasjon>
+							<kommunenummer>5678</kommunenummer>
+							<gaardsnummer>1010</gaardsnummer>
+							<bruksnummer>11</bruksnummer>
+							<festenummer>0</festenummer>
+							<seksjonsnummer>0</seksjonsnummer>
+						</eiendomsidentifikasjon>
+						<adresse>
+							<adresselinje1>Gateadresse Nabo 123</adresselinje1>
+							<postnr>5678</postnr>
+							<poststed>Poststed 2</poststed>
+							<landkode>NO</landkode>
+						</adresse>
+						<bygningsnummer>1234</bygningsnummer>
+						<bolignummer>3</bolignummer>
+						<kommunenavn>Annen Kommune</kommunenavn>
+					</matrikkelinformasjon>
+					<sluttbrukersystemReferanse>nabo 1 referanse 2</sluttbrukersystemReferanse>
+				</eiendom>
+			</eiendommer>
+			<respons>
+				<merknadMottattDato>2025-10-22</merknadMottattDato>
+				<nabovarselSendtVia>
+					<kodeverdi>FTB</kodeverdi>
+					<kodebeskrivelse>Fellestjenester Bygg</kodebeskrivelse>
+				</nabovarselSendtVia>
+				<nabovarselSendt>2025-10-22</nabovarselSendt>
+				<erMerknadMottatt>true</erMerknadMottatt>
+				<samtykkeMottattDato>2025-10-22</samtykkeMottattDato>
+				<erSamtykkeMottatt>true</erSamtykkeMottatt>
+			</respons>
+		</naboGjenboerEiendom>
+		<naboGjenboerEiendom>
+			<eier>
+				<partstype>
+					<kodeverdi>TYPE3</kodeverdi>
+					<kodebeskrivelse>Type 3</kodebeskrivelse>
+				</partstype>
+				<foedselsnummer>12345678910</foedselsnummer>
+				<organisasjonsnummer>987654321</organisasjonsnummer>
+				<navn>Nabo 2</navn>
+				<adresse>
+					<adresselinje1>Gateadresse 789</adresselinje1>
+					<postnr>9876</postnr>
+					<poststed>Poststed 3</poststed>
+					<landkode>NO</landkode>
+				</adresse>
+				<telefonnummer>12345678</telefonnummer>
+				<mobilnummer>98765432</mobilnummer>
+				<epost>Nabo 2@example.com</epost>
+				<kontaktperson>
+					<navn>Kontaktperson Nabo 2</navn>
+					<telefonnummer>11111111</telefonnummer>
+					<mobilnummer>22222222</mobilnummer>
+					<epost>kontaktperson1@example.com</epost>
+				</kontaktperson>
+			</eier>
+			<eiendommer>
+				<eiendom>
+					<matrikkelinformasjon>
+						<eiendomsidentifikasjon>
+							<kommunenummer>5678</kommunenummer>
+							<gaardsnummer>1012</gaardsnummer>
+							<bruksnummer>12</bruksnummer>
+							<festenummer>0</festenummer>
+							<seksjonsnummer>0</seksjonsnummer>
+						</eiendomsidentifikasjon>
+						<adresse>
+							<adresselinje1>Gateadresse Nabo 123</adresselinje1>
+							<postnr>5678</postnr>
+							<poststed>Poststed 2</poststed>
+							<landkode>NO</landkode>
+						</adresse>
+						<bygningsnummer>123</bygningsnummer>
+						<bolignummer>2</bolignummer>
+						<kommunenavn>Annen Kommune</kommunenavn>
+					</matrikkelinformasjon>
+					<sluttbrukersystemReferanse>nabo 2 referanse</sluttbrukersystemReferanse>
+				</eiendom>
+			</eiendommer>
+			<respons>
+				<merknadMottattDato>2025-10-22</merknadMottattDato>
+				<nabovarselSendtVia>
+					<kodeverdi>FTB</kodeverdi>
+					<kodebeskrivelse>Fellestjenester Bygg</kodebeskrivelse>
+				</nabovarselSendtVia>
+				<nabovarselSendt>2025-10-22</nabovarselSendt>
+				<erMerknadMottatt>true</erMerknadMottatt>
+				<samtykkeMottattDato>2025-10-22</samtykkeMottattDato>
+				<erSamtykkeMottatt>true</erSamtykkeMottatt>
+			</respons>
+		</naboGjenboerEiendom>
+	</naboGjenboerEiendommer>
+	<tiltakshaver>
+		<partstype>
+			<kodeverdi>TYPE3</kodeverdi>
+			<kodebeskrivelse>Type 3</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>12345678910</foedselsnummer>
+		<organisasjonsnummer>987654321</organisasjonsnummer>
+		<navn>Tiltakshaver 1</navn>
+		<adresse>
+			<adresselinje1>Gateadresse 789</adresselinje1>
+			<postnr>9876</postnr>
+			<poststed>Poststed 3</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>tiltakshaver1@example.com</epost>
+		<kontaktperson>
+			<navn>Kontaktperson 1</navn>
+			<telefonnummer>11111111</telefonnummer>
+			<mobilnummer>22222222</mobilnummer>
+			<epost>kontaktperson1@example.com</epost>
+		</kontaktperson>
+	</tiltakshaver>
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Code2</kodeverdi>
+			<kodebeskrivelse>Description2</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>98765432109</foedselsnummer>
+		<organisasjonsnummer>123456789</organisasjonsnummer>
+		<navn>Ansvarlig Søker 1</navn>
+		<adresse>
+			<adresselinje1>Gateadresse 101</adresselinje1>
+			<postnr>1111</postnr>
+			<poststed>Poststed 4</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>99999999</telefonnummer>
+		<mobilnummer>88888888</mobilnummer>
+		<epost>ansvarligsoeker1@example.com</epost>
+		<kontaktperson>
+			<navn>Kontaktperson 2</navn>
+			<telefonnummer>33333333</telefonnummer>
+			<mobilnummer>44444444</mobilnummer>
+			<epost>kontaktperson2@example.com</epost>
+		</kontaktperson>
+	</ansvarligSoeker>
+	<kontaktpersonForNabovarselet>
+		<navn>Kontaktperson for nabovarselet</navn>
+		<epost>kontaktperson@nabovarsel.com</epost>
+		<mobilnummer>55555555</mobilnummer>
+		<telefonnummer>66666666</telefonnummer>
+	</kontaktpersonForNabovarselet>
+	<soeknadensHjemmeside>https://soeknadenshjemmeside.no</soeknadensHjemmeside>
+	<dispensasjonOversikt>
+		<dispensasjon>
+			<dispensasjonReferanse>89fa33df-079a-407c-8371-4e85df5cf418</dispensasjonReferanse>
+			<dispensasjonKategori>
+				<kodeverdi>plassering</kodeverdi>
+				<kodebeskrivelse>Plassering</kodebeskrivelse>
+			</dispensasjonKategori>
+			<dispensasjonTittel>
+				<kodeverdi>byggegrenser</kodeverdi>
+				<kodebeskrivelse>Byggegrenser</kodebeskrivelse>
+			</dispensasjonTittel>
+			<bestemmelserType>
+				<kodeverdi>RP</kodeverdi>
+				<kodebeskrivelse>Reguleringsplan</kodebeskrivelse>
+			</bestemmelserType>
+		</dispensasjon>
+	</dispensasjonOversikt>
+</gjenpartnabovarsel>

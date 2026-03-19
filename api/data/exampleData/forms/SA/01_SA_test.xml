@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<samsvarserklaeringDirekte
+  xmlns="https://skjema.ft.dibk.no/samsvarserklaeringdirekte/v2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://skjema.ft.dibk.no/samsvarserklaeringdirekte/v2 samsvarserklaeringdirekte.xsd"
+  dataFormatProvider="DIBK" dataFormatId="10020" dataFormatVersion="2">
+  <metadata>
+        <fraSluttbrukersystem>Fellestjenester bygg testmotor</fraSluttbrukersystem>
+        <ftbId>FTB-12345</ftbId>
+        <prosjektnavn>Prosjektnavn Eksempel</prosjektnavn>
+        <prosjektnr>PNR-2025</prosjektnr>
+        <foretrukketSpraak>
+            <kodeverdi>nb</kodeverdi>
+            <kodebeskrivelse>Bokmål</kodebeskrivelse>
+        </foretrukketSpraak>
+    </metadata>
+  <kommunensSaksnummer>
+        <saksaar>2024</saksaar>
+        <sakssekvensnummer>12345</sakssekvensnummer>
+  </kommunensSaksnummer>
+  <eiendomByggested>
+        <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>9999</kommunenummer>
+                <gaardsnummer>56</gaardsnummer>
+                <bruksnummer>16</bruksnummer>
+                <festenummer>0</festenummer>
+                <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+                <adresselinje1>Mariboes gate 13</adresselinje1>
+                <adresselinje2></adresselinje2>
+                <adresselinje3></adresselinje3>
+                <postnr>0183</postnr>
+                <poststed>Oslo</poststed>
+                <landkode>NO</landkode>
+                <gatenavn>Mariboes gate</gatenavn>
+                <husnr>13</husnr>
+                <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer>8626677</bygningsnummer>
+            <bolignummer>H0101</bolignummer>
+            <kommunenavn>Oslo</kommunenavn>
+        </eiendom>
+        <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>9999</kommunenummer>
+                <gaardsnummer>208</gaardsnummer>
+                <bruksnummer>391</bruksnummer>
+                <festenummer>0</festenummer>
+                <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+                <adresselinje1>Mariboes gate 13</adresselinje1>
+                <adresselinje2></adresselinje2>
+                <adresselinje3></adresselinje3>
+                <postnr>0183</postnr>
+                <poststed>Oslo</poststed>
+                <landkode>NO</landkode>
+                <gatenavn>Mariboes gate</gatenavn>
+                <husnr>13</husnr>
+                <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer>81099618</bygningsnummer>
+            <bolignummer>H0101</bolignummer>
+            <kommunenavn>Oslo</kommunenavn>
+        </eiendom>
+    </eiendomByggested>
+    <ansvarligSoeker>
+        <partstype>
+            <kodeverdi>Organisasjon</kodeverdi>
+            <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <foedselsnummer>01039012345</foedselsnummer>
+        <organisasjonsnummer>897069652</organisasjonsnummer>
+        <navn>Test Organisasjon</navn>
+        <adresse>
+            <adresselinje1>Test Adresse</adresselinje1>
+            <postnr>3750</postnr>
+            <poststed>Drangedal</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>12345678</telefonnummer>
+        <mobilnummer>87654321</mobilnummer>
+        <epost>e@post.com</epost>
+        <kontaktperson>
+            <navn>Kontakt Person</navn>
+            <telefonnummer>11223344</telefonnummer>
+            <mobilnummer>99887766</mobilnummer>
+            <epost>kontakt@person.no</epost>
+        </kontaktperson>
+    </ansvarligSoeker>
+    <ansvarligForetak>
+        <partstype>
+            <kodeverdi>Organisasjon</kodeverdi>
+            <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer>897069652</organisasjonsnummer>
+        <navn>Test Organisasjon</navn>
+        <adresse>
+            <adresselinje1>Test Adresse</adresselinje1>
+            <postnr>3750</postnr>
+            <poststed>Drangedal</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>12345678</telefonnummer>
+        <mobilnummer>87654321</mobilnummer>
+        <epost>e@post.com</epost>
+        <kontaktperson>
+            <navn>Kontakt Person</navn>
+            <telefonnummer>11223344</telefonnummer>
+            <mobilnummer>99887766</mobilnummer>
+            <epost>kontakt@person.no</epost>
+        </kontaktperson>
+        <harSentralGodkjenning>true</harSentralGodkjenning>
+    </ansvarligForetak> 
+    <ansvarsomraader>
+      <ansvarsomraade>
+        <funksjon>
+          <kodeverdi>UTF</kodeverdi>
+          <kodebeskrivelse>Ansvarlig prosjekterende</kodebeskrivelse>
+        </funksjon>
+        <beskrivelseAvAnsvarsomraadet>Miljøsanering</beskrivelseAvAnsvarsomraadet>
+        <prosjekterende>
+          <erOkForRammetillatelse>false</erOkForRammetillatelse>
+          <erOkForIgangsettingstillatelse>false</erOkForIgangsettingstillatelse>
+          <erOkForMidlertidigBrukstillatelse>true</erOkForMidlertidigBrukstillatelse>
+          <erOkForFerdigattest>false</erOkForFerdigattest>
+        </prosjekterende>
+        <utfoerende>
+          <midlertidigBrukstillatelse>
+              <erOkForMidlertidigBrukstillatelse>true</erOkForMidlertidigBrukstillatelse>
+              <gjenstaaendeArbeider>
+                  <gjenstaaendeInnenfor>Gjenstående innenfor</gjenstaaendeInnenfor>
+                  <gjenstaaendeUtenfor>Gjenstående utenfor</gjenstaaendeUtenfor>
+              </gjenstaaendeArbeider>
+              <sikkerhet>
+                  <harTilstrekkeligSikkerhet>false</harTilstrekkeligSikkerhet>
+                  <typeArbeider>Typearbeid</typeArbeider>
+                  <utfoertInnen>2026-06-28</utfoertInnen>
+              </sikkerhet>
+          </midlertidigBrukstillatelse>
+          <erOkForFerdigattest>false</erOkForFerdigattest>
+        </utfoerende>
+        <datoAnsvarsrettErklaert>2026-02-28</datoAnsvarsrettErklaert>
+        <erAnsvarsomraadetAvsluttet>false</erAnsvarsomraadetAvsluttet>
+        <soeknadssystemetsReferanse>67a20b95-1eeb-44e3-a105-f2a5286358ee</soeknadssystemetsReferanse>
+      </ansvarsomraade>
+      <ansvarsomraade>
+        <funksjon>
+          <kodeverdi>PRO</kodeverdi>
+          <kodebeskrivelse>Ansvarlig prosjekterende</kodebeskrivelse>
+        </funksjon>
+        <beskrivelseAvAnsvarsomraadet>Miljøsanering</beskrivelseAvAnsvarsomraadet>
+        <prosjekterende>
+          <erOkForRammetillatelse>true</erOkForRammetillatelse>
+          <erOkForIgangsettingstillatelse>true</erOkForIgangsettingstillatelse>
+          <erOkForMidlertidigBrukstillatelse>true</erOkForMidlertidigBrukstillatelse>
+          <erOkForFerdigattest>true</erOkForFerdigattest>
+        </prosjekterende>
+        <utfoerende>
+          <midlertidigBrukstillatelse>
+              <erOkForMidlertidigBrukstillatelse>false</erOkForMidlertidigBrukstillatelse>
+              <gjenstaaendeArbeider>
+                  <gjenstaaendeInnenfor>Gjenstående innenfor</gjenstaaendeInnenfor>
+                  <gjenstaaendeUtenfor>Gjenstående utenfor</gjenstaaendeUtenfor>
+              </gjenstaaendeArbeider>
+              <sikkerhet>
+                  <harTilstrekkeligSikkerhet>true</harTilstrekkeligSikkerhet>
+                  <typeArbeider>Typearbeid</typeArbeider>
+                  <utfoertInnen>2026-06-28</utfoertInnen>
+              </sikkerhet>
+          </midlertidigBrukstillatelse>
+          <erOkForFerdigattest>true</erOkForFerdigattest>
+        </utfoerende>
+        <datoAnsvarsrettErklaert>2026-02-28</datoAnsvarsrettErklaert>
+        <erAnsvarsomraadetAvsluttet>false</erAnsvarsomraadetAvsluttet>
+        <soeknadssystemetsReferanse>67a20b95-1eeb-44e3-a105-f2a5286358ee</soeknadssystemetsReferanse>
+      </ansvarsomraade>
+    </ansvarsomraader>
+    <erklaering>
+      <harErklaeringAnsvarligProsjekterende>true</harErklaeringAnsvarligProsjekterende>
+      <harErklaeringAnsvarligUtfoerende>true</harErklaeringAnsvarligUtfoerende>
+    </erklaering>  
+</samsvarserklaeringDirekte>

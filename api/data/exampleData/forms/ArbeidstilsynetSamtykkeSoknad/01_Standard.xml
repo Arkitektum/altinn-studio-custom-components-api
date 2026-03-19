@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArbeidstilsynetsSamtykke xmlns="https://skjema.ft.dibk.no/arbeidstilsynetssamtykke/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://skjema.ft.dibk.no/arbeidstilsynetssamtykke/v3 arbeidstilsynetsSamtykke.xsd" dataFormatProvider="ATIL" dataFormatId="12000" dataFormatVersion="3">
+  <eiendomByggested>
+    <eiendom>
+      <eiendomsidentifikasjon>
+        <kommunenummer>9997</kommunenummer>
+        <gaardsnummer>208</gaardsnummer>
+        <bruksnummer>391</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <adresse>
+        <adresselinje1>Mariboes gate 13</adresselinje1>
+        <postnr>0183</postnr>
+        <poststed>Oslo</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Mariboes gate</gatenavn>
+        <husnr>13</husnr>
+      </adresse>
+      <bygningsnummer>81099618</bygningsnummer>
+      <bolignummer>H0101</bolignummer>
+      <kommunenavn>Oslo</kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <tiltakshaver>
+    <partstype>
+      <kodeverdi>Foretak</kodeverdi>
+      <kodebeskrivelse>Foretak</kodebeskrivelse>
+    </partstype>
+    <foedselsnummer xsi:nil="true" />
+    <organisasjonsnummer>910748548</organisasjonsnummer>
+    <navn>BLOMSTERDALEN OG ØVRE SNERTINGDAL</navn>
+    <adresse>
+      <adresselinje1>Bøgata 16</adresselinje1>
+      <adresselinje2 xsi:nil="true" />
+      <adresselinje3 xsi:nil="true" />
+      <postnr>3802</postnr>
+      <poststed>Bø i Telemark</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>111223344</telefonnummer>
+    <mobilnummer>12034043</mobilnummer>
+    <epost>test2@arkitektum.no</epost>
+    <kontaktperson>
+      <navn>Test Person</navn>
+      <telefonnummer>111223344</telefonnummer>
+      <mobilnummer>12034043</mobilnummer>
+      <epost>test2@arkitektum.no</epost>
+    </kontaktperson>
+  </tiltakshaver>
+  <arbeidsplasser>
+    <framtidige>false</framtidige>
+    <faste>false</faste>
+    <midlertidige>true</midlertidige>
+    <antallAnsatte>20</antallAnsatte>
+    <eksisterende>true</eksisterende>
+    <utleieBygg>false</utleieBygg>
+    <antallVirksomheter>1</antallVirksomheter>
+    <beskrivelse>Lorem ipsum odor amet, consectetuer adipiscing elit. Hendrerit nunc natoque vehicula sapien tellus; faucibus et dis. Taciti iaculis viverra venenatis integer rhoncus ultrices. Blandit neque nam suspendisse sapien elementum netus netus inceptos. Netus ut sapien magna facilisis orci? Hac ipsum ornare eleifend sodales habitasse. Taciti convallis ex ad vel vulputate.
+    </beskrivelse>
+    <veiledning>false</veiledning>
+  </arbeidsplasser>
+  <fakturamottaker>
+    <partstype>
+      <kodeverdi>Foretak</kodeverdi>
+      <kodebeskrivelse>Foretak</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>910297937</organisasjonsnummer>
+    <bestillerreferanse>Gunnar Testperson</bestillerreferanse>
+    <fakturareferanse>Ref999</fakturareferanse>
+    <navn>FANA OG HAFSLO REVISJON</navn>
+    <prosjektnummer>12345</prosjektnummer>
+    <adresse>
+      <adresselinje1>Bøgata 16</adresselinje1>
+      <adresselinje2>dør nr 2</adresselinje2>
+      <adresselinje3 xsi:nil="true" />
+      <postnr>3802</postnr>
+      <poststed>Bø i Telemark</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <epost>test-fana.hafslo.revisjon@arkitektum.no</epost>
+  </fakturamottaker>
+  <ansvarligSoeker>
+    <partstype>
+      <kodeverdi>Foretak</kodeverdi>
+      <kodebeskrivelse>Foretak</kodebeskrivelse>
+    </partstype>
+    <foedselsnummer>28044102120</foedselsnummer>
+    <organisasjonsnummer>910598023</organisasjonsnummer>
+    <navn>HUSNES OG OPPDAL</navn>
+    <adresse>
+      <adresselinje1>c/o Ola Nordmann</adresselinje1>
+      <adresselinje2>andre etasje</adresselinje2>
+      <adresselinje3>Bøgata 16</adresselinje3>
+      <postnr>3802</postnr>
+      <poststed>Bø i Telemark</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>11223344</telefonnummer>
+    <mobilnummer>99887766</mobilnummer>
+    <epost>test@arkitektum.no</epost>
+    <kontaktperson>
+      <navn>Ingvild Testperson Halland</navn>
+      <telefonnummer>36588888</telefonnummer>
+      <mobilnummer>90900454</mobilnummer>
+      <epost>test@arkitektum.no</epost>
+    </kontaktperson>
+  </ansvarligSoeker>
+  <betaling>
+    <beskrivelse>En beskrivelse...</beskrivelse>
+    <ordreId xsi:nil="true" />
+    <sum>4854</sum>
+    <transId xsi:nil="true" />
+    <gebyrkategori>8</gebyrkategori>
+    <skalFaktureres>true</skalFaktureres>
+  </betaling>
+  <dispensasjoner>
+    <dispensasjon>
+      <dispensasjonstype>
+        <kodeverdi>TEK</kodeverdi>
+        <kodebeskrivelse>Byggteknisk forskrift med veiledning</kodebeskrivelse>
+      </dispensasjonstype>
+      <begrunnelse>Begrunnelse for dispensasjon</begrunnelse>
+      <beskrivelse>Søknad om dispensasjon fra bestemmelsen NN...</beskrivelse>
+    </dispensasjon>
+  </dispensasjoner>
+   <krav>
+    <sjekklistekrav>
+      <sjekklistepunktsvar>true</sjekklistepunktsvar>
+      <sjekklistepunkt>
+        <kodeverdi>11.2</kodeverdi>
+        <kodebeskrivelse>Har arbeidsgiver(e) som skal bruke tiltaket, plikt til å være tilknyttet godkjent bedriftshelsetjeneste?</kodebeskrivelse>
+      </sjekklistepunkt>
+      <dokumentasjon>Dette er dokumentasjon for pkt 11.2...</dokumentasjon>
+    </sjekklistekrav>
+    <sjekklistekrav>
+      <sjekklistepunktsvar>false</sjekklistepunktsvar>
+      <sjekklistepunkt>
+        <kodeverdi>11.6</kodeverdi>
+        <kodebeskrivelse>Er bygning(er) vernet?</kodebeskrivelse>
+      </sjekklistepunkt>
+      <dokumentasjon>Dette er dokumentasjon for pkt 11.6...</dokumentasjon>
+    </sjekklistekrav>
+  </krav>
+  <beskrivelseAvTiltak>
+    <bruk>
+      <anleggstype>
+        <kodeverdi>industri</kodeverdi>
+        <kodebeskrivelse>Industri</kodebeskrivelse>
+      </anleggstype>
+      <naeringsgruppe>
+        <kodeverdi>I</kodeverdi>
+        <kodebeskrivelse>Overnattings- og serveringsvirksomhet</kodebeskrivelse>
+      </naeringsgruppe>
+      <bygningstype>
+        <kodeverdi>249</kodeverdi>
+        <kodebeskrivelse>Annen landbruksbygning</kodebeskrivelse>
+      </bygningstype>
+      <tiltaksformaal>
+        <kode>
+          <kodeverdi>Bolig</kodeverdi>
+          <kodebeskrivelse>Bolig</kodebeskrivelse>  
+        </kode>
+        <kode>
+          <kodeverdi>Annet</kodeverdi>
+          <kodebeskrivelse>Annet</kodebeskrivelse>
+        </kode>
+      </tiltaksformaal>
+      <beskrivPlanlagtFormaal>En beskrivelse av planlagt formål.....</beskrivPlanlagtFormaal>
+    </bruk>
+    <BRA>300</BRA>
+    <typer>
+      <kode>
+        <kodeverdi>endringdrift</kodeverdi>
+        <kodebeskrivelse>Vesentlig endring av tidligere drift</kodebeskrivelse>
+      </kode>
+      <kode>
+        <kodeverdi>bruksendring</kodeverdi>
+        <kodebeskrivelse>Bruksendring</kodebeskrivelse>
+      </kode>
+      <kode>
+        <kodeverdi>installasjonibygg</kodeverdi>
+        <kodebeskrivelse>Bygningstekniske installasjoner - Endring - Teknisk installasjon i bygg</kodebeskrivelse>
+      </kode>
+    </typer>
+  </beskrivelseAvTiltak>
+  <kommunensSaksnummer>
+    <saksaar>2021</saksaar>
+    <sakssekvensnummer>123</sakssekvensnummer>
+  </kommunensSaksnummer>
+  <arbeidstilsynetsSaksnummer>
+    <saksaar>2021</saksaar>
+    <sakssekvensnummer>999</sakssekvensnummer>
+  </arbeidstilsynetsSaksnummer>
+  <metadata>
+    <fraSluttbrukersystem>Fellestjenester bygg testmotor</fraSluttbrukersystem>
+    <ftbId>1000000000001</ftbId>
+    <prosjektnavn>Nytt prosjekt</prosjektnavn>
+    <prosjektnr>PRO2025-01</prosjektnr>
+    <foretrukketSpraak>
+      <kodeverdi>nb</kodeverdi>
+      <kodebeskrivelse>Bokmål</kodebeskrivelse>
+    </foretrukketSpraak>
+    <erNorskSvenskDansk>true</erNorskSvenskDansk>
+    <unntattOffentlighet>true</unntattOffentlighet>
+    <kommunensOrganisasjonsnummer></kommunensOrganisasjonsnummer>
+  </metadata>
+</ArbeidstilsynetsSamtykke>

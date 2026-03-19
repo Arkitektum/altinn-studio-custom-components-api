@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nabovarsel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFormatProvider="DIBK" dataFormatId="10009" dataFormatVersion="5" xmlns="https://skjema.ft.dibk.no/nabovarsel/v5">
+  <metadata>
+    <fraSluttbrukersystem>Fellestjenester BYGG testmotor</fraSluttbrukersystem>
+    <ftbId></ftbId>
+    <prosjektnavn></prosjektnavn>
+    <prosjektnr></prosjektnr>
+    <foretrukketSpraak>
+      <kodeverdi></kodeverdi>
+      <kodebeskrivelse></kodebeskrivelse>
+    </foretrukketSpraak>
+  </metadata>
+  <generelleVilkaar>
+    <norskSvenskDansk>true</norskSvenskDansk>
+  </generelleVilkaar>
+  <soeknadGjelder>
+    <type>
+      <kode>
+        <kodeverdi>mikrohus</kodeverdi>
+        <kodebeskrivelse>Mikrohus til boligformål - Inntil 30 m2 BRA</kodebeskrivelse>
+      </kode>
+    </type>
+    <bruk>
+      <tiltaksformaal>
+        <kode>
+          <kodeverdi>Bolig</kodeverdi>
+          <kodebeskrivelse>Bolig</kodebeskrivelse>
+        </kode>
+      </tiltaksformaal>
+      <beskrivTidligereFormaal></beskrivTidligereFormaal>
+      <beskrivPlanlagtFormaal></beskrivPlanlagtFormaal>
+    </bruk>
+    <foelgebrev></foelgebrev>
+  </soeknadGjelder>
+  <ansvarForByggesaken>
+    <kodeverdi>utenAnsvar</kodeverdi>
+    <kodebeskrivelse>Søknad om tillatelse uten ansvarsrett etter pbl § 20-4</kodebeskrivelse>
+  </ansvarForByggesaken>
+  <eiendomByggested>
+    <eiendom>
+      <adresse>
+        <adresselinje1>Christian Eggens veg 43 🚀</adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3></adresselinje3>
+        <postnr>7033</postnr>
+        <poststed>Trondheim</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Christian Eggens veg</gatenavn>
+        <husnr>43</husnr>
+        <bokstav></bokstav>
+      </adresse>
+      <eiendomsidentifikasjon>
+        <kommunenummer>5001</kommunenummer>
+        <gaardsnummer>79</gaardsnummer>
+        <bruksnummer>91</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <bygningsnummer>182752762</bygningsnummer>
+      <bolignummer></bolignummer>
+      <kommunenavn>Trondheim</kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <planer>
+    <gjeldendePlan>
+      <navn>Kommuneplanens arealdel: Kommuneplanens arealdel 2022-2034</navn>
+        <plantype>
+          <kodeverdi>KP</kodeverdi>
+          <kodebeskrivelse>Arealdel av kommuneplan</kodebeskrivelse>
+        </plantype>
+    </gjeldendePlan>
+  </planer>
+  <svarfrist>2026-04-30</svarfrist>
+  <tiltakshaver>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>310473812</organisasjonsnummer>
+    <navn>SORGLØS OFFISIELL KATT BOKS</navn>
+    <adresse>
+      <adresselinje1>storgata 1 👑</adresselinje1>
+      <postnr>3810</postnr>
+      <poststed>Gvarv</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>99887766</telefonnummer>
+    <epost>ingen@dibk.no</epost>
+    <kontaktperson>
+      <navn></navn>
+      <telefonnummer></telefonnummer>
+      <mobilnummer></mobilnummer>
+      <epost></epost>
+    </kontaktperson>
+  </tiltakshaver>
+  <kontaktpersonForNabovarselet>
+    <navn>Fjång Juni</navn>
+    <telefonnummer></telefonnummer>
+    <mobilnummer></mobilnummer>
+    <epost>juni@fjaang.no</epost>
+  </kontaktpersonForNabovarselet>
+  <naboGjenboerEiendommer>
+    <naboGjenboerEiendom>
+      <eier>
+        <partstype>
+          <kodeverdi>Organisasjon</kodeverdi>
+          <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer>312949555</organisasjonsnummer>
+        <foedselsnummer></foedselsnummer>
+        <navn>Freidig Allsidig Katt Omstilling</navn>
+        <adresse>
+          <adresselinje1></adresselinje1>
+          <postnr></postnr>
+          <poststed></poststed>
+          <landkode></landkode>
+        </adresse>
+        <telefonnummer></telefonnummer>
+        <epost></epost>
+        <kontaktperson>
+          <navn></navn>
+          <telefonnummer></telefonnummer>
+          <mobilnummer></mobilnummer>
+          <epost></epost>
+        </kontaktperson>
+      </eier>
+      <eiendommer>
+        <eiendom>
+          <matrikkelinformasjon>
+            <eiendomsidentifikasjon>
+              <kommunenummer>5001</kommunenummer>
+              <gaardsnummer>79</gaardsnummer>
+              <bruksnummer>87</bruksnummer>
+              <festenummer>0</festenummer>
+              <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+              <adresselinje1>Christian Eggens veg 35</adresselinje1>
+              <postnr>7033</postnr>
+              <poststed>Trondheim</poststed>
+              <landkode>NO</landkode>
+              <gatenavn>Christian Eggens veg</gatenavn>
+              <husnr>35</husnr>
+              <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn>Trondheim</kommunenavn>
+          </matrikkelinformasjon>
+          <sluttbrukersystemReferanse>SysRef1000 (organisasjon)</sluttbrukersystemReferanse>
+        </eiendom>
+      </eiendommer>
+    </naboGjenboerEiendom>
+  </naboGjenboerEiendommer>
+  <soeknadensHjemmeside></soeknadensHjemmeside>
+</nabovarsel>

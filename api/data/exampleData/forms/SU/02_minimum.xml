@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppleringAvSoeknad
+	xmlns="https://skjema.ft.dibk.no/suppleringavsoeknad/v2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://skjema.ft.dibk.no/suppleringavsoeknad/v2 suppleringavsoeknad.xsd"
+  dataFormatProvider="DIBK" dataFormatId="10008" dataFormatVersion="2">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9998</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>391</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1></adresselinje1>
+				<postnr></postnr>
+				<poststed></poststed>
+				<landkode></landkode>
+				<gatenavn></gatenavn>
+				<husnr></husnr>
+			</adresse>
+			<bygningsnummer>2</bygningsnummer>
+			<bolignummer></bolignummer>
+			<kommunenavn></kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<foretrukketSpraak>
+			<kodeverdi>nb</kodeverdi>
+			<kodebeskrivelse>Bokmål</kodebeskrivelse>
+		</foretrukketSpraak>
+		<fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+	</metadata>
+	<generelleVilkaar>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>bruksendringhoveddel</kodeverdi>
+				<kodebeskrivelse>Bruksendring fra tilleggsdel til hoveddel</kodebeskrivelse>
+			</kode>
+		</type>
+		<foelgebrev>Se vedlagte følgebrev.</foelgebrev>
+	</soeknadGjelder>
+	<ettersendinger>
+		<ettersending>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Geologisk undersøkelse</tittel>
+			<kommentar>Se vedlegg.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>RedegjoerelseGrunnforhold</kodeverdi>
+						<kodebeskrivelse>Redegjørelse grunnforhold</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>grunnforhold.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</ettersending>
+	</ettersendinger>
+	<utfallBesvarelse>
+	</utfallBesvarelse>
+	<tiltakshaver>
+		<partstype>
+			<kodeverdi>Privatperson</kodeverdi>
+			<kodebeskrivelse>Privatperson</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer>28044102120</foedselsnummer>
+		<organisasjonsnummer></organisasjonsnummer>
+		<navn>Ludvig Moholt</navn>
+		<adresse>
+			<adresselinje1></adresselinje1>
+			<postnr></postnr>
+			<poststed></poststed>
+			<landkode></landkode>
+		</adresse>
+		<telefonnummer></telefonnummer>
+		<mobilnummer>90909090</mobilnummer>	
+		<epost></epost>
+		<kontaktperson>
+			<navn></navn>
+			<telefonnummer></telefonnummer>
+			<mobilnummer></mobilnummer>
+			<epost></epost>
+		</kontaktperson>
+	</tiltakshaver>
+	<ansvarForByggesaken>
+		<kodeverdi>utenAnsvar</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse uten ansvarsrett etter pbl § 20-4</kodebeskrivelse>
+	</ansvarForByggesaken>
+</suppleringAvSoeknad>

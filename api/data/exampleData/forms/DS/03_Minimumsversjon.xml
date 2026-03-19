@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dispensasjonsoversikt
+    xmlns="https://skjema.ft.dibk.no/dispensasjonsoversikt/v1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/dispensasjonsoversikt/v1 dispensasjonsoversikt.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10006" dataFormatVersion="1">
+    <metadata>
+      <fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+      <ftbId></ftbId>
+      <prosjektnavn></prosjektnavn>
+      <prosjektnr></prosjektnr>
+      <foretrukketSpraak>
+        <kodeverdi></kodeverdi>
+        <kodebeskrivelse></kodebeskrivelse>
+      </foretrukketSpraak>    
+    </metadata>
+    <kommunensSaksnummer>
+      <saksaar>2024</saksaar>
+      <sakssekvensnummer>12345</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <soeknadGjelder>
+      <type>
+        <kode>
+          <kodeverdi>nyttbyggunder70m2</kodeverdi>
+          <kodebeskrivelse>Nytt bygg - Under 70 m2 - ikke boligformål</kodebeskrivelse>
+        </kode>
+      </type>
+      <foelgebrev>Se vedlagte planer.</foelgebrev>
+    </soeknadGjelder>
+    <eiendomByggested>
+      <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>9997</kommunenummer>
+                <gaardsnummer>208</gaardsnummer>
+                <bruksnummer>391</bruksnummer>
+                <festenummer>0</festenummer>
+                <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+                <adresselinje1></adresselinje1>
+                <adresselinje2></adresselinje2>
+                <adresselinje3></adresselinje3>
+                <postnr></postnr>
+                <poststed></poststed>
+                <landkode></landkode>
+                <gatenavn></gatenavn>
+                <husnr></husnr>
+                <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn></kommunenavn>
+        </eiendom>
+    </eiendomByggested>
+    <generelleVilkaar>
+      <norskSvenskDansk>true</norskSvenskDansk>
+    </generelleVilkaar>
+    <varsling>
+      <fritattFraNabovarsling>true</fritattFraNabovarsling>
+      <redegjorelseFritak>Det er for langt til neste nabo</redegjorelseFritak>
+      <foreliggerMerknader>false</foreliggerMerknader>
+      <antallMerknader>0</antallMerknader>
+      <vurderingAvMerknader></vurderingAvMerknader>
+      <soeknadensHjemmeside></soeknadensHjemmeside>
+    </varsling>
+    <tiltakshaver>
+      <partstype>
+        <kodeverdi>Privatperson</kodeverdi>
+        <kodebeskrivelse>Privatperson</kodebeskrivelse>
+      </partstype>
+      <foedselsnummer>28044102120</foedselsnummer>
+      <organisasjonsnummer></organisasjonsnummer>
+      <navn>Ludvig Moholt</navn>
+      <adresse>
+        <adresselinje1></adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3></adresselinje3>
+        <postnr></postnr>
+        <poststed></poststed>
+        <landkode></landkode>
+      </adresse>
+      <telefonnummer></telefonnummer>
+      <mobilnummer>98765432</mobilnummer>
+      <epost></epost>
+      <kontaktperson>
+        <navn></navn>
+        <telefonnummer></telefonnummer>
+        <mobilnummer></mobilnummer>
+        <epost></epost>
+      </kontaktperson>
+    </tiltakshaver>
+    <fakturamottaker>
+      <partstype>
+        <kodeverdi></kodeverdi>
+        <kodebeskrivelse></kodebeskrivelse>
+      </partstype>
+      <organisasjonsnummer></organisasjonsnummer>
+      <bestillerreferanse></bestillerreferanse>
+      <fakturareferanse></fakturareferanse>
+      <prosjektnummer></prosjektnummer>
+      <navn></navn>
+      <adresse>
+        <adresselinje1></adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3 xsi:nil="true" />
+        <postnr></postnr>
+        <poststed></poststed>
+        <landkode></landkode>
+      </adresse>
+      <epost></epost>
+    </fakturamottaker>
+    <dispensasjonOversikt>
+      <dispensasjon>
+        <dispensasjonReferanse>9164de62-4fba-492f-bb52-e9f76c7060ad</dispensasjonReferanse>
+        <dispensasjonKategori>
+          <kodeverdi>andrePlanbestemmelser</kodeverdi>
+          <kodebeskrivelse>Andre bestemmelser i gjeldende plan</kodebeskrivelse>         
+        </dispensasjonKategori>
+        <dispensasjonTittel>
+          <kodeverdi>byggeForbud</kodeverdi>
+          <kodebeskrivelse>Avstand langs sjø eller vassdrag</kodebeskrivelse>         
+        </dispensasjonTittel>
+        <bestemmelserType>
+          <kodeverdi>pbl18</kodeverdi>
+          <kodebeskrivelse>Plan- og bygningsloven § 1-8</kodebeskrivelse>         
+        </bestemmelserType>
+       </dispensasjon>
+    </dispensasjonOversikt>
+</dispensasjonsoversikt>

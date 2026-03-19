@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArbeidstilsynetsSamtykke xmlns="https://skjema.ft.dibk.no/arbeidstilsynetssamtykke/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://skjema.ft.dibk.no/arbeidstilsynetssamtykke/v3 arbeidstilsynetsSamtykke.xsd" dataFormatProvider="ATIL" dataFormatId="12000" dataFormatVersion="3">
+  <eiendomByggested>
+    <eiendom>
+      <eiendomsidentifikasjon>
+        <kommunenummer>9997</kommunenummer>
+        <gaardsnummer>793</gaardsnummer>
+        <bruksnummer>72</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <adresse>
+        <adresselinje1>Bøgata 1</adresselinje1>
+        <postnr>3800</postnr>
+        <poststed>Bø i Telemark</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Bøgata</gatenavn>
+        <husnr>1</husnr>
+      </adresse>
+      <bygningsnummer>80466985</bygningsnummer>
+      <bolignummer>H0102</bolignummer>
+      <kommunenavn>Midt Telemark</kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <tiltakshaver>
+    <partstype>
+      <kodeverdi>Foretak</kodeverdi>
+      <kodebeskrivelse>Foretak</kodebeskrivelse>
+    </partstype>
+    <foedselsnummer xsi:nil="true" />
+    <organisasjonsnummer>910748548</organisasjonsnummer>
+    <navn>BLOMSTERDALEN OG ØVRE SNERTINGDAL</navn>
+    <adresse>
+      <adresselinje1>Bøgata 16</adresselinje1>
+      <adresselinje2 xsi:nil="true" />
+      <adresselinje3 xsi:nil="true" />
+      <postnr>3802</postnr>
+      <poststed>Bø i Telemark</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>111223344</telefonnummer>
+    <mobilnummer>12034043</mobilnummer>
+    <epost>test2@arkitektum.no</epost>
+    <kontaktperson>
+      <navn>Test Person</navn>
+      <telefonnummer>111223344</telefonnummer>
+      <mobilnummer>12034043</mobilnummer>
+      <epost>test2@arkitektum.no</epost>
+    </kontaktperson>
+  </tiltakshaver>
+  <arbeidsplasser>
+    <framtidige>true</framtidige>
+    <faste>true</faste>
+    <midlertidige>false</midlertidige>
+    <antallAnsatte>50</antallAnsatte>
+    <utleieBygg>false</utleieBygg>
+    <antallVirksomheter>1</antallVirksomheter>
+    <beskrivelse>Kontorbygg  - 3 etasjer</beskrivelse>
+    <veiledning>false</veiledning>
+  </arbeidsplasser>
+  <fakturamottaker>
+    <partstype>
+      <kodeverdi>Foretak</kodeverdi>
+      <kodebeskrivelse>Foretak</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>910297937</organisasjonsnummer>
+    <bestillerreferanse>B.Ref1234</bestillerreferanse>
+    <fakturareferanse>Ref999</fakturareferanse>
+    <navn>FANA OG HAFSLO REVISJON</navn>
+    <prosjektnummer>12345</prosjektnummer>
+    <adresse>
+      <adresselinje1>Bøgata 16</adresselinje1>
+      <adresselinje2>dør nr 2</adresselinje2>
+      <adresselinje3 xsi:nil="true" />
+      <postnr>3802</postnr>
+      <poststed>Bø i Telemark</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <epost>test-fana.hafslo.revisjon@arkitektum.no</epost>
+  </fakturamottaker>
+  <ansvarligSoeker>
+    <partstype>
+      <kodeverdi>Foretak</kodeverdi>
+      <kodebeskrivelse>Foretak</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>910598023</organisasjonsnummer>
+    <navn>HUSNES OG OPPDAL</navn>
+    <adresse>
+      <adresselinje1>c/o Ola Nordmann</adresselinje1>
+      <adresselinje2>andre etasje</adresselinje2>
+      <adresselinje3>Bøgata 16</adresselinje3>
+      <postnr>3802</postnr>
+      <poststed>Bø i Telemark</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>11223344</telefonnummer>
+    <mobilnummer>99887766</mobilnummer>
+    <epost>test@arkitektum.no</epost>
+    <kontaktperson>
+      <navn>Ingvild Testperson Halland</navn>
+      <telefonnummer>36588888</telefonnummer>
+      <mobilnummer>90900454</mobilnummer>
+      <epost>test@arkitektum.no</epost>
+    </kontaktperson>
+  </ansvarligSoeker>
+  <betaling>
+    <beskrivelse>En beskrivelse...</beskrivelse>
+    <ordreId xsi:nil="true" />
+    <sum>9707</sum>
+    <transId xsi:nil="true" />
+    <gebyrkategori>10</gebyrkategori>
+    <skalFaktureres>true</skalFaktureres>
+  </betaling>
+  <dispensasjoner>
+    <dispensasjon>
+      <dispensasjonstype>
+        <kodeverdi>TEK</kodeverdi>
+        <kodebeskrivelse>Byggteknisk forskrift med veiledning</kodebeskrivelse>
+      </dispensasjonstype>
+      <begrunnelse>Begrunnelse for dispensasjon</begrunnelse>
+      <beskrivelse>Søknad om dispensasjon fra bestemmelsen NN...</beskrivelse>
+    </dispensasjon>
+  </dispensasjoner>
+  <krav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>1.15</kodeverdi>
+				<kodebeskrivelse>Har representatene til de ansatte som skal arbeide i det omsøkte tiltaket (AMU, verneombud eller ansattes representant), medvirket i planleggingsprosessen?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Her er dokumentasjon for pkt 1.15...</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>2.1</kodeverdi>
+				<kodebeskrivelse>Er arbeidstakerne sikret mot fall i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>2.3</kodeverdi>
+				<kodebeskrivelse>Er tiltaket tilrettelagt for sikkerhet ved renhold, vedlikehold, montering og liknende i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>2.5</kodeverdi>
+				<kodebeskrivelse>Er arbeidslokalene plassert, innredet og utformet for å redusere fare for vold og trusler om vold i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>2.6</kodeverdi>
+				<kodebeskrivelse>Er vold eller trusler om vold et tema i det søknadspliktige tiltaket og en risiko ved driften til virksomheten(e) som skal bruke tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>2.7</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med rømningsveier og nødutganger i tråd kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>2.9</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med løfteinnretninger i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>2.10</kodeverdi>
+				<kodebeskrivelse>Er løfteinnretninger et tema i det søknadspliktige tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>3.1</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med handikaptoalett i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>3.3</kodeverdi>
+				<kodebeskrivelse>Er arbeidslokalene planlagt med trinnfri atkomst og heis eller løfteplattform i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>4.1</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med løsninger for klima, ventilasjon og luftkvalitet mv. i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>4.3</kodeverdi>
+				<kodebeskrivelse>Er forurensning i arbeidsatmosfæren ivaretatt i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>4.4</kodeverdi>
+				<kodebeskrivelse>Er forurensing i arbeidsatmosfæren et tema i det søknadspliktige tiltaket og en risiko ved driften til virksomheten(e) som skal bruke tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>5.1</kodeverdi>
+				<kodebeskrivelse>Er risiko for helsefarlig stråling ivaretatt i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>5.2</kodeverdi>
+				<kodebeskrivelse>Er stråling et tema i det søknadspliktige tiltaket og en risiko ved driften til virksomheten(e) som skal bruke tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>5.3</kodeverdi>
+				<kodebeskrivelse>Er risiko for biologisk helsefare ivaretatt i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>5.4</kodeverdi>
+				<kodebeskrivelse>Er biologisk helsefare et tema i det søknadspliktige tiltaket og en risiko ved driften til virksomheten(e) som skal bruke tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>5.5</kodeverdi>
+				<kodebeskrivelse>Er risiko for kjemisk helsefare ivaretatt i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>5.6</kodeverdi>
+				<kodebeskrivelse>Er kjemisk helsefare et tema i det søknadspliktige tiltaket og en risiko ved driften til virksomheten(e) som skal bruke tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>5.7</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med løsninger for rent og urent område i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>6.1</kodeverdi>
+				<kodebeskrivelse>Er risiko for støy redusert i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>7.1</kodeverdi>
+				<kodebeskrivelse>Er arealet som er avsatt per arbeidsplass, i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>7.3</kodeverdi>
+				<kodebeskrivelse>Er romhøyden i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>8.1</kodeverdi>
+				<kodebeskrivelse>Er ferdsel og atkomst planlagt i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>8.3</kodeverdi>
+				<kodebeskrivelse>Er varelevering planlagt i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>8.4</kodeverdi>
+				<kodebeskrivelse>Er varelevering et tema i det søknadspliktige tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>9.1</kodeverdi>
+				<kodebeskrivelse>Er utendørs arbeids- og lagringsplasser planlagt i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>9.2</kodeverdi>
+				<kodebeskrivelse>Er utendørs arbeids- og lagringsplasser et tema i det søknadspliktige tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>10.1</kodeverdi>
+				<kodebeskrivelse>Er de enkelte arbeidsplassene og personalrommene planlagt med tilgang til dagslys og utsyn i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>10.3</kodeverdi>
+				<kodebeskrivelse>Er alle arbeidsplasser og ferdselsveier planlagt med belysning og synsforhold i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.1</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med garderober som er plassert, innredet og utformet i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.4</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med dusjrom som er plassert, innredet og utformet i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.5</kodeverdi>
+				<kodebeskrivelse>Er dusjrom et tema i det søknadspliktige tiltaket og et krav som følger av driften til virksomheten(e) som skal bruke tiltaket?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.7</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med toaletter plassert, innredet og utformet i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.10</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med rom for renholdsutstyr plassert, innredet og utformet i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.12</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med spiserom plassert, innredet og utformet i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.15</kodeverdi>
+				<kodebeskrivelse>Er spiserom tilgjengelig hele arbeidsdagen og plassert mindre enn 100 meter fra arbeidsstedet?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.16</kodeverdi>
+				<kodebeskrivelse>Er det planlagt med pauserom innredet og utformet i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.19</kodeverdi>
+				<kodebeskrivelse>Må arbeidstakere kunne sove på, eller i tilknytning til arbeidsstedet på grunn av arbeidets art?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>11.23</kodeverdi>
+				<kodebeskrivelse>Har virksomheten(e) utendørs eller annet arbeid som medfører behov for tørking av klær eller fottøy?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>true</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>12.1</kodeverdi>
+				<kodebeskrivelse>Er risiko for ergonomisk helsefare redusert i tråd med kravene?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon>Se vedlegg</dokumentasjon>
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>13.1</kodeverdi>
+				<kodebeskrivelse>Er det søknadspliktige tiltaket en helseinstitusjon?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>14.1</kodeverdi>
+				<kodebeskrivelse>Har arbeidsgiver(e) som skal bruke tiltaket, plikt til å være tilknyttet godkjent bedriftshelsetjeneste?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+		<sjekklistekrav>
+			<sjekklistepunktsvar>false</sjekklistepunktsvar>
+			<sjekklistepunkt>
+				<kodeverdi>15.1</kodeverdi>
+				<kodebeskrivelse>Er bygning(er) vernet?</kodebeskrivelse>
+			</sjekklistepunkt>
+			<dokumentasjon xsi:nil="true" />
+		</sjekklistekrav>
+	</krav>
+  <beskrivelseAvTiltak>
+    <bruk>
+      <anleggstype>
+        <kodeverdi>industri</kodeverdi>
+        <kodebeskrivelse>Industri</kodebeskrivelse>
+      </anleggstype>
+      <naeringsgruppe>
+        <kodeverdi>I</kodeverdi>
+        <kodebeskrivelse>Overnattings- og serveringsvirksomhet</kodebeskrivelse>
+      </naeringsgruppe>
+      <bygningstype>
+        <kodeverdi>311</kodeverdi>
+        <kodebeskrivelse>Kontor- og administrasjonsbygning eller rådhus</kodebeskrivelse>
+      </bygningstype>
+      <tiltaksformaal>
+        <kode>
+          <kodeverdi>Bolig</kodeverdi>
+          <kodebeskrivelse>Bolig</kodebeskrivelse>  
+        </kode>
+        <kode>
+          <kodeverdi>Annet</kodeverdi>
+          <kodebeskrivelse>Annet</kodebeskrivelse>
+        </kode>
+      </tiltaksformaal>
+      <beskrivPlanlagtFormaal>Kontorbygg  - 3 etasjer</beskrivPlanlagtFormaal>
+    </bruk>
+    <BRA>2500</BRA>
+    <typer>
+      <kode>
+        <kodeverdi>nyttbyggover70m2</kodeverdi>
+		<kodebeskrivelse>Nytt bygg - Over 70 m2 - ikke boligformål</kodebeskrivelse>
+      </kode>
+    </typer>
+  </beskrivelseAvTiltak>
+  <kommunensSaksnummer>
+    <saksaar>2021</saksaar>
+    <sakssekvensnummer>123</sakssekvensnummer>
+  </kommunensSaksnummer>
+  <arbeidstilsynetsSaksnummer>
+    <saksaar>2021</saksaar>
+    <sakssekvensnummer>999</sakssekvensnummer>
+  </arbeidstilsynetsSaksnummer>
+  <metadata>
+    <fraSluttbrukersystem>Fellestjenester bygg testmotor</fraSluttbrukersystem>
+    <ftbId>1000000000001</ftbId>
+    <prosjektnavn>Nytt prosjekt</prosjektnavn>
+    <prosjektnr>CASE 1 - AUTOMATISK SAMTYKKE</prosjektnr>
+    <foretrukketSpraak>
+      <kodeverdi>nb</kodeverdi>
+      <kodebeskrivelse>Bokmål</kodebeskrivelse>
+    </foretrukketSpraak>
+	<erNorskSvenskDansk>true</erNorskSvenskDansk>
+    <unntattOffentlighet>false</unntattOffentlighet>
+    <kommunensOrganisasjonsnummer></kommunensOrganisasjonsnummer>
+  </metadata>
+</ArbeidstilsynetsSamtykke>

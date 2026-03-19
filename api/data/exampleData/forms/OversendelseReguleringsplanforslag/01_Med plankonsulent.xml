@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OversendelseReguleringsplanforslag
+    xmlns="https://skjema.ft.dibk.no/reguleringsplanforslag/v1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/reguleringsplanforslag/v1 oversendelseReguleringsplanforslag.xsd"
+    dataFormatProvider="DIBK" dataFormatId="11001" dataFormatVersion="1">
+  <planforslag>
+    <plannavn>Årstad, gnr. 11 bnr. 28 mfl. Nattlandsfjellet</plannavn>
+    <nasjonalArealplanId>
+      <administrativEnhet>4601</administrativEnhet>
+      <planidentifikasjon>66470000</planidentifikasjon>
+    </nasjonalArealplanId> 
+    <plantype>
+      <kodeverdi>35</kodeverdi>
+      <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
+    </plantype>
+    <kommunensSaksnummer>
+      <saksaar>2023</saksaar>
+      <sakssekvensnummer>12</sakssekvensnummer>
+    </kommunensSaksnummer>
+  </planforslag>
+  <lovreferanse>
+    <kodeverdi>6</kodeverdi>
+    <kodebeskrivelse>Pbl 2008</kodebeskrivelse>
+  </lovreferanse>
+  <sendesTilKommune>
+    <navn>Alta</navn>
+    <nummer>9997</nummer>
+  </sendesTilKommune>
+  <versjon>
+    <dato>2025-06-11</dato>
+    <nummer>1</nummer>
+    <erFoersteVersjon>true</erFoersteVersjon>
+    <erAlternativ xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+    <alternativReferanse>1234</alternativReferanse>
+  </versjon>
+  <metadata>
+    <ftbId>12345</ftbId>
+    <hovedinnsendingsnummer>98765</hovedinnsendingsnummer>
+    <klartForSigneringFraSluttbrukersystem>true</klartForSigneringFraSluttbrukersystem>
+    <fraSluttbrukersystem>TestSystem</fraSluttbrukersystem>
+    <prosjektnavn>Nattlandsfjellet Project</prosjektnavn>
+    <prosjektnr>12345</prosjektnr>
+  </metadata>
+  <forslagsstiller>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>910297937</organisasjonsnummer>
+    <navn>Fana of Havslo Revisjon</navn>
+    <epost>veronika@arkitektum.no</epost>
+    <adresse>
+      <adresselinje1>Sentrumsgate 1</adresselinje1>
+      <postnr>3810</postnr>
+      <poststed>GVARV</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefon>99999999</telefon>
+  </forslagsstiller>
+  <plankonsulent>
+    <partstype>
+      <kodeverdi>Privatperson</kodeverdi>
+      <kodebeskrivelse>Privatperson</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer></organisasjonsnummer>
+    <navn>FILET TANKEFULL</navn>
+    <epost>veronika@arkitektum.no</epost>
+    <adresse>
+      <adresselinje1>Sentrum</adresselinje1>
+      <postnr>3810</postnr>
+      <poststed>Gvarv</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefon>47759931</telefon>
+    <foedselsnummer>27845398386</foedselsnummer>
+  </plankonsulent>
+  <fakturamottaker>
+    <fakturaSendesTil>plankonsulent</fakturaSendesTil>
+    <fakturaReferanse>555kgd33sf</fakturaReferanse>
+  </fakturamottaker>
+</OversendelseReguleringsplanforslag>

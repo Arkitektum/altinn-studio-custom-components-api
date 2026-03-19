@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nabovarsel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFormatProvider="DIBK" dataFormatId="10009" dataFormatVersion="5" xmlns="https://skjema.ft.dibk.no/nabovarsel/v5">
+  <metadata>
+    <fraSluttbrukersystem>Fellestjenester BYGG testmotor</fraSluttbrukersystem>
+    <ftbId>FTB-12345</ftbId>
+    <prosjektnavn>Vinterhagen</prosjektnavn>
+    <prosjektnr>100-2025</prosjektnr>
+    <foretrukketSpraak>
+      <kodeverdi>nb</kodeverdi>
+      <kodebeskrivelse>Bokmål</kodebeskrivelse>
+    </foretrukketSpraak>
+  </metadata>
+  <generelleVilkaar>
+    <norskSvenskDansk>true</norskSvenskDansk>
+  </generelleVilkaar>
+  <soeknadGjelder>
+    <type>
+      <kode>
+        <kodeverdi>bruksendringhoveddel</kodeverdi>
+        <kodebeskrivelse>Bruksendring fra tilleggsdel til hoveddel</kodebeskrivelse>
+      </kode>
+      <kode>
+        <kodeverdi>fasade</kodeverdi>
+        <kodebeskrivelse>Endring av bygg - utvendig - Fasade</kodebeskrivelse>
+      </kode>
+    </type>
+    <bruk>
+      <tiltaksformaal>
+        <kode>
+          <kodeverdi>Bolig</kodeverdi>
+          <kodebeskrivelse>Bolig</kodebeskrivelse>
+        </kode>
+        <kode>
+          <kodeverdi>Fritidsbolig</kodeverdi>
+          <kodebeskrivelse>Fritidsbolig</kodebeskrivelse>
+        </kode>
+        <kode>
+          <kodeverdi>Annet</kodeverdi>
+          <kodebeskrivelse>Annet</kodebeskrivelse>
+        </kode>
+      </tiltaksformaal>
+      <beskrivTidligereFormaal>Arealet har blitt brukt som bod.</beskrivTidligereFormaal>
+      <beskrivPlanlagtFormaal>Vi ønsker å bruke rommet som vinterhage, som en utvidelse av stua med skikkelig store vinduer ut mot fjorden.</beskrivPlanlagtFormaal>
+    </bruk>
+    <foelgebrev>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</foelgebrev>
+  </soeknadGjelder>
+  <ansvarForByggesaken>
+    <kodeverdi>medAnsvar</kodeverdi>
+    <kodebeskrivelse>Søknad om tillatelse til tiltak med ansvarlige foretak</kodebeskrivelse>
+  </ansvarForByggesaken>
+  <eiendomByggested>
+    <eiendom>
+      <adresse>
+        <adresselinje1>Christian Eggens veg 43</adresselinje1>
+        <adresselinje2>Inngang 2</adresselinje2>
+        <adresselinje3>Andre etasje</adresselinje3>
+        <postnr>7033</postnr>
+        <poststed>Trondheim</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Christian Eggens veg</gatenavn>
+        <husnr>43</husnr>
+        <bokstav></bokstav>
+      </adresse>
+      <eiendomsidentifikasjon>
+        <kommunenummer>5001</kommunenummer>
+        <gaardsnummer>79</gaardsnummer>
+        <bruksnummer>91</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <bygningsnummer>182752762</bygningsnummer>
+      <bolignummer></bolignummer>
+      <kommunenavn>Trondheim</kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <planer>
+    <gjeldendePlan>
+      <navn>Kommuneplanens arealdel: Kommuneplanens arealdel 2022-2034</navn>
+        <plantype>
+          <kodeverdi>KP</kodeverdi>
+          <kodebeskrivelse>Arealdel av kommuneplan</kodebeskrivelse>
+        </plantype>
+    </gjeldendePlan>
+    <andrePlaner>
+      <plan>
+        <navn>Mindre reguleringsendring: Stendal nordre.Søndre</navn>
+        <plantype>
+          <kodeverdi>RP</kodeverdi>
+          <kodebeskrivelse>Reguleringsplan</kodebeskrivelse>
+        </plantype>
+      </plan>
+    </andrePlaner>
+  </planer>
+  <dispensasjonOversikt>
+    <dispensasjon>
+      <dispensasjonReferanse>DISP-12345</dispensasjonReferanse>
+      <dispensasjonKategori>
+        <kodeverdi>plassering</kodeverdi>
+        <kodebeskrivelse>Plassering</kodebeskrivelse>
+      </dispensasjonKategori>
+      <dispensasjonTittel>
+        <kodeverdi>byggtekniskforskrift</kodeverdi>
+        <kodebeskrivelse>Dispensasjon fra byggteknisk forskrift (TEK17)</kodebeskrivelse>
+      </dispensasjonTittel>
+      <bestemmelserType>
+        <kodeverdi>1</kodeverdi>
+        <kodebeskrivelse>Bestemmelse i plan</kodebeskrivelse>
+      </bestemmelserType>
+    </dispensasjon>
+    <dispensasjon>
+      <dispensasjonReferanse>DISP-54321</dispensasjonReferanse>
+      <dispensasjonKategori>
+        <kodeverdi>parkering</kodeverdi>
+        <kodebeskrivelse>Parkering</kodebeskrivelse>
+      </dispensasjonKategori>
+      <dispensasjonTittel>
+        <kodeverdi>byggtekniskforskrift2</kodeverdi>
+        <kodebeskrivelse>Dispensasjon fra byggteknisk forskrift (TEK17)2</kodebeskrivelse>
+      </dispensasjonTittel>
+      <bestemmelserType>
+        <kodeverdi>2</kodeverdi>
+        <kodebeskrivelse>Bestemmelse i plan2</kodebeskrivelse>
+      </bestemmelserType>
+    </dispensasjon>
+  </dispensasjonOversikt>
+  <svarfrist>2025-12-31</svarfrist>
+  <tiltakshaver>
+    <partstype>
+      <kodeverdi>Privatperson</kodeverdi>
+      <kodebeskrivelse>Privatperson</kodebeskrivelse>
+    </partstype>
+    <foedselsnummer>23826696249</foedselsnummer>
+    <navn>Fjång Juni</navn>
+    <adresse>
+      <adresselinje1>Husgata 15</adresselinje1>
+      <postnr>0123</postnr>
+      <poststed>Oslo</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>12345678</telefonnummer>
+    <epost>juni@fjaang.no</epost>
+    <kontaktperson>
+      <navn>August Fjång</navn>
+      <telefonnummer>12345678</telefonnummer>
+      <mobilnummer>98765432</mobilnummer>
+      <epost>august@fjaang.no</epost>
+    </kontaktperson>
+  </tiltakshaver>
+  <ansvarligSoeker>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>310973513</organisasjonsnummer>
+    <foedselsnummer></foedselsnummer>
+    <navn>Verdifull Falsk Ape</navn>
+    <adresse>
+      <adresselinje1>Næringsveien 10</adresselinje1>
+      <postnr>0123</postnr>
+      <poststed>Oslo</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>22334455</telefonnummer>
+    <mobilnummer>99887766</mobilnummer>
+    <epost>post@fanaoghafslo.no</epost>
+    <kontaktperson>
+      <navn>Uttrykksfull Branngate</navn>
+      <telefonnummer>11223344</telefonnummer>
+      <mobilnummer>88776655</mobilnummer>
+      <epost>uttrykksfull@falskape.no</epost>
+    </kontaktperson>
+  </ansvarligSoeker>
+  <kontaktpersonForNabovarselet>
+    <navn>Skamfull omstilling</navn>
+    <telefonnummer>33445566</telefonnummer>
+    <mobilnummer>77889911</mobilnummer>
+    <epost>skamfull@falskape.no</epost>
+  </kontaktpersonForNabovarselet>
+  <naboGjenboerEiendommer>
+    <naboGjenboerEiendom>
+      <eier>
+        <partstype>
+          <kodeverdi>Organisasjon</kodeverdi>
+          <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer>312949555</organisasjonsnummer>
+        <foedselsnummer></foedselsnummer>
+        <navn>Freidig Allsidig Katt Omstilling</navn>
+        <adresse>
+          <adresselinje1>Christian Eggens veg 35</adresselinje1>
+          <postnr>7033</postnr>
+          <poststed>Trondheim</poststed>
+          <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>11221122</telefonnummer>
+        <epost>post@omstilling.no</epost>
+        <kontaktperson>
+          <navn></navn>
+          <telefonnummer></telefonnummer>
+          <mobilnummer></mobilnummer>
+          <epost></epost>
+        </kontaktperson>
+      </eier>
+      <eiendommer>
+        <eiendom>
+          <matrikkelinformasjon>
+            <eiendomsidentifikasjon>
+              <kommunenummer>5001</kommunenummer>
+              <gaardsnummer>79</gaardsnummer>
+              <bruksnummer>87</bruksnummer>
+              <festenummer>0</festenummer>
+              <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+              <adresselinje1>Christian Eggens veg 35</adresselinje1>
+              <postnr>7033</postnr>
+              <poststed>Trondheim</poststed>
+              <landkode>NO</landkode>
+              <gatenavn>Christian Eggens veg</gatenavn>
+              <husnr>35</husnr>
+              <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn>Trondheim</kommunenavn>
+          </matrikkelinformasjon>
+          <sluttbrukersystemReferanse>SysRef1000 (organisasjon, eiendom 1)</sluttbrukersystemReferanse>
+        </eiendom>
+        <eiendom>
+          <matrikkelinformasjon>
+            <eiendomsidentifikasjon>
+              <kommunenummer>5001</kommunenummer>
+              <gaardsnummer>79</gaardsnummer>
+              <bruksnummer>93</bruksnummer>
+              <festenummer>0</festenummer>
+              <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+              <adresselinje1>Christian Eggens veg 47</adresselinje1>
+              <postnr>7033</postnr>
+              <poststed>Trondheim</poststed>
+              <landkode>NO</landkode>
+              <gatenavn>Christian Eggens veg</gatenavn>
+              <husnr>47</husnr>
+              <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn>Trondheim</kommunenavn>
+          </matrikkelinformasjon>
+          <sluttbrukersystemReferanse>SysRef1000 (organisasjon, eiendom 2)</sluttbrukersystemReferanse>
+        </eiendom>
+      </eiendommer>
+    </naboGjenboerEiendom>
+    <naboGjenboerEiendom>
+      <eier>
+        <partstype>
+          <kodeverdi>Organisasjon</kodeverdi>
+          <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer>315728150</organisasjonsnummer>
+        <foedselsnummer></foedselsnummer>
+        <navn>RETORISK RASTLØS LØVE SAMEIE</navn>
+        <adresse>
+          <adresselinje1>Mariboes gate 13</adresselinje1>
+          <postnr>0183</postnr>
+          <poststed>Oslo</poststed>
+          <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>31323435</telefonnummer>
+        <epost>styret@borettslaget.no</epost>
+        <kontaktperson>
+          <navn>Styreleder Hansen</navn>
+          <telefonnummer>21222324</telefonnummer>
+          <mobilnummer>99989796</mobilnummer>
+          <epost>styreleder@borettslaget.no</epost>
+        </kontaktperson>
+      </eier>
+      <eiendommer>
+        <eiendom>
+          <matrikkelinformasjon>
+            <eiendomsidentifikasjon>
+              <kommunenummer>5001</kommunenummer>
+              <gaardsnummer>79</gaardsnummer>
+              <bruksnummer>90</bruksnummer>
+              <festenummer>0</festenummer>
+              <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+              <adresselinje1>Christian Eggens veg 41</adresselinje1>
+              <postnr>7033</postnr>
+              <poststed>Trondheim</poststed>
+              <landkode>NO</landkode>
+              <gatenavn>Christian Eggens veg</gatenavn>
+              <husnr>41</husnr>
+              <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn>Trondheim</kommunenavn>
+          </matrikkelinformasjon>
+          <sluttbrukersystemReferanse>SysRef1001 (organisasjon - borettslag)</sluttbrukersystemReferanse>
+        </eiendom>
+      </eiendommer>
+    </naboGjenboerEiendom>
+    <naboGjenboerEiendom>
+      <eier>
+        <partstype>
+          <kodeverdi>Privatperson</kodeverdi>
+          <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer></organisasjonsnummer>
+        <foedselsnummer>26854199837</foedselsnummer>
+        <navn>ESTETISK JOURNALIST</navn>
+        <adresse>
+          <adresselinje1>Christian Eggens veg 51</adresselinje1>
+          <postnr>7033</postnr>
+          <poststed>Trondheim</poststed>
+          <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer></telefonnummer>
+        <epost></epost>
+        <kontaktperson>
+          <navn></navn>
+          <telefonnummer></telefonnummer>
+          <mobilnummer></mobilnummer>
+          <epost></epost>
+        </kontaktperson>
+      </eier>
+      <eiendommer>
+        <eiendom>
+          <matrikkelinformasjon>
+            <eiendomsidentifikasjon>
+              <kommunenummer>5001</kommunenummer>
+              <gaardsnummer>79</gaardsnummer>
+              <bruksnummer>95</bruksnummer>
+              <festenummer>0</festenummer>
+              <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+              <adresselinje1>Christian Eggens veg 51</adresselinje1>
+              <postnr>7033</postnr>
+              <poststed>Trondheim</poststed>
+              <landkode>NO</landkode>
+              <gatenavn>Christian Eggens veg</gatenavn>
+              <husnr>51</husnr>
+              <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn>Trondheim</kommunenavn>
+          </matrikkelinformasjon>
+          <sluttbrukersystemReferanse>SysRef1002 (privatperson)</sluttbrukersystemReferanse>
+        </eiendom>
+      </eiendommer>
+    </naboGjenboerEiendom>
+    <naboGjenboerEiendom>
+      <eier>
+        <partstype>
+          <kodeverdi>Privatperson</kodeverdi>
+          <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer></organisasjonsnummer>
+        <foedselsnummer>15833549364</foedselsnummer>
+        <navn>ERFAREN BOK</navn>
+        <adresse>
+          <adresselinje1>213 Acklains Circle</adresselinje1>
+          <adresselinje2>32119 Daytona Beach</adresselinje2>
+          <postnr xsi:nil="true" />
+          <poststed>Florida</poststed>
+          <landkode>US</landkode>
+        </adresse>
+        <telefonnummer></telefonnummer>
+        <epost></epost>
+        <kontaktperson>
+          <navn></navn>
+          <telefonnummer></telefonnummer>
+          <mobilnummer></mobilnummer>
+          <epost></epost>
+        </kontaktperson>
+      </eier>
+      <eiendommer>
+        <eiendom>
+          <matrikkelinformasjon>
+            <eiendomsidentifikasjon>
+              <kommunenummer>5001</kommunenummer>
+              <gaardsnummer>79</gaardsnummer>
+              <bruksnummer>96</bruksnummer>
+              <festenummer>0</festenummer>
+              <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+              <adresselinje1>Christian Eggens veg 53</adresselinje1>
+              <postnr>7033</postnr>
+              <poststed>Trondheim</poststed>
+              <landkode>NO</landkode>
+              <gatenavn>Christian Eggens veg</gatenavn>
+              <husnr>53</husnr>
+              <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn>Trondheim</kommunenavn>
+          </matrikkelinformasjon>
+          <sluttbrukersystemReferanse>SysRef1004 (privatperson utvandret)</sluttbrukersystemReferanse>
+        </eiendom>
+      </eiendommer>
+    </naboGjenboerEiendom>
+    <naboGjenboerEiendom>
+      <eier>
+        <partstype>
+          <kodeverdi>Privatperson</kodeverdi>
+          <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer></organisasjonsnummer>
+        <foedselsnummer>27869497172</foedselsnummer>
+        <navn>KNUSLETE BRA TAKKE</navn>
+        <adresse>
+          <adresselinje1>Christian Eggens veg 49</adresselinje1>
+          <postnr>7033</postnr>
+          <poststed>Trondheim</poststed>
+          <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer></telefonnummer>
+        <epost></epost>
+        <kontaktperson>
+          <navn></navn>
+          <telefonnummer></telefonnummer>
+          <mobilnummer></mobilnummer>
+          <epost></epost>
+        </kontaktperson>
+      </eier>
+      <eiendommer>
+        <eiendom>
+          <matrikkelinformasjon>
+            <eiendomsidentifikasjon>
+              <kommunenummer>5001</kommunenummer>
+              <gaardsnummer>79</gaardsnummer>
+              <bruksnummer>94</bruksnummer>
+              <festenummer>0</festenummer>
+              <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+              <adresselinje1>Christian Eggens veg 49</adresselinje1>
+              <postnr>7033</postnr>
+              <poststed>Trondheim</poststed>
+              <landkode>NO</landkode>
+              <gatenavn>Christian Eggens veg</gatenavn>
+              <husnr>49</husnr>
+              <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn>Trondheim</kommunenavn>
+          </matrikkelinformasjon>
+          <sluttbrukersystemReferanse>SysRef1005 (privatperson D-nummer)</sluttbrukersystemReferanse>
+        </eiendom>
+      </eiendommer>
+    </naboGjenboerEiendom>
+    <naboGjenboerEiendom>
+      <eier>
+        <partstype>
+          <kodeverdi>Privatperson</kodeverdi>
+          <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer></organisasjonsnummer>
+        <foedselsnummer>23910248847</foedselsnummer>
+        <navn>Sliten Grense</navn>
+        <adresse>
+          <adresselinje1>Christian Eggens veg 39</adresselinje1>
+          <postnr>7033</postnr>
+          <poststed>Trondheim</poststed>
+          <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer></telefonnummer>
+        <epost></epost>
+        <kontaktperson>
+          <navn></navn>
+          <telefonnummer></telefonnummer>
+          <mobilnummer></mobilnummer>
+          <epost></epost>
+        </kontaktperson>
+      </eier>
+      <eiendommer>
+        <eiendom>
+          <matrikkelinformasjon>
+            <eiendomsidentifikasjon>
+              <kommunenummer>5001</kommunenummer>
+              <gaardsnummer>79</gaardsnummer>
+              <bruksnummer>89</bruksnummer>
+              <festenummer>0</festenummer>
+              <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+            <adresse>
+              <adresselinje1>Christian Eggens veg 39</adresselinje1>
+              <postnr>7033</postnr>
+              <poststed>Trondheim</poststed>
+              <landkode>NO</landkode>
+              <gatenavn>Christian Eggens veg</gatenavn>
+              <husnr>39</husnr>
+              <bokstav></bokstav>
+            </adresse>
+            <bygningsnummer></bygningsnummer>
+            <bolignummer></bolignummer>
+            <kommunenavn>Trondheim</kommunenavn>
+          </matrikkelinformasjon>
+          <sluttbrukersystemReferanse>SysRef1006 (privatperson død)</sluttbrukersystemReferanse>
+        </eiendom>
+      </eiendommer>
+    </naboGjenboerEiendom>
+  </naboGjenboerEiendommer>
+  <soeknadensHjemmeside>www.vinterhageniparadis.no</soeknadensHjemmeside>
+</nabovarsel>

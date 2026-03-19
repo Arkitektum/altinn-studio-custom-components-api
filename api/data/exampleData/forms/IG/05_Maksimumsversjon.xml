@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<igangsettingstillatelse
+    xmlns="https://skjema.ft.dibk.no/igangsettingstillatelse/v4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/igangsettingstillatelse/v4 igangsettingstillatelse.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10003" dataFormatVersion="4">
+	<eiendomByggested>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9997</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>391</bruksnummer>
+				<festenummer>0</festenummer>
+				<seksjonsnummer>0</seksjonsnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 13</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>13</husnr>
+			</adresse>
+			<bygningsnummer>81099618</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Oslo</kommunenavn>
+		</eiendom>
+		<eiendom>
+			<eiendomsidentifikasjon>
+				<kommunenummer>9997</kommunenummer>
+				<gaardsnummer>208</gaardsnummer>
+				<bruksnummer>389</bruksnummer>
+			</eiendomsidentifikasjon>
+			<adresse>
+				<adresselinje1>Mariboes gate 11</adresselinje1>
+				<postnr>0183</postnr>
+				<poststed>Oslo</poststed>
+				<landkode>NO</landkode>
+				<gatenavn>Mariboes gate</gatenavn>
+				<husnr>11</husnr>
+			</adresse>
+			<bygningsnummer>80477813</bygningsnummer>
+			<bolignummer>H0101</bolignummer>
+			<kommunenavn>Oslo</kommunenavn>
+		</eiendom>
+	</eiendomByggested>
+	<kommunensSaksnummer>
+		<saksaar>2024</saksaar>
+		<sakssekvensnummer>12345</sakssekvensnummer>
+	</kommunensSaksnummer>
+	<metadata>
+		<ftbId>FTB123</ftbId>
+		<prosjektnavn>Vinterpalasset</prosjektnavn>
+		<prosjektnr>2024-54-A</prosjektnr>
+		<foretrukketSpraak>
+			<kodeverdi>nb</kodeverdi>
+			<kodebeskrivelse>Bokmål</kodebeskrivelse>
+		</foretrukketSpraak>
+		<fraSluttbrukersystem>eByggesøknadssystem X</fraSluttbrukersystem>
+	</metadata>
+	<generelleVilkaar>
+		<beroererArbeidsplasser>true</beroererArbeidsplasser>
+		<norskSvenskDansk>true</norskSvenskDansk>
+	</generelleVilkaar>
+	<soeknadGjelder>
+		<type>
+			<kode>
+				<kodeverdi>nyttbyggunder70m2</kodeverdi>
+				<kodebeskrivelse>Nytt bygg - Under 70 m2 - ikke boligformål</kodebeskrivelse>
+			</kode>
+		</type>
+		<foelgebrev>Vi søker i denne IG-en om oppføring av lysthus i hagen til Vinterpalasset. Et lysthus er en mindre frittstående bygning (ofte gjort av spinkle materialer) i en park eller hage, og gjerne bevokst av klatreplanter. Slike byggverk benyttes som regel til rekreasjonsformål, og ikke til boligformål. Dette er også vår intensjon.
+			Et lysthus kan være med på å gjøre hagen eller uteplassen til en helårs samlingsplass. De store vinduene er med på å lage en lystig og fin atmosfære. I tillegg til å være et populært hageprodukt passer lysthus også veldig fint der det er vakker utsikt, for eksempel ved sjøen, slik som det er på tomten til Vinterpalasset. Dette vil gi et betydelig løft til prosjektet, og utnytte tomtens potensiale.</foelgebrev>
+		<gjelderHeleTiltaket>false</gjelderHeleTiltaket>
+		<delAvTiltaket>Lysthus</delAvTiltaket>
+		<delsoeknadsnummer>4</delsoeknadsnummer>
+	</soeknadGjelder>
+	<delsoeknader>
+		<delsoeknad>
+			<delAvTiltaket>Enebolig</delAvTiltaket>
+			<tillatelsedato>2022-01-01</tillatelsedato>
+			<delsoeknadsnummer>1</delsoeknadsnummer>
+			<kommentar>Det er tidligere søkt om, og gitt tillatelse til oppføring av enebolig.</kommentar>
+			<type>
+				<kode>
+					<kodeverdi>nyttbyggboligformal</kodeverdi>
+					<kodebeskrivelse>Nytt bygg - Boligformål</kodebeskrivelse>
+				</kode>
+			</type>
+		</delsoeknad>
+		<delsoeknad>
+			<delAvTiltaket>Garasje</delAvTiltaket>
+			<tillatelsedato>2023-02-02</tillatelsedato>
+			<delsoeknadsnummer>2</delsoeknadsnummer>
+			<kommentar>Det er tidligere søkt om, og gitt tillatelse til oppføring av enebolig og garasje.</kommentar>
+			<type>
+				<kode>
+					<kodeverdi>nyttbyggunder70m2</kodeverdi>
+					<kodebeskrivelse>Nytt bygg - Under 70 m2 - ikke boligformål</kodebeskrivelse>
+				</kode>
+			</type>
+		</delsoeknad>
+		<delsoeknad>
+			<delAvTiltaket>Parkeringsplass</delAvTiltaket>
+			<tillatelsedato>2024-03-03</tillatelsedato>
+			<delsoeknadsnummer>3</delsoeknadsnummer>
+			<kommentar>Det er tidligere søkt om, og gitt tillatelse til oppføring av enebolig, garasje og parkeringsplass.</kommentar>
+			<type>
+				<kode>
+					<kodeverdi>parkeringsplass</kodeverdi>
+					<kodebeskrivelse>Parkeringsplass</kodebeskrivelse>
+				</kode>
+			</type>
+		</delsoeknad>
+	</delsoeknader>
+	<utfallBesvarelse>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>4c0c9653-fd00-4ed3-a123-76c388ab8d4a</utfallId>
+			<tema>
+				<kodeverdi>andreForhold</kodeverdi>
+				<kodebeskrivelse>Andre forhold</kodebeskrivelse>
+			</tema>
+			<tittel>Er vilkår om betaling av gebyr oppfylt?</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>18.18</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Gebyr må være betalt før igangsettingstillatelse kan gis.</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>false</erUtfallBesvart>
+			<kommentar>Gebyret er nå betalt. Beklager så mye at dette ved en inkurie har forfalt, det skyldes overgangen til nytt regnskapsprogram. Vi håper dette er i orden nå. Legger ved samtykke fra Arbeidstilsynet.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer />
+					<vedleggstype>
+						<kodeverdi />
+						<kodebeskrivelse />
+					</vedleggstype>
+					<versjonsdato xsi:nil="true" />
+					<filnavn />
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>SamtykkeArbeidstilsynet</kodeverdi>
+						<kodebeskrivelse>Samtykke fra Arbeidstilsynet</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-02-16</versjonsdato>
+					<filnavn>ATIL_samtykke_Vinterpalasset.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>SVV</kodeverdi>
+				<kodebeskrivelse>Vilkår i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>f35caa6e-0ea5-4684-9ce3-1db842b5e99e</utfallId>
+			<tema>
+				<kodeverdi>Parkering</kodeverdi>
+				<kodebeskrivelse>Parkering</kodebeskrivelse>
+			</tema>
+			<tittel>Er vilkår for dispensasjon fra krav til parkering oppfylt?</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>15.10</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Det må sendes inn dokumentasjon på at vilkår for dispensasjon fra krav til parkering er oppfylt.</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>true</erUtfallBesvart>
+			<kommentar>Dispensasjonssøknaden fra krav til parkering er innvilget. Vi legger derfor opp til et færre antall parkeringsplasser og satser stort på parkeringsmulighet for spark og slede, se vedlagte parkeringsplan. Dispensasjonen er også vedlagt.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-12-01</versjonsdato>
+					<filnavn>disp_parkering.pdf</filnavn>
+				</vedlegg>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>utomhusplan</kodeverdi>
+						<kodebeskrivelse>Utomhusplan</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-12-04</versjonsdato>
+					<filnavn>parkeringsplan_Vinterpalasset.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+		<utfallSvar>
+			<utfallType>
+				<kodeverdi>MKV</kodeverdi>
+				<kodebeskrivelse>Oppfølgingspunkt i vedtak</kodebeskrivelse>
+			</utfallType>
+			<utfallId>r56dss6e-0fa5-8784-0ce5-2ab942b5e99g</utfallId>
+			<tema>
+				<kodeverdi>utvalgteNaturtyper</kodeverdi>
+				<kodebeskrivelse>Utvalgte naturtyper og ivaretakelse av miljø</kodebeskrivelse>
+			</tema>
+			<tittel>Krav til miljøsanneringsbeskrivelse</tittel>
+			<utloestFraSjekkpunkt>
+				<sjekkpunktId>4.4</sjekkpunktId>
+				<sjekkpunktEier>dibk</sjekkpunktEier>
+			</utloestFraSjekkpunkt>
+			<beskrivelse>Det må utarbeides en miljøsanneringsbeskrivelse for tiltaket. Det må sendes inn en erklæring om ansvarsrett for dette arbeidet.</beskrivelse>
+			<erUtfallBesvaresSenere>false</erUtfallBesvaresSenere>
+			<erUtfallBesvart>true</erUtfallBesvart>
+			<kommentar>Miljøsaneringsbeskrivelse er et dokument som identifiserer og beskriver hvordan byggematerialer, produkter, og avfall skal håndteres før, under, og etter et byggeprosjekt for å minimalisere negativ miljøpåvirkning. Dette inkluderer sortering, gjenvinning, og sikker fjerning av avfall og farlige materialer.
+				Se vedlagte dokumentt "Miljøsaneringsbeskrivelse" utarbeidet av Natur og Miljø AS. Ansvarserklæring og oppdatert gjennomføringsplan ettersendes.</kommentar>
+			<vedleggsliste>
+				<vedlegg>
+					<versjonsnummer>V1</versjonsnummer>
+					<vedleggstype>
+						<kodeverdi>AndreRedegjoerelser</kodeverdi>
+						<kodebeskrivelse>Andre redegjørelser</kodebeskrivelse>
+					</vedleggstype>
+					<versjonsdato>2024-12-04</versjonsdato>
+					<filnavn>miljoesaneringsbeskrivelse_lysthus_i_Vinterpalasset.pdf</filnavn>
+				</vedlegg>
+			</vedleggsliste>
+		</utfallSvar>
+	</utfallBesvarelse>
+	<ansvarligSoeker>
+		<partstype>
+			<kodeverdi>Organisasjon</kodeverdi>
+			<kodebeskrivelse>Organisasjon</kodebeskrivelse>
+		</partstype>
+		<foedselsnummer></foedselsnummer>
+		<organisasjonsnummer>910065203</organisasjonsnummer>
+		<navn>Arkitekt Flink</navn>
+		<adresse>
+			<adresselinje1>Munkegata 1</adresselinje1>
+			<postnr>7013</postnr>
+			<poststed>Trondheim</poststed>
+			<landkode>NO</landkode>
+		</adresse>
+		<telefonnummer>12345678</telefonnummer>
+		<mobilnummer>98765432</mobilnummer>
+		<epost>ansvarligsoker@mail.com</epost>
+		<kontaktperson>
+			<navn>Ludvig Moholt</navn>
+			<telefonnummer>11223344</telefonnummer>
+			<mobilnummer>99887766</mobilnummer>
+			<epost>kontaktperson.ansvarligsoker@mail.com</epost>
+		</kontaktperson>
+	</ansvarligSoeker>
+	<ansvarForByggesaken>
+		<kodeverdi>medAnsvar</kodeverdi>
+		<kodebeskrivelse>Søknad om tillatelse til tiltak med ansvarlige foretak</kodebeskrivelse>
+	</ansvarForByggesaken>
+</igangsettingstillatelse>

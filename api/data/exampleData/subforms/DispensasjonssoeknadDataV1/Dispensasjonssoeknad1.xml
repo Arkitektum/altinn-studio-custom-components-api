@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dispensasjonssoeknad
+    xmlns="https://skjema.ft.dibk.no/dispensasjonssoeknad/v1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://skjema.ft.dibk.no/dispensasjonssoeknad/v1 dispensasjonssoeknad.xsd"
+    dataFormatProvider="DIBK" dataFormatId="10007" dataFormatVersion="1">
+    <soeknadstype>
+        <kodeverdi>RS</kodeverdi>
+        <kodebeskrivelse>Søknad om rammetillatelse</kodebeskrivelse>
+    </soeknadstype>
+    <dispensasjonReferanse>94yj689t-3k45-df0i-ns09-ri7gh7hf6k76</dispensasjonReferanse>
+    <tiltakstyper>
+        <type>
+            <kode>
+                <kodeverdi>tilbyggunder50m2</kodeverdi>
+                <kodebeskrivelse>Endring av bygg - utvendig - Tilbygg med samlet areal mindre enn 50 m2</kodebeskrivelse>
+            </kode>
+        </type>  
+    </tiltakstyper>
+    <dispensasjonBeskrivelse>
+        <dispensasjonTittel>
+            <kodeverdi>gradAvUtnytting</kodeverdi>
+            <kodebeskrivelse>Grad av utnytting</kodebeskrivelse>
+        </dispensasjonTittel>
+        <inngangsbeskrivelse>
+            <kodeverdi>gradAvUtnytting</kodeverdi>
+            <kodebeskrivelse>Vi vil gjennomføre et tiltak som er større enn tillatt (grad av utnytting)</kodebeskrivelse>
+        </inngangsbeskrivelse>
+        <annenInngangsbeskrivelse></annenInngangsbeskrivelse>
+        <beskrivelse>Vi skal koble oss på offentlige tjenester, og trenger å bygge et lite tilbygg med 2 kvm fotavtrykk som toalettet skal stå i. Da ender vi opp 0,002 over tillat grad av utnytting, som er 0,2.</beskrivelse>
+    </dispensasjonBeskrivelse>
+    <dispensasjonFra>
+        <bestemmelserType>
+            <kodeverdi>REG</kodeverdi>
+            <kodebeskrivelse>Reguleringsplan</kodebeskrivelse>
+        </bestemmelserType>
+        <dispensasjonPlanBestemmelse>
+            <navn>S-2255</navn>
+            <nasjonalArealplanId>
+                <administrativEnhet>0102</administrativEnhet>
+                <planidentifikasjon>S-2255</planidentifikasjon>
+            </nasjonalArealplanId>
+            <planbestemmelse>
+                  <nummerering>§ 5.</nummerering>
+                  <overskrift>REGULERINGSBESTEMMELSER TIL ENDRET REGULERINGSPLAN FOR OSLO SENTRUM OG INDRE SONE I OSLO KOMMUNE.</overskrift>
+                  <bestemmelsestekst>I denne planen betyr utnyttelsesgrad (U) det samlede brutto gulvareal for et avgrenset område (inkludert garasjeanlegg over terreng) dividert med brutto grunnareal for byggeområdene innenfor området. Brutto grunnareal kan regnes inntil midten av tilgrensende trafikkområde/friområde og maksimum 10 meter. Hvor det er større brutto etasjehøyde enn 3 meter regnes utnyttelsesgraden etter en teoretisk etasjehøyde på 3 meter. 
+
+                    Det er skrevet inn i plankartet at maks U er 0,2.</bestemmelsestekst>
+            </planbestemmelse>
+            <gradAvUtnytting>0,202</gradAvUtnytting>
+            <beregningsregelGradAvUtnytting>
+                <kodeverdi>BYA</kodeverdi>
+                <kodebeskrivelse>Bebygd areal</kodebeskrivelse>
+            </beregningsregelGradAvUtnytting>
+        </dispensasjonPlanBestemmelse>
+        <lovbestemmelse></lovbestemmelse>
+    </dispensasjonFra>
+    <stedfesting>
+        <posisjon>
+            <koordinatsystem>
+                <kodeverdi>EPSG:25835</kodeverdi>
+                <kodebeskrivelse>EUREF89 UTM sone 35</kodebeskrivelse>
+            </koordinatsystem>
+            <koordinater>
+                <koordinat>59.9139</koordinat>
+                <koordinat>10.7522</koordinat>
+            </koordinater>
+        </posisjon>
+        <vertikalnivaa>
+            <kodeverdi>2</kodeverdi>
+            <kodebeskrivelse>På grunnen/vannoverflate</kodebeskrivelse>
+        </vertikalnivaa>
+    </stedfesting>
+    <varighet>
+        <oenskesVarigDispensasjon>true</oenskesVarigDispensasjon>
+        <oensketVarighetTil>2025-12-31</oensketVarighetTil>
+    </varighet>
+    <begrunnelse>
+        <hensynBakBestemmelsen>Fortetting og bytransformasjon øker presset på utearealene. Den generelle fortettingen gir økt utnyttelse av de bebygde arealene og fører til utbyggingspress på mange offentlige arealer. Uterommenes størrelse, beliggenhet og grad av offentlig karakter er under press. Høy arealutnyttelse kan endre uterommenes oppholdskvaliteter ved reduserte lys- og solforhold. Storskalerte utbygginger kan også redusere tilgjengeligheten i byen dersom de ikke gir rom for et nett av byrom og forbindelser som knytter seg til den eksisterende byen. </hensynBakBestemmelsen>
+        <vurderingHensynBakBestemmelsen>Hensynet blir minimalt tilsidesatt, da tilbygget er vent ut mot hagen og er av ubetydelig størrelse. </vurderingHensynBakBestemmelsen>
+        <vurderingHensynOverordnet>Nasjonale og regionale interesser blir ikke vesentlig tilsidesatt av av endringen.</vurderingHensynOverordnet>
+        <fordeler>
+            <effekt>Økt bruk av eiendom</effekt>
+            <effekt>Oppgradering av bolig til livsløpstandard.</effekt>
+            <effekt>Oppgradering av område ved at utedo ikke lenger benyttes.</effekt>
+        </fordeler>
+        <ulemper>
+            <effekt>Det blir et avvik på 0,002 (U) fra planens bestemmelser.</effekt>
+        </ulemper>
+        <samletBegrunnelse>Fordelene er vesentlig større enn ulempene.</samletBegrunnelse>
+    </begrunnelse>
+</dispensasjonssoeknad>

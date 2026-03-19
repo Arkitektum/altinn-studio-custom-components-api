@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ettrinn xmlns="https://skjema.ft.dibk.no/ettrinn/v4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://skjema.ft.dibk.no/ettrinn/v4 ettrinn.xsd" dataFormatProvider="DIBK" dataFormatId="10012" dataFormatVersion="4">
+  <metadata>
+    <fraSluttbrukersystem>Fellestjenester bygg testmotor</fraSluttbrukersystem>
+    <ftbId>FTB-12345</ftbId>
+    <prosjektnavn>dørmmehuset</prosjektnavn>
+    <prosjektnr>PNR-2025</prosjektnr>
+    <foretrukketSpraak>
+      <kodeverdi>nb</kodeverdi>
+      <kodebeskrivelse>Bokmål</kodebeskrivelse>
+    </foretrukketSpraak>
+    <samtykkeTilByggeplaner></samtykkeTilByggeplaner>
+  </metadata>
+  <generelleVilkaar>
+    <norskSvenskDansk>true</norskSvenskDansk>
+    <beroererArbeidsplasser>true</beroererArbeidsplasser>
+  </generelleVilkaar>
+  <soeknadGjelder>
+    <type>
+      <kode>
+        <kodeverdi>berekonstruksjoner</kodeverdi>
+        <kodebeskrivelse>Endring av bygg - innvendig - Bærekonstruksjoner i bygg</kodebeskrivelse>
+      </kode>
+      <kode>
+        <kodeverdi>endringbyggannet</kodeverdi>
+        <kodebeskrivelse>Endring av bygg - Annet</kodebeskrivelse>
+      </kode>
+      <kode>
+        <kodeverdi>driftsbygningendringover1000m2</kodeverdi>
+        <kodebeskrivelse>Endring av driftsbygning i landbruket over 1000 m2 (BRA)</kodebeskrivelse>
+      </kode>
+      <kode>
+        <kodeverdi>bruksendringhoveddel</kodeverdi>
+        <kodebeskrivelse>Bruksendring fra tilleggsdel til hoveddel</kodebeskrivelse>
+      </kode>
+      <kode>
+        <kodeverdi>nyttbyggunder70m2</kodeverdi>
+        <kodebeskrivelse>Nytt bygg - Under 70 m2 - ikke boligformål</kodebeskrivelse>
+      </kode>
+      <kode>
+        <kodeverdi>plasseringmidlertidig</kodeverdi>
+        <kodebeskrivelse>Plassering av midlertidige bygninger, konstruksjoner og anlegg</kodebeskrivelse>
+      </kode>
+    </type>
+    <foelgebrev></foelgebrev>
+    <bruk>
+      <tiltaksformaal>
+        <kode>
+          <kodeverdi>Bolig</kodeverdi>
+          <kodebeskrivelse>Bolig</kodebeskrivelse>
+        </kode>
+      </tiltaksformaal>
+      <beskrivTidligereFormaal>Har vært en love</beskrivTidligereFormaal>
+      <beskrivPlanlagtFormaal>Skal brukes som en garasje</beskrivPlanlagtFormaal>
+      <bygningstype>
+        <kodeverdi>136</kodeverdi>
+        <kodebeskrivelse>Andre småhus med 3 boliger eller flere</kodebeskrivelse>
+      </bygningstype>
+      <naeringsgruppe>
+        <kodeverdi>I</kodeverdi>
+        <kodebeskrivelse>Overnattings- og serveringsvirksomhet</kodebeskrivelse>
+      </naeringsgruppe>
+      <anleggstype>
+        <kodeverdi>industri</kodeverdi>
+        <kodebeskrivelse>Industri</kodebeskrivelse>
+      </anleggstype>
+    </bruk>
+  </soeknadGjelder>
+  <kommunensSaksnummer>
+    <saksaar>2024</saksaar>
+    <sakssekvensnummer>12345</sakssekvensnummer>
+  </kommunensSaksnummer>
+  <ansvarForByggesaken>
+    <kodeverdi>medAnsvar</kodeverdi>
+    <kodebeskrivelse>Søknad om tillatelse til tiltak med ansvarlige foretak</kodebeskrivelse>
+  </ansvarForByggesaken>
+  <eiendomByggested>
+    <eiendom>
+      <eiendomsidentifikasjon>
+        <kommunenummer>3909</kommunenummer>
+        <gaardsnummer>4080</gaardsnummer>
+        <bruksnummer>1</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <adresse>
+        <adresselinje1>Tvedalsveien 372</adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3></adresselinje3>
+        <postnr>3295</postnr>
+        <poststed>HELGEROA</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Tvedalsveien</gatenavn>
+        <husnr>372</husnr>
+        <bokstav></bokstav>
+      </adresse>
+      <bygningsnummer>140805637</bygningsnummer>
+      <bolignummer>H0101</bolignummer>
+      <kommunenavn>Larvik</kommunenavn>
+    </eiendom>
+    <eiendom>
+      <eiendomsidentifikasjon>
+        <kommunenummer>3909</kommunenummer>
+        <gaardsnummer>4080</gaardsnummer>
+        <bruksnummer>1</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <adresse>
+        <adresselinje1>Tvedalsveien 372</adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3></adresselinje3>
+        <postnr>3295</postnr>
+        <poststed>HELGEROA</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Tvedalsveien</gatenavn>
+        <husnr>372</husnr>
+        <bokstav></bokstav>
+      </adresse>
+      <bygningsnummer>21264911</bygningsnummer>
+      <bolignummer>H0101</bolignummer>
+      <kommunenavn>Larvik</kommunenavn>
+    </eiendom>
+    <eiendom>
+      <eiendomsidentifikasjon>
+        <kommunenummer>3909</kommunenummer>
+        <gaardsnummer>4080</gaardsnummer>
+        <bruksnummer>1</bruksnummer>
+        <festenummer>0</festenummer>
+        <seksjonsnummer>0</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <adresse>
+        <adresselinje1>Tvedalsveien 372</adresselinje1>
+        <adresselinje2></adresselinje2>
+        <adresselinje3></adresselinje3>
+        <postnr>3295</postnr>
+        <poststed>HELGEROA</poststed>
+        <landkode>NO</landkode>
+        <gatenavn>Tvedalsveien</gatenavn>
+        <husnr>372</husnr>
+        <bokstav></bokstav>
+      </adresse>
+      <bygningsnummer>140805629</bygningsnummer>
+      <bolignummer>H0101</bolignummer>
+      <kommunenavn>Larvik</kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <fakturamottaker>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>910297937</organisasjonsnummer>
+    <bestillerreferanse>Gunnar Testperson</bestillerreferanse>
+    <fakturareferanse>Ref999</fakturareferanse>
+    <prosjektnummer>12345</prosjektnummer>
+    <navn>FANA OG HAFSLO REVISJON</navn>
+    <adresse>
+      <adresselinje1>Bøgata 16</adresselinje1>
+      <adresselinje2>dør nr 2</adresselinje2>
+      <adresselinje3 xsi:nil="true" />
+      <postnr>3802</postnr>
+      <poststed>Bø i Telemark</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <epost>test-fana.hafslo.revisjon@epost.no</epost>
+  </fakturamottaker>
+  <varsling>
+    <fritattFraNabovarsling>false</fritattFraNabovarsling>
+    <redegjorelseFritak></redegjorelseFritak>
+    <foreliggerMerknader>true</foreliggerMerknader>
+    <antallMerknader>4</antallMerknader>
+    <vurderingAvMerknader>Besvart i vedlegg</vurderingAvMerknader>
+    <soeknadensHjemmeside>www.dibk.no</soeknadensHjemmeside>
+    <harPengeheftelser>true</harPengeheftelser>
+  </varsling>
+  <planer>
+    <gjeldendePlan>
+      <formaal>formål</formaal>
+      <navn>rammebetingelser navn</navn>
+      <plantype>
+        <kodeverdi>RP</kodeverdi>
+        <kodebeskrivelse>Reguleringsplan</kodebeskrivelse>
+      </plantype>
+      <beregningsregelGradAvUtnytting>
+        <kodeverdi>%BYA</kodeverdi>
+        <kodebeskrivelse>Prosent bebygd areal</kodebeskrivelse>
+      </beregningsregelGradAvUtnytting>
+      <utnyttingsgrad>30.0</utnyttingsgrad>
+    </gjeldendePlan>
+    <andrePlaner>
+      <plan>
+        <navn>Kommuneplanens arealdel 2025-2037</navn>
+        <plantype>
+          <kodeverdi>KP</kodeverdi>
+          <kodebeskrivelse>Arealdel av kommuneplan</kodebeskrivelse>
+        </plantype>
+      </plan>
+      <plan>
+        <navn>Tvedalen Steinindustri</navn>
+        <plantype>
+          <kodeverdi>34</kodeverdi>
+          <kodebeskrivelse>Områderegulering</kodebeskrivelse>
+        </plantype>
+      </plan>
+      <plan>
+        <navn>Kommunedelplan for steinressurser 2012-2024</navn>
+        <plantype>
+          <kodeverdi>KP</kodeverdi>
+          <kodebeskrivelse>Arealdel av kommuneplan</kodebeskrivelse>
+        </plantype>
+      </plan>
+    </andrePlaner>
+    <andreRelevanteKrav>Alle skal ha et blivrak i hagen</andreRelevanteKrav>
+  </planer>
+  <rammebetingelser>
+    <generellInformasjon>
+      <oppfyllerVilkaarForTreukersfrist>false</oppfyllerVilkaarForTreukersfrist>
+      <erPaalagtUavhengigKontroll>false</erPaalagtUavhengigKontroll>
+      <erForhaandskonferanseAvholdt>true</erForhaandskonferanseAvholdt>
+      <skalUtarbeideAvfallsplan>true</skalUtarbeideAvfallsplan>
+      <erAvhengigAvTillatelse>false</erAvhengigAvTillatelse>
+      <beroererByggEldreEnn1850>false</beroererByggEldreEnn1850>
+    </generellInformasjon>
+    <adkomst>
+      <erNyEllerEndretAdkomst>true</erNyEllerEndretAdkomst>
+      <vegtype>
+        <kode>
+          <kodeverdi>KommunalVeg</kodeverdi>
+          <kodebeskrivelse>Kommunal vei</kodebeskrivelse>
+        </kode>
+      </vegtype>
+      <erTillatelseGittRiksFylkesveg>false</erTillatelseGittRiksFylkesveg>
+      <erTillatelseGittKommunalVeg>false</erTillatelseGittKommunalVeg>
+      <erTillatelseGittPrivatVeg>false</erTillatelseGittPrivatVeg>
+    </adkomst>
+    <arealdisponering>
+      <tomtearealByggeomraade>550.0</tomtearealByggeomraade>
+      <tomtearealSomTrekkesFra>59.60</tomtearealSomTrekkesFra>
+      <tomtearealSomLeggesTil>36.20</tomtearealSomLeggesTil>
+      <tomtearealBeregnet>526.6</tomtearealBeregnet>
+      <beregnetMaksByggeareal>160.0</beregnetMaksByggeareal>
+      <arealBebyggelseEksisterende>136.20</arealBebyggelseEksisterende>
+      <arealBebyggelseSomSkalRives>95.15</arealBebyggelseSomSkalRives>
+      <arealBebyggelseNytt>59.60</arealBebyggelseNytt>
+      <parkeringsarealTerreng>36.00</parkeringsarealTerreng>
+      <arealSumByggesak>136.65</arealSumByggesak>
+      <beregnetGradAvUtnytting>25.95</beregnetGradAvUtnytting>
+    </arealdisponering>
+    <vannforsyning>
+      <tilknytningstype>
+        <kodeverdi>TilknyttetOffVannverk</kodeverdi>
+        <kodebeskrivelse>Offentlig vannverk</kodebeskrivelse>
+      </tilknytningstype>
+      <beskrivelse>Vanlig rør</beskrivelse>
+      <krysserVannforsyningAnnensGrunn>true</krysserVannforsyningAnnensGrunn>
+      <harTinglystErklaering>true</harTinglystErklaering>
+    </vannforsyning>
+    <avloep>
+      <tilknytningstype>
+        <kodeverdi>OffentligKloakk</kodeverdi>
+        <kodebeskrivelse>Offentlig avløpsanlegg</kodebeskrivelse>
+      </tilknytningstype>
+      <skalInstallereVannklosett>true</skalInstallereVannklosett>
+      <harUtslippstillatelse>false</harUtslippstillatelse>
+      <krysserAvloepAnnensGrunn>true</krysserAvloepAnnensGrunn>
+      <harTinglystErklaering>true</harTinglystErklaering>
+      <ledesOvervannTilTerreng>true</ledesOvervannTilTerreng>
+      <ledesOvervannTilAvloepssystem>false</ledesOvervannTilAvloepssystem>
+    </avloep>
+    <kravTilByggegrunn>
+      <muligeOmraadeRisikoer>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>steinSprang</kodeverdi>
+            <kodebeskrivelse>Skred i bratt terreng - steinsprang</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>s2</kodeverdi>
+            <kodebeskrivelse>S2</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>sorpeSkred</kodeverdi>
+            <kodebeskrivelse>Skred i bratt terreng - sørpeskred</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>s2</kodeverdi>
+            <kodebeskrivelse>S2</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>snoSkred</kodeverdi>
+            <kodebeskrivelse>Skred i bratt terreng - snøskred</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>s2</kodeverdi>
+            <kodebeskrivelse>S2</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>overvannsFlom</kodeverdi>
+            <kodebeskrivelse>Overvannsflom</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>f2</kodeverdi>
+            <kodebeskrivelse>F2</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>fjellSkred</kodeverdi>
+            <kodebeskrivelse>Fjellskred</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>s2</kodeverdi>
+            <kodebeskrivelse>S2</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>flom</kodeverdi>
+            <kodebeskrivelse>Flom</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>f3</kodeverdi>
+            <kodebeskrivelse>F3</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>kvikkLeire</kodeverdi>
+            <kodebeskrivelse>Kvikkleire</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>k0</kodeverdi>
+            <kodebeskrivelse>K0</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>plutseligFlom</kodeverdi>
+            <kodebeskrivelse>Plutselig flom</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>bygNRBeredskap</kodeverdi>
+            <kodebeskrivelse>Bygninger som er avgjørende for nasjonal eller regional beredskap</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>jordSkred</kodeverdi>
+            <kodebeskrivelse>Skred i bratt terreng - jordskred</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>utenforFO</kodeverdi>
+            <kodebeskrivelse>Utenfor mulig fareområde</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+        <omraadeRisiko>
+          <risikotype>
+            <kodeverdi>stormFlo</kodeverdi>
+            <kodebeskrivelse>Stormflo</kodebeskrivelse>
+          </risikotype>
+          <sikkerhetsklasse>
+            <kodeverdi>f1</kodeverdi>
+            <kodebeskrivelse>F1</kodebeskrivelse>
+          </sikkerhetsklasse>
+        </omraadeRisiko>
+      </muligeOmraadeRisikoer>
+      <harMiljoeforhold>true</harMiljoeforhold>
+    </kravTilByggegrunn>
+    <loefteinnretninger>
+      <erLoefteinnretningIBygning>true</erLoefteinnretningIBygning>
+      <planleggesLoefteinnretningIBygning>false</planleggesLoefteinnretningIBygning>
+      <planleggesHeis>false</planleggesHeis>
+      <planleggesTrappeheis>false</planleggesTrappeheis>
+      <planleggesRulletrapp>false</planleggesRulletrapp>
+      <planleggesLoefteplattform>false</planleggesLoefteplattform>
+    </loefteinnretninger>
+    <plassering>
+      <erKonfliktMedHoeyspentkraftlinje>false</erKonfliktMedHoeyspentkraftlinje>
+      <erKonfliktMedVannOgAvloep>false</erKonfliktMedVannOgAvloep>
+    </plassering>
+  </rammebetingelser>
+  <dispensasjonOversikt>
+    <dispensasjon>
+      <dispensasjonReferanse>89fa33df-079a-407c-8371-4e85df5cf418</dispensasjonReferanse>
+      <dispensasjonKategori>
+        <kodeverdi>plassering</kodeverdi>
+        <kodebeskrivelse>Plassering</kodebeskrivelse>
+      </dispensasjonKategori>
+      <dispensasjonTittel>
+        <kodeverdi>byggegrenser</kodeverdi>
+        <kodebeskrivelse>Byggegrenser</kodebeskrivelse>
+      </dispensasjonTittel>
+      <bestemmelserType>
+        <kodeverdi>RP</kodeverdi>
+        <kodebeskrivelse>Reguleringsplan</kodebeskrivelse>
+      </bestemmelserType>
+    </dispensasjon>
+  </dispensasjonOversikt>
+  <tiltakshaver>
+    <partstype>
+      <kodeverdi>Foretak</kodeverdi>
+      <kodebeskrivelse>Foretak</kodebeskrivelse>
+    </partstype>
+    <foedselsnummer xsi:nil="true" />
+    <organisasjonsnummer>910748548</organisasjonsnummer>
+    <navn>BLOMSTERDALEN OG ØVRE SNERTINGDAL</navn>
+    <adresse>
+      <adresselinje1>Bøgata 16</adresselinje1>
+      <adresselinje2 xsi:nil="true" />
+      <adresselinje3 xsi:nil="true" />
+      <postnr>3802</postnr>
+      <poststed>Bø i Telemark</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>111223344</telefonnummer>
+    <mobilnummer>12034043</mobilnummer>
+    <epost>test2@arkitektum.no</epost>
+    <kontaktperson>
+      <navn>Test Person</navn>
+      <telefonnummer>111223344</telefonnummer>
+      <mobilnummer>12034043</mobilnummer>
+      <epost>test2@arkitektum.no</epost>
+    </kontaktperson>
+  </tiltakshaver>
+  <ansvarligSoeker>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <foedselsnummer></foedselsnummer>
+    <organisasjonsnummer>312949555</organisasjonsnummer>
+    <navn>FREIDIG ALLSIDIG KATT OMSTILLING</navn>
+    <adresse>
+      <adresselinje1>Test Adresse</adresselinje1>
+      <postnr>3750</postnr>
+      <poststed>Drangedal</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefonnummer>12345678</telefonnummer>
+    <mobilnummer>87654321</mobilnummer>
+    <epost>e@post.com</epost>
+    <kontaktperson>
+      <navn>Kontakt Person</navn>
+      <telefonnummer>11223344</telefonnummer>
+      <mobilnummer>99887766</mobilnummer>
+      <epost>kontakt@person.no</epost>
+    </kontaktperson>
+  </ansvarligSoeker>
+  <ansvarsrettSoeker>
+    <harSentralGodkjenning>false</harSentralGodkjenning>
+    <tiltaksklasse>
+      <kodeverdi>1</kodeverdi>
+      <kodebeskrivelse>1</kodebeskrivelse>
+    </tiltaksklasse>
+    <harErklaeringOmAnsvar>true</harErklaeringOmAnsvar>
+  </ansvarsrettSoeker>
+</ettrinn>
