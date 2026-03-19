@@ -1,0 +1,1 @@
+# altinn-studio-custom-components-api
