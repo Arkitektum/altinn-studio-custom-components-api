@@ -14,7 +14,21 @@ import {
 } from "./scripts/functions.mjs";
 
 const app = express();
-const port = process.env.API_PORT;
+
+const envPort = process.env.API_PORT;
+const parsedPort = envPort !== undefined ? Number.parseInt(envPort, 10) : NaN;
+const port =
+    Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort <= 65535
+        ? parsedPort
+        : 3000;
+
+if (port !== parsedPort) {
+    console.warn(
+        `Invalid or missing API_PORT environment variable${
+            envPort ? ` ("${envPort}")` : ""
+        }. Falling back to default port ${port}.`
+    );
+}
 
 app.use(cors());
 
@@ -64,11 +78,11 @@ app.get("/api/resources", async (req, res) => {
 
 app.get("/api/altinnStudioForms", (req, res) => {
     try {
-        const altinnStudioApps = getAltinnStudioForms();
-        res.json(altinnStudioApps);
+        const altinnStudioForms = getAltinnStudioForms();
+        res.json(altinnStudioForms);
     } catch (error) {
-        console.error("Error fetching Altinn Studio apps:", error);
-        res.status(500).json({ error: "Failed to fetch Altinn Studio apps" });
+        console.error("Error fetching Altinn Studio forms:", error);
+        res.status(500).json({ error: "Failed to fetch Altinn Studio forms" });
     }
 });
 
