@@ -65,7 +65,7 @@ app.get("/api/resources", async (req, res) => {
     }
 });
 
-app.get("/api/altinnStudioForms", async (req, res) => {
+app.get("/api/altinnStudioForms", (req, res) => {
     try {
         const altinnStudioForms = getAltinnStudioForms();
         res.json(altinnStudioForms);
