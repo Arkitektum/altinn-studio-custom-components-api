@@ -16,18 +16,11 @@ import {
 const app = express();
 
 const envPort = process.env.API_PORT;
-const parsedPort = envPort !== undefined ? Number.parseInt(envPort, 10) : NaN;
-const port =
-    Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort <= 65535
-        ? parsedPort
-        : 3000;
+const parsedPort = envPort === undefined ? Number.NaN : Number.parseInt(envPort, 10);
+const port = Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort <= 65535 ? parsedPort : 3000;
 
 if (port !== parsedPort) {
-    console.warn(
-        `Invalid or missing API_PORT environment variable${
-            envPort ? ` ("${envPort}")` : ""
-        }. Falling back to default port ${port}.`
-    );
+    console.warn(`Invalid or missing API_PORT environment variable${envPort ? ` ("${envPort}")` : ""}. Falling back to default port ${port}.`);
 }
 
 app.use(cors());
