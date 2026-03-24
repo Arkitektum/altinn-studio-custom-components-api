@@ -1,5 +1,6 @@
 // Data
 import DispensasjonssoeknadDataV1 from "./subforms/DispensasjonssoeknadDataV1.mjs";
+import DispensasjonsvarselDataV1 from "./subforms/DispensasjonsvarselDataV1.mjs";
 import GjennomfoeringsplanDataV7 from "./subforms/GjennomfoeringsplanDataV7.mjs";
 import GjenpartNabovarselDataV3 from "./subforms/GjenpartNabovarselDataV3.mjs";
 
@@ -10,6 +11,13 @@ export default [
         isSubform: true,
         dataType: "DispensasjonssoeknadDataV1",
         layout: DispensasjonssoeknadDataV1
+    },
+    {
+        appOwner: "dibk",
+        appName: "dispensasjonsvarsel-v1",
+        isSubform: true,
+        dataType: "DispensasjonsvarselDataV1",
+        layout: DispensasjonsvarselDataV1
     },
     {
         appOwner: "dibk",
