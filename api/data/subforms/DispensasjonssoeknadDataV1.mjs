@@ -7,61 +7,69 @@ export default {
                 type: "Custom",
                 tagName: "custom-dispensasjon",
                 dataModelBindings: {
-                    dispensasjonBeskrivelse: {
+                    begrunnelse: {
                         dataType: "DispensasjonssoeknadDataV1",
-                        field: "dispensasjonBeskrivelse"
+                        field: "begrunnelse"
                     },
-                    dispensasjonReferanse: {
+                    bestemmelsestype: {
                         dataType: "DispensasjonssoeknadDataV1",
-                        field: "dispensasjonReferanse"
+                        field: "bestemmelsestype"
                     },
-                    soeknadstype: {
+                    dispensasjonsbeskrivelse: {
                         dataType: "DispensasjonssoeknadDataV1",
-                        field: "soeknadstype"
+                        field: "dispensasjonsbeskrivelse"
+                    },
+                    dispensasjonsreferanse: {
+                        dataType: "DispensasjonssoeknadDataV1",
+                        field: "dispensasjonsreferanse"
+                    },
+                    dispensasjonstema: {
+                        dataType: "DispensasjonssoeknadDataV1",
+                        field: "dispensasjonstema"
+                    },
+                    eiendomByggested: {
+                        dataType: "DS",
+                        field: "eiendomByggested"
+                    },
+                    generelleVilkaar: {
+                        dataType: "DS",
+                        field: "generelleVilkaar"
                     },
                     kommunensSaksnummer: {
-                        dataType: "ES",
+                        dataType: "DS",
                         field: "kommunensSaksnummer"
                     },
                     metadata: {
-                        dataType: "ES",
+                        dataType: "DS",
                         field: "metadata"
                     },
-                    tiltakshaver: {
-                        dataType: "ES",
-                        field: "tiltakshaver"
-                    },
-                    eiendomByggested: {
-                        dataType: "ES",
-                        field: "eiendomByggested"
-                    },
-                    tiltakstyper: {
+                    nasjonalArealplanId: {
                         dataType: "DispensasjonssoeknadDataV1",
-                        field: "tiltakstyper"
+                        field: "nasjonalArealplanId"
                     },
-                    dispensasjonFra: {
+                    paragrafnummer: {
                         dataType: "DispensasjonssoeknadDataV1",
-                        field: "dispensasjonFra"
+                        field: "paragrafnummer"
+                    },
+                    plannavn: {
+                        dataType: "DispensasjonssoeknadDataV1",
+                        field: "plannavn"
                     },
                     stedfesting: {
                         dataType: "DispensasjonssoeknadDataV1",
                         field: "stedfesting"
                     },
+                    tiltakshaver: {
+                        dataType: "DS",
+                        field: "tiltakshaver"
+                    },
+                    tiltakstyper: {
+                        dataType: "DispensasjonssoeknadDataV1",
+                        field: "tiltakstyper"
+                    },
                     varighet: {
                         dataType: "DispensasjonssoeknadDataV1",
                         field: "varighet"
-                    },
-                    begrunnelse: {
-                        dataType: "DispensasjonssoeknadDataV1",
-                        field: "begrunnelse"
-                    },
-                    generelleVilkaar: {
-                        dataType: "ES",
-                        field: "generelleVilkaar"
-                    },
-                    dispensasjonPlanBestemmelse: {
-                        dataType: "DispensasjonssoeknadDataV1",
-                        field: "dispensasjonPlanBestemmelse"
                     }
                 }
             }
