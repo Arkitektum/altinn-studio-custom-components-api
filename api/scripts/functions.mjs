@@ -92,6 +92,26 @@ async function fetchSubFormDisplayLayoutFromAltinnStudio(appOwner, appName, subF
 }
 
 /**
+ * Helper function to fetch and validate a subform layout.
+ * @param {string} appOwner
+ * @param {string} appName
+ * @param {string} subFormDataType
+ * @returns {Promise<Object|null>}
+ */
+async function getSubFormLayout(appOwner, appName, subFormDataType) {
+    try {
+        const subLayout = await fetchSubFormDisplayLayoutFromAltinnStudio(appOwner, appName, subFormDataType);
+        if (!subLayout) {
+            throw new Error(`No layout found for subform ${subFormDataType} in ${appOwner}/${appName}`);
+        }
+        return subLayout;
+    } catch (error) {
+        console.error(`Error fetching layout for subform ${subFormDataType} in ${appOwner}/${appName}:`, error);
+        return null;
+    }
+}
+
+/**
  * Fetches the display layouts for all Altinn Studio apps and their associated subforms, and returns them as an array of layout objects.
  *
  * This function iterates over the list of Altinn Studio apps, fetches the main display layout for each app, and if the app has associated subforms,
@@ -114,17 +134,7 @@ export async function getDisplayLayouts() {
                     subForms = await Promise.all(
                         subForms.map(async (subForm) => {
                             const subFormDataType = subForm.dataType;
-                            const subFormLayout = await fetchSubFormDisplayLayoutFromAltinnStudio(appOwner, appName, subFormDataType)
-                                .then((subLayout) => {
-                                    if (!subLayout) {
-                                        throw new Error(`No layout found for subform ${subFormDataType} in ${appOwner}/${appName}`);
-                                    }
-                                    return subLayout;
-                                })
-                                .catch((error) => {
-                                    console.error(`Error fetching layout for subform ${subFormDataType} in ${appOwner}/${appName}:`, error);
-                                    return null;
-                                });
+                            const subFormLayout = await getSubFormLayout(appOwner, appName, subFormDataType);
                             return {
                                 ...subForm,
                                 layout: subFormLayout
