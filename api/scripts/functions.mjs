@@ -82,7 +82,7 @@ async function fetchDisplayLayoutFromAltinnStudio(appOwner, appName) {
  * @throws {Error} If fetching or parsing the subform display layout fails.
  */
 async function fetchSubFormDisplayLayoutFromAltinnStudio(appOwner, appName, subFormDataType) {
-    const filePath = `App/ui//subform-${subFormDataType}/layouts/${subFormDataType}.json`;
+    const filePath = `App/ui/subform-${subFormDataType}/layouts/${subFormDataType}.json`;
     const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
     if (!fileContent) {
         return null;
@@ -405,12 +405,12 @@ export async function getPackageVersions() {
  * @returns {Array<Object>} An array of objects representing both Altinn Studio apps and subforms.
  */
 export function getAltinnStudioForms() {
-    const supFormApps = subforms?.map((subform) => ({
+    const subFormApps = subforms?.map((subform) => ({
         appOwner: subform?.appOwner,
         appName: subform?.appName,
         dataType: subform?.dataType
     }));
-    const allApps = [...altinnStudioApps, ...supFormApps];
+    const allApps = [...altinnStudioApps, ...subFormApps];
     return allApps;
 }
 
