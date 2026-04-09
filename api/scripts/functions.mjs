@@ -420,6 +420,54 @@ async function fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType) {
 }
 
 /**
+ * Fetches the application metadata JSON from an Altinn Studio app repository.
+ *
+ * @async
+ * @function
+ * @param {string} appOwner - The owner of the application repository.
+ * @param {string} appName - The name of the application repository.
+ * @returns {Promise<Object>} The parsed JSON content of the application metadata.
+ * @throws {Error} If fetching or parsing the application metadata fails.
+ */
+async function fetchApplicationMetadataFromAltinnStudio(appOwner, appName) {
+    const filePath = "App/config/applicationmetadata.json";
+    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
+    const jsonResponse = JSON.parse(fileContent);
+    return jsonResponse;
+}
+
+/**
+ * Fetches the application metadata for all Altinn Studio apps and returns it as an array of metadata objects.
+ *
+ * This function iterates over the list of Altinn Studio apps, fetches the application metadata for each app,
+ * and returns an array of objects containing the app owner, app name, and the fetched metadata. If fetching
+ * metadata fails for an app, it logs the error and excludes that app from the result.
+ *
+ * @async
+ * @function
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of application metadata objects for each app.
+ * @throws {Error} If fetching or parsing any of the application metadata fails.
+ */
+export async function getApplicationMetadata() {
+    const metadataPromises = altinnStudioApps.map(async ({ appOwner, appName }) => {
+        try {
+            const metadata = await fetchApplicationMetadataFromAltinnStudio(appOwner, appName);
+            return {
+                appOwner,
+                appName,
+                metadata
+            };
+        } catch (error) {
+            console.error(`Error fetching application metadata for ${appOwner}/${appName}:`, error);
+            return null;
+        }
+    });
+
+    const metadataArray = await Promise.all(metadataPromises);
+    return metadataArray.filter((metadata) => metadata !== null);
+}
+
+/**
  * Retrieves the app owner and app name for a given data type.
  *
  * Searches through the `altinnStudioApps` array for an app matching the provided `dataType`.
