@@ -7,6 +7,7 @@ import express from "express";
 import {
     getAltinnStudioForms,
     getAppResourceValues,
+    getApplicationMetadata,
     getDefaultTextResources,
     getDisplayLayouts,
     getJsonExampleData,
@@ -83,6 +84,16 @@ app.get("/api/exampleData", async (req, res) => {
     } catch (error) {
         console.error("Error fetching example data:", error);
         res.status(500).json({ error: "Failed to fetch example data" });
+    }
+});
+
+app.get("/api/applicationMetadata", async (req, res) => {
+    try {
+        const applicationMetadata = await getApplicationMetadata();
+        res.json(applicationMetadata);
+    } catch (error) {
+        console.error("Error fetching application metadata:", error);
+        res.status(500).json({ error: "Failed to fetch application metadata" });
     }
 });
 
