@@ -20,7 +20,8 @@ const parsedPort = envPort === undefined ? Number.NaN : Number.parseInt(envPort,
 const port = Number.isInteger(parsedPort) && parsedPort > 0 && parsedPort <= 65535 ? parsedPort : 3000;
 
 if (port !== parsedPort) {
-    console.warn(`Invalid or missing API_PORT environment variable${envPort ? ` ("${envPort}")` : ""}. Falling back to default port ${port}.`);
+    const envPortMsg = envPort ? ' ("' + envPort + '")' : "";
+    console.warn(`Invalid or missing API_PORT environment variable${envPortMsg}. Falling back to default port ${port}.`);
 }
 
 app.use(cors());
