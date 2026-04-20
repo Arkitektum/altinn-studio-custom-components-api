@@ -54,9 +54,6 @@ export function convertXmlToJson(xmlContent, xsdContent) {
 
     const arrayPaths = extractArrayPaths(xsdDoc);
 
-    console.log("📐 Array paths from XSD:");
-    arrayPaths.forEach((p) => console.log(" -", p));
-
     // XML → JSON parser
     const arrayPathList = [...arrayPaths];
 

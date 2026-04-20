@@ -36,16 +36,16 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-            throw new Error(`Failed to fetch file content from ${url}: ${response.statusText}`);
+            throw new Error(`⚠️ Failed to fetch file content from ${url}`);
         }
         const content = await response.text();
         return content;
     } catch (error) {
         if (error.message.includes("404")) {
-            console.warn(`File not found at ${url}, returning null.`);
+            console.warn(`⚠️ File not found at ${url}, returning null.`);
             return null;
         }
-        console.error(`Error fetching file content from ${url}:`, error);
+        console.error(`⚠️ Error fetching file content from ${url}`);
         throw error;
     }
 }
@@ -102,11 +102,11 @@ async function getSubFormLayout(appOwner, appName, subFormDataType) {
     try {
         const subLayout = await fetchSubFormDisplayLayoutFromAltinnStudio(appOwner, appName, subFormDataType);
         if (!subLayout) {
-            throw new Error(`No layout found for subform ${subFormDataType} in ${appOwner}/${appName}`);
+            throw new Error(`⛔️ No layout found for subform ${subFormDataType} in ${appOwner}/${appName}`);
         }
         return subLayout;
-    } catch (error) {
-        console.error(`Error fetching layout for subform ${subFormDataType} in ${appOwner}/${appName}:`, error);
+    } catch {
+        console.error(`⛔️ Error fetching layout for subform ${subFormDataType} in ${appOwner}/${appName}:`);
         return null;
     }
 }
@@ -150,8 +150,8 @@ export async function getDisplayLayouts() {
                     subForms
                 };
             })
-            .catch((error) => {
-                console.error(`Error fetching layout for ${appOwner}/${appName}:`, error);
+            .catch(() => {
+                console.error(`⛔️ Error fetching layout for ${appOwner}/${appName}:`);
                 return null;
             })
     );
@@ -239,8 +239,7 @@ export async function getAppResourceValues() {
                 resourceValueLanguages.map((lang) =>
                     fetchAppResourceFile(appOwner, appName, lang)
                         .then((file) => ({ language: lang, resources: file.resources }))
-                        .catch((error) => {
-                            console.warn(`Resource file for language '${lang}' not found for ${appOwner}/${appName}. Skipping this language.`, error);
+                        .catch(() => {
                             return null;
                         })
                 )
@@ -249,7 +248,7 @@ export async function getAppResourceValues() {
             const validResourceFiles = resourceFiles.filter((file) => file !== null);
 
             if (validResourceFiles.length === 0) {
-                console.warn(`No valid resource files found for ${appOwner}/${appName}. Skipping this app.`);
+                console.warn(`⛔️ No valid resource files found for ${appOwner}/${appName}. Skipping this app.`);
                 return null;
             }
 
@@ -260,8 +259,8 @@ export async function getAppResourceValues() {
                 appName,
                 resourceValues
             };
-        } catch (error) {
-            console.error(`Error fetching resource values for ${appOwner}/${appName}:`, error);
+        } catch {
+            console.error(`⛔️ Error fetching resource values for ${appOwner}/${appName}`);
             return null;
         }
     });
@@ -285,8 +284,8 @@ export async function getAppResourceValues() {
 export async function getDefaultTextResources() {
     try {
         return defaultTextResources;
-    } catch (error) {
-        console.error("Error reading default text resources:", error);
+    } catch {
+        console.error("⛔️ Error reading default text resources:");
         return null;
     }
 }
@@ -385,8 +384,8 @@ export async function getPackageVersions() {
                     altinnAppFrontendJS: altinnAppFrontendVersions.js
                 }
             };
-        } catch (error) {
-            console.error(`Error fetching package versions for ${appOwner}/${appName}:`, error);
+        } catch {
+            console.error(`⛔️ Error fetching package versions for ${appOwner}/${appName}`);
             return null;
         }
     });
@@ -467,8 +466,8 @@ export async function getApplicationMetadata() {
                 appName,
                 metadata
             };
-        } catch (error) {
-            console.error(`Error fetching application metadata for ${appOwner}/${appName}:`, error);
+        } catch {
+            console.error(`⛔️ Error fetching application metadata for ${appOwner}/${appName}`);
             return null;
         }
     });
@@ -530,7 +529,7 @@ async function readExampleFilesForDataType(dataType, folderPath, result, subform
     const files = fs.readdirSync(folderPath, { withFileTypes: true }).filter((dirent) => dirent.isFile());
     const { appOwner, appName } = getAppOwnerAndNameFromDataType(dataType);
     if (!appOwner || !appName) {
-        console.warn(`No app owner or app name found for data type: ${dataType}. Skipping folder: ${folderPath}`);
+        console.warn(`⛔️ No app owner or app name found for data type: ${dataType}. Skipping folder: ${folderPath}`);
         return;
     }
     const xmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType);
@@ -539,6 +538,7 @@ async function readExampleFilesForDataType(dataType, folderPath, result, subform
         const filePath = `${folderPath}/${file.name}`;
         const content = fs.readFileSync(filePath, "utf8");
         const existing = result.find((r) => r.dataType === dataType);
+        console.log(`📄 Processing XML: ${appOwner}/${appName} - ${dataType} (${file.name})`);
         if (existing) {
             existing.data[file.name] = convertXmlToJson(content, xmlSchema);
         } else {
@@ -577,6 +577,7 @@ async function handleSubForms(dataType, appOwner, appName, result, subformsExamp
                 const subFormFilePath = `${subFormFolderPath}/${subFormFile.name}`;
                 const subFormContent = fs.readFileSync(subFormFilePath, "utf8");
                 const existing = result.find((r) => r.dataType === subFormDataType);
+                console.log(`📄 Processing XML: ${appOwner}/${appName} - ${subFormDataType} (${subFormFile.name})`);
                 if (existing) {
                     existing.data[subFormFile.name] = convertXmlToJson(subFormContent, subXmlSchema);
                 } else {
