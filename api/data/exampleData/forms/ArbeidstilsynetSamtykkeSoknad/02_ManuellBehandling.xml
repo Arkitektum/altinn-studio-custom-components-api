@@ -43,12 +43,12 @@
     </adresse>
     <telefonnummer>11223344</telefonnummer>
     <mobilnummer xsi:nil="true" />
-    <epost>tine@arkitektum.no</epost>
+    <epost>test@arkitektum.no</epost>
     <kontaktperson>
-      <navn>Tine Høllre</navn>
+      <navn>Test Testesen</navn>
       <telefonnummer>98839131</telefonnummer>
       <mobilnummer xsi:nil="true" />
-      <epost>tine@arkitektum.no</epost>
+      <epost>test@arkitektum.no</epost>
     </kontaktperson>
   </tiltakshaver>
   <arbeidsplasser>

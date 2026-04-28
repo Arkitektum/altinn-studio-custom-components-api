@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Planvarsel xmlns="https://skjema.ft.dibk.no/planvarsel/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://skjema.ft.dibk.no/planvarsel/v3 planvarsel.xsd" dataFormatProvider="DIBK" dataFormatId="11000" dataFormatVersion="3">
+  <forslagsstiller>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>811009962</organisasjonsnummer>
+    <navn>Klavestadhaugen og holmsbu revisjon</navn>
+    <epost>test@arkitektum.no</epost>
+    <adresse>
+      <adresselinje1>Sofies Gate 1</adresselinje1>
+      <postnr>0170</postnr>
+      <poststed>Oslo</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefon>47759931</telefon>
+  </forslagsstiller>
+  <beroerteParter>
+    <beroertpart>
+      <partstype>
+        <kodeverdi>Organisasjon</kodeverdi>
+        <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+      </partstype>
+      <organisasjonsnummer>315728150</organisasjonsnummer>
+      <foedselsnummer></foedselsnummer>
+      <navn>RETORISK RASTLØS LØVE SAMEIE</navn>
+      <telefon>47759931</telefon>
+      <epost>test@arkitektum.no</epost>
+      <adresse>
+        <adresselinje1>Grev Wedels Plass 9</adresselinje1>
+        <postnr>0301</postnr>
+        <poststed>Oslo</poststed>
+        <landkode>NO</landkode>
+      </adresse>
+      <beskrivelseForVarsel />
+      <systemReferanse>sysref-1</systemReferanse>
+      <erHoeringsmyndighet>false</erHoeringsmyndighet>
+      <gjelderEiendom>
+        <gjeldereiendom>
+          <bolignummer />
+          <bygningsnummer />
+          <eiendomsidentifikasjon>
+            <kommunenummer>5001</kommunenummer>
+            <gaardsnummer>110</gaardsnummer>
+            <bruksnummer>3</bruksnummer>
+            <festenummer>385</festenummer>
+            <seksjonsnummer>36</seksjonsnummer>
+          </eiendomsidentifikasjon>
+          <adresse>
+            <adresselinje1>Storgata 5</adresselinje1>
+            <adresselinje2 />
+            <adresselinje3 />
+            <postnr>3502</postnr>
+            <poststed>Hønefoss</poststed>
+            <landkode />
+            <gatenavn />
+            <husnr />
+            <bokstav />
+          </adresse>
+          <kommunenavn>String</kommunenavn>
+        </gjeldereiendom>
+      </gjelderEiendom>
+    </beroertpart>
+    <beroertpart>
+      <partstype>
+        <kodeverdi>Privatperson</kodeverdi>
+        <kodebeskrivelse>Privatperson</kodebeskrivelse>
+      </partstype>
+      <foedselsnummer>
+        1fl2/28lGiJKYtAjQO7B9zQ1ltYxQbWlujaIwGo1crNHEFjhIeAvfnDgSm3pdtfUKIqb7XKbYVSiPADWncb+BWzXJ8Wcqf017fiiLyclBaaBSbup/8suwMN1ku0BZiyLQXXtsXoDA9kAxuhQsLjD7DVN+qg6Hw+OmDwt/WdSHBE=</foedselsnummer>
+      <navn>MELANKOLSK ØRN</navn>
+      <telefon>47759931</telefon>
+      <epost>test@arkitektum.no</epost>
+      <adresse>
+        <adresselinje1>Grev Wedels Plass 9</adresselinje1>
+        <postnr>0301</postnr>
+        <poststed>Oslo</poststed>
+        <landkode>NO</landkode>
+      </adresse>
+      <beskrivelseForVarsel />
+      <systemReferanse>sysref-2</systemReferanse>
+      <erHoeringsmyndighet>false</erHoeringsmyndighet>
+      <gjelderEiendom>
+        <gjeldereiendom>
+          <bolignummer />
+          <bygningsnummer />
+          <eiendomsidentifikasjon>
+            <kommunenummer>3804</kommunenummer>
+            <gaardsnummer>110</gaardsnummer>
+            <bruksnummer>3</bruksnummer>
+            <festenummer>385</festenummer>
+            <seksjonsnummer>36</seksjonsnummer>
+          </eiendomsidentifikasjon>
+          <adresse>
+            <adresselinje1>Storgata 5</adresselinje1>
+            <adresselinje2 />
+            <adresselinje3 />
+            <postnr>3502</postnr>
+            <poststed>Hønefoss</poststed>
+            <landkode />
+            <gatenavn />
+            <husnr />
+            <bokstav />
+          </adresse>
+          <kommunenavn>String</kommunenavn>
+        </gjeldereiendom>
+      </gjelderEiendom>
+    </beroertpart>
+    <beroertpart>
+      <partstype>
+        <kodeverdi>Organisasjon</kodeverdi>
+        <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+      </partstype>
+      <organisasjonsnummer>310973513</organisasjonsnummer>
+      <foedselsnummer></foedselsnummer>
+      <navn>STATENS VEGVESEN</navn>
+      <telefon>47759931</telefon>
+      <epost>test@arkitektum.no</epost>
+      <adresse>
+        <adresselinje1>Grev Wedels Plass 9</adresselinje1>
+        <postnr>0301</postnr>
+        <poststed>Oslo</poststed>
+        <landkode>NO</landkode>
+      </adresse>
+      <beskrivelseForVarsel />
+      <systemReferanse>sysref-3</systemReferanse>
+      <erHoeringsmyndighet>true</erHoeringsmyndighet>
+      <gjelderEiendom />
+    </beroertpart>
+    <beroertpart>
+      <partstype>
+        <kodeverdi>Privatperson</kodeverdi>
+        <kodebeskrivelse>Privatperson</kodebeskrivelse>
+      </partstype>
+      <organisasjonsnummer></organisasjonsnummer>
+      <foedselsnummer>D0KffaNkTGJQwIrNZp0MUW8dlyMVgryKvZNFqICYr/VQq3UuY3qaMD0E2ucDoA0wWthmDHnLrS0u0AJkSwPvjQY7ArBQ9e/UU1OzbFueWyKQf0ukC+xMgroBwr0inXbPLMWQA/OWF4u+Fo3TwXvonIiPBVPzwM2jAZWiinTCwJ4=</foedselsnummer>
+      <navn>Filip Mohamed</navn>
+      <telefon>47613288</telefon>
+      <epost>test@arkitektum.no</epost>
+      <adresse>
+        <adresselinje1>Grev Wedels Plass 9</adresselinje1>
+        <postnr>0301</postnr>
+        <poststed>Oslo</poststed>
+        <landkode>NO</landkode>
+      </adresse>
+      <beskrivelseForVarsel />
+      <systemReferanse>sysref-4</systemReferanse>
+      <erHoeringsmyndighet>true</erHoeringsmyndighet>
+      <gjelderEiendom />
+    </beroertpart>
+    <beroertpart>
+      <partstype>
+        <kodeverdi>Organisasjon</kodeverdi>
+        <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+      </partstype>
+      <organisasjonsnummer>312949555</organisasjonsnummer>
+      <foedselsnummer></foedselsnummer>
+      <navn>Freidig Allsidig Katt Omstilling</navn>
+      <telefon>47759931</telefon>
+      <epost>test@arkitektum.no</epost>
+      <adresse>
+        <adresselinje1>Grev Wedels Plass 9</adresselinje1>
+        <postnr>0301</postnr>
+        <poststed>Oslo</poststed>
+        <landkode>NO</landkode>
+      </adresse>
+      <beskrivelseForVarsel />
+      <systemReferanse>sysref-5</systemReferanse>
+      <erHoeringsmyndighet>true</erHoeringsmyndighet>
+      <gjelderEiendom>
+        <gjeldereiendom>
+          <bolignummer />
+          <bygningsnummer />
+          <eiendomsidentifikasjon>
+            <kommunenummer>5001</kommunenummer>
+            <gaardsnummer>110</gaardsnummer>
+            <bruksnummer>3</bruksnummer>
+            <festenummer>385</festenummer>
+            <seksjonsnummer>36</seksjonsnummer>
+          </eiendomsidentifikasjon>
+          <adresse>
+            <adresselinje1>Storgata 5</adresselinje1>
+            <adresselinje2 />
+            <adresselinje3 />
+            <postnr>3502</postnr>
+            <poststed>Hønefoss</poststed>
+            <landkode />
+            <gatenavn />
+            <husnr />
+            <bokstav />
+          </adresse>
+          <kommunenavn>String</kommunenavn>
+        </gjeldereiendom>
+      </gjelderEiendom>
+    </beroertpart>
+  </beroerteParter>
+  <kommunenavn>Oslo</kommunenavn>
+  <eiendomByggested>
+    <eiendom>
+      <eiendomsidentifikasjon>
+        <kommunenummer>0301</kommunenummer>
+        <gaardsnummer>318</gaardsnummer>
+        <bruksnummer>97</bruksnummer>
+        <festenummer>1</festenummer>
+        <seksjonsnummer>1</seksjonsnummer>
+      </eiendomsidentifikasjon>
+      <adresse>
+        <adresselinje1>Testveien 999</adresselinje1>
+        <adresselinje2 />
+        <adresselinje3 />
+        <postnr>3502</postnr>
+        <poststed>Hønefoss</poststed>
+        <landkode>NO</landkode>
+        <gatenavn />
+        <husnr />
+        <bokstav />
+      </adresse>
+      <bygningsnummer />
+      <bolignummer />
+      <kommunenavn>Oslo</kommunenavn>
+    </eiendom>
+  </eiendomByggested>
+  <gjeldendePlan>
+    <gjeldendeplan>
+      <navn>Reguleringsplan for Hønefoss</navn>
+      <plantype>
+        <kodeverdi>35</kodeverdi>
+        <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
+      </plantype>
+    </gjeldendeplan>
+  </gjeldendePlan>
+  <plankonsulent>
+    <partstype>
+      <kodeverdi>Organisasjon</kodeverdi>
+      <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+    </partstype>
+    <organisasjonsnummer>910297937</organisasjonsnummer>
+    <navn>FANA OG HAFSLO REVISJON</navn>
+    <epost>test@arkitektum.no</epost>
+    <adresse>
+      <adresselinje1>Sentrum</adresselinje1>
+      <adresselinje2 />
+      <adresselinje3 />
+      <postnr>3800</postnr>
+      <poststed>BØ I TELEMARK</poststed>
+      <landkode>NO</landkode>
+    </adresse>
+    <telefon>98839131</telefon>
+    <foedselsnummer></foedselsnummer>
+  </plankonsulent>
+  <metadata>
+    <ftbId />
+    <fraSluttbrukersystem>Testmotor Ftp</fraSluttbrukersystem>
+    <foretrukketSpraak>
+      <kodeverdi>NO</kodeverdi>
+      <kodebeskrivelse>Norsk</kodebeskrivelse>
+    </foretrukketSpraak>
+  </metadata>
+  <planforslag>
+    <plannavn>OMRÅDEPLAN FOR HIS ALLÉ</plannavn>
+    <arealplanId>09062018-2</arealplanId>
+    <hjemmesidePlanforslag>www.kommunensHjemmeside.no</hjemmesidePlanforslag>
+    <kravKonsekvensUtredning>false</kravKonsekvensUtredning>
+    <planHensikt>String</planHensikt>
+    <fristForInnspill>2026-12-31</fristForInnspill>
+    <hjemmesidePlanprogram>www.planprogram.no</hjemmesidePlanprogram>
+    <plantype>
+      <kodeverdi>36</kodeverdi>
+      <kodebeskrivelse>Forenklet endring i reguleringsplan etter pbl2008</kodebeskrivelse>
+    </plantype>
+    <begrunnelseKU>Begrunnelse for hvorfor det ikke er krav om konsekvensutredning.</begrunnelseKU>
+    <kommunensSaksnummer>
+      <saksaar>2021</saksaar>
+      <sakssekvensnummer>08062021</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <saksgangOgMedvirkning>Saksgang og medvirkning...</saksgangOgMedvirkning>
+  </planforslag>
+</Planvarsel>
