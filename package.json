@@ -10,13 +10,13 @@
         "dotenv": "^17.4.2",
         "eslint": "^10.2.1",
         "express": "^5.2.1",
-        "fast-xml-parser": "^5.7.1",
+        "fast-xml-parser": "^5.7.2",
         "globals": "^17.5.0",
-        "jsdom": "^29.0.2",
+        "jsdom": "^29.1.0",
         "libxmljs2": "^0.37.0"
     },
     "dependencies": {
-        "@arkitektum/altinn-studio-custom-components": "^15.0.0",
-        "@arkitektum/altinn-studio-custom-components-utils": "^1.4.1"
+        "@arkitektum/altinn-studio-custom-components": "^15.3.6",
+        "@arkitektum/altinn-studio-custom-components-utils": "^1.4.2"
     }
 }
