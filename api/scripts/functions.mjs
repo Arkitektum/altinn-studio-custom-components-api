@@ -526,7 +526,7 @@ function getSubformsFromDataType(dataType) {
  * @returns {Promise<void>} Resolves when all files and subforms have been processed.
  */
 async function readExampleFilesForDataType(dataType, folderPath, result, subformsExampleDataDir) {
-    const files = fs.readdirSync(folderPath, { withFileTypes: true }).filter((dirent) => dirent.isFile());
+    const files = fs.readdirSync(folderPath, { withFileTypes: true }).filter((dirent) => dirent.isFile() && dirent.name.endsWith(".xml"));
     const { appOwner, appName } = getAppOwnerAndNameFromDataType(dataType);
     if (!appOwner || !appName) {
         console.warn(`⛔️ No app owner or app name found for data type: ${dataType}. Skipping folder: ${folderPath}`);
