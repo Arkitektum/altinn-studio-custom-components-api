@@ -330,11 +330,10 @@ function extractAltinnAppFrontendVersions(htmlString) {
 
     const result = {
         css: new Set(),
-        js: new Set()
+        js: doc?.querySelector("meta[data-altinn-app-frontend-version]")?.dataset?.altinnAppFrontendVersion || null
     };
 
     const cssRegex = /altinn-app-frontend\/([^/]+)\/altinn-app-frontend\.css$/;
-    const jsRegex = /altinn-app-frontend\/([^/]+)\/altinn-app-frontend\.js$/;
 
     doc.querySelectorAll('link[rel="stylesheet"][href]').forEach((link) => {
         const match = link.href.match(cssRegex);
@@ -343,15 +342,9 @@ function extractAltinnAppFrontendVersions(htmlString) {
         }
     });
 
-    doc.querySelectorAll("script[src]").forEach((script) => {
-        const match = script.src.match(jsRegex);
-        if (match) {
-            result.js.add(match[1]);
-        }
-    });
     return {
         css: result.css.size > 0 ? Array.from(result.css)[0] : null,
-        js: result.js.size > 0 ? Array.from(result.js)[0] : null
+        js: result.js
     };
 }
 
