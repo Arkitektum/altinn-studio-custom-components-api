@@ -5,10 +5,10 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@arkitektum/altinn-studio-custom-components-utils@npm:^1.4.2":
-  version: 1.4.2
-  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:1.4.2"
-  checksum: 10c0/a1744413fef1bfdeec016a9298be2c01d7b9f42b57a610ab316b14372b4b54d5b6079711362abb4b9d4666fdaf4548a7e5fb142456a3c34a2b9e39096dfc6479
+"@arkitektum/altinn-studio-custom-components-utils@npm:^1.4.2, @arkitektum/altinn-studio-custom-components-utils@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:1.4.3"
+  checksum: 10c0/649712c1daa99a43f661feef2e4ddce22ffd2646846c50af7478c84a2dc408961b7ed59eea1e561dc150fa1bae76e074dbaf8f95945052af4e61bfce346f2901
   languageName: node
   linkType: hard
 
@@ -405,7 +405,7 @@ __metadata:
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
     "@arkitektum/altinn-studio-custom-components": "npm:^15.3.6"
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.4.2"
+    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.4.3"
     "@eslint/js": "npm:^10.0.1"
     cors: "npm:^2.8.6"
     dotenv: "npm:^17.4.2"
@@ -2535,21 +2535,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tldts-core@npm:^7.0.28":
-  version: 7.0.28
-  resolution: "tldts-core@npm:7.0.28"
-  checksum: 10c0/1fde2a2806c758d13c7eb2bd285a9482bf905829b38c060d66127e9e0682a103c42e181509f0d3c6da046e9aa2f71fe9d61afadb1b85a6b6c557cb98d6b7dede
+"tldts-core@npm:^7.0.29":
+  version: 7.0.29
+  resolution: "tldts-core@npm:7.0.29"
+  checksum: 10c0/14fbd1806c8eb04cd08951feeaf463b4f280a00bc343c2a33b72cad1c4e7881eda7f30629cefcf443486ea4adfe058529ecacdb0c167723e85935dedc15b8a9b
   languageName: node
   linkType: hard
 
 "tldts@npm:^7.0.5":
-  version: 7.0.28
-  resolution: "tldts@npm:7.0.28"
+  version: 7.0.29
+  resolution: "tldts@npm:7.0.29"
   dependencies:
-    tldts-core: "npm:^7.0.28"
+    tldts-core: "npm:^7.0.29"
   bin:
     tldts: bin/cli.js
-  checksum: 10c0/37f92481bc7276f60f06d93d2671a67fd94dc8e245c232a50c69b8704d34c908658968f7298810e1b4df68a84be9ff6248867981d1cc7ddb08755565edd3f496
+  checksum: 10c0/f2999cba3060a36af7c72f2b756a4c00edb0aa8b0885a368810a1c7ddc52aac6130cc63f2260821ed8cdda104b31434b896d9e9aafbb723ba985d6657160e6a5
   languageName: node
   linkType: hard
 
