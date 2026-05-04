@@ -4,6 +4,7 @@ import fs from "node:fs";
 
 // Data
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
+import packageSources from "../data/packageSources.mjs";
 import subforms from "../data/subforms.mjs";
 
 // Utils
@@ -12,6 +13,61 @@ import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 const defaultTextResourcesFilePath = "node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json";
 const defaultTextResources = JSON.parse(fs.readFileSync(defaultTextResourcesFilePath, "utf8"));
 const resourceValueLanguages = ["nb", "nn"];
+
+/**
+ * Fetches the latest version of a package from the npm registry.
+ *
+ * @param {string} packageName - The name of the npm package to fetch the latest version for.
+ * @returns {Promise<string|null>} The latest version of the package, or null if it cannot be fetched.
+ */
+async function fetchLatestVersionFromNpm(packageName) {
+    try {
+        const encodedName = packageName.replace("/", "%2F");
+        const response = await fetch(`https://registry.npmjs.org/${encodedName}/latest`);
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data.version ?? null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Fetches the latest version of a package from a GitHub repository.
+ *
+ * @param {string} repo - The GitHub repository in the format "owner/repo".
+ * @returns {Promise<string|null>} The latest version of the package, or null if it cannot be fetched.
+ */
+async function fetchLatestVersionFromGithub(repo) {
+    try {
+        const response = await fetch(`https://api.github.com/repos/${repo}/releases/latest`);
+        if (!response.ok) return null;
+        const data = await response.json();
+        return data.tag_name?.replace(/^v/, "") ?? null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Fetches the latest versions of all packages defined in the packageSources object.
+ *
+ * @returns {Promise<Object>} An object containing the latest versions of all packages.
+ */
+export async function getLatestPackageVersions() {
+    const versionPromises = Object.entries(packageSources).map(async ([key, source]) => {
+        if (source.type === "npm") {
+            const version = await fetchLatestVersionFromNpm(source.package);
+            return { [key]: version };
+        } else if (source.type === "github") {
+            const version = await fetchLatestVersionFromGithub(source.repo);
+            return { [key]: version };
+        }
+        return { [key]: null };
+    });
+
+    return Promise.all(versionPromises).then((versions) => Object.assign({}, ...versions));
+}
 
 /**
  * Fetches the content of a file from a Gitea repository using the Altinn Studio API.
