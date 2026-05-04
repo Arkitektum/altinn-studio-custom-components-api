@@ -11,6 +11,7 @@ import {
     getDefaultTextResources,
     getDisplayLayouts,
     getJsonExampleData,
+    getLatestPackageVersions,
     getPackageVersions
 } from "./scripts/functions.mjs";
 
@@ -44,6 +45,16 @@ app.get("/api/packageVersions", async (req, res) => {
     } catch (error) {
         console.error("Error fetching package.json files:", error);
         res.status(500).json({ error: "Failed to fetch package.json files" });
+    }
+});
+
+app.get("/api/latestPackageVersions", async (req, res) => {
+    try {
+        const packageVersions = await getLatestPackageVersions();
+        res.json(packageVersions);
+    } catch (error) {
+        console.error("Error fetching latest package versions:", error);
+        res.status(500).json({ error: "Failed to fetch latest package versions" });
     }
 });
 
