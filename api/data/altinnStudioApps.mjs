@@ -76,7 +76,17 @@ const altinnStudioApps = [
     {
         appOwner: "dibk",
         appName: "fts-v1",
-        dataType: "FTS"
+        dataType: "FTS",
+        subForms: [
+            {
+                appName: "dispensasjonssoeknad-v1",
+                dataType: "DispensasjonssoeknadDataV1"
+            },
+            {
+                appName: "gjennomfoeringsplan-v7",
+                dataType: "GjennomfoeringsplanDataV7"
+            }
+        ]
     },
     {
         appOwner: "dibk",
