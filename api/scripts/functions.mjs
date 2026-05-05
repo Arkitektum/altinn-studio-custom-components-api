@@ -15,6 +15,41 @@ const defaultTextResources = JSON.parse(fs.readFileSync(defaultTextResourcesFile
 const resourceValueLanguages = ["nb", "nn"];
 
 /**
+ * Strips JavaScript-style comments (//) from JSON content.
+ * @param {string} jsonString - The JSON string potentially containing comments.
+ * @returns {string} The JSON string with comments removed.
+ */
+function stripJsonComments(jsonString) {
+    return jsonString
+        .split("\n")
+        .map((line) => {
+            // Find // that's not inside quotes
+            let inQuotes = false;
+            let commentStart = -1;
+
+            for (let i = 0; i < line.length - 1; i++) {
+                if (line[i] === '"' && line[i - 1] !== "\\") {
+                    inQuotes = !inQuotes;
+                }
+                if (!inQuotes && line[i] === "/" && line[i + 1] === "/") {
+                    commentStart = i;
+                    break;
+                }
+            }
+
+            if (commentStart >= 0) {
+                return line.substring(0, commentStart).trimEnd();
+            }
+            return line;
+        })
+        .filter((line) => {
+            const trimmed = line.trim();
+            return !trimmed.startsWith("//");
+        })
+        .join("\n");
+}
+
+/**
  * Fetches the latest version of a package from the npm registry.
  *
  * @param {string} packageName - The name of the npm package to fetch the latest version for.
@@ -94,7 +129,13 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
         if (!response.ok) {
             throw new Error(`⚠️ Failed to fetch file content from ${url}`);
         }
-        const content = await response.text();
+        let content = await response.text();
+
+        // If it's a JSON file, strip comments to prevent JSON.parse() failures
+        if (filePath.toLowerCase().endsWith(".json")) {
+            content = stripJsonComments(content);
+        }
+
         return content;
     } catch (error) {
         if (error.message.includes("404")) {
@@ -116,8 +157,8 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
  * @returns {Promise<Object>} The parsed JSON content of the display layout.
  * @throws {Error} If fetching or parsing the display layout fails.
  */
-async function fetchDisplayLayoutFromAltinnStudio(appOwner, appName) {
-    const filePath = "App/ui/form/layouts/DisplayLayout.json";
+async function fetchDisplayLayoutFromAltinnStudio(appOwner, appName, layoutFile) {
+    const filePath = layoutFile || "App/ui/form/layouts/DisplayLayout.json";
     const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
     if (!fileContent) {
         return null;
@@ -180,8 +221,8 @@ async function getSubFormLayout(appOwner, appName, subFormDataType) {
  * @throws {Error} If fetching or parsing any of the display layouts fails.
  */
 export async function getDisplayLayouts() {
-    const layoutPromises = altinnStudioApps.map(({ appOwner, appName, dataType, subForms }) =>
-        fetchDisplayLayoutFromAltinnStudio(appOwner, appName)
+    const layoutPromises = altinnStudioApps.map(({ appOwner, appName, dataType, layoutFile, subForms }) =>
+        fetchDisplayLayoutFromAltinnStudio(appOwner, appName, layoutFile)
             .then(async (layout) => {
                 if (!layout) {
                     throw new Error(`No layout found for ${appOwner}/${appName}`);
