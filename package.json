@@ -8,11 +8,11 @@
         "@eslint/js": "^10.0.1",
         "cors": "^2.8.6",
         "dotenv": "^17.4.2",
-        "eslint": "^10.2.1",
+        "eslint": "^10.4.0",
         "express": "^5.2.1",
-        "fast-xml-parser": "^5.7.2",
-        "globals": "^17.5.0",
-        "jsdom": "^29.1.0",
+        "fast-xml-parser": "^5.8.0",
+        "globals": "^17.6.0",
+        "jsdom": "^29.1.1",
         "libxmljs2": "^0.37.0"
     },
     "dependencies": {
