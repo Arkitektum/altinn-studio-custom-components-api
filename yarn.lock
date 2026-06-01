@@ -5,10 +5,10 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@arkitektum/altinn-studio-custom-components-utils@npm:^1.4.8":
-  version: 1.4.8
-  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:1.4.8"
-  checksum: 10c0/912f1128de22a8b1aeb3b936128d9d6117eeaa1dfb3d60ee1503688ecdf939e193b1ed5053178d81e99809d033502d8cefe201e9d8784504aa7f8b777d02793c
+"@arkitektum/altinn-studio-custom-components-utils@npm:^1.4.10, @arkitektum/altinn-studio-custom-components-utils@npm:^1.4.8":
+  version: 1.4.10
+  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:1.4.10"
+  checksum: 10c0/aee59836b0f0aad2e346656dce7170754b32fb20fa7779d0915f88fa184349bda02ccb60aaf9fa2c54f12c0bdd67d5906e9a6899df44cec333426ea9056a31ac
   languageName: node
   linkType: hard
 
@@ -413,7 +413,7 @@ __metadata:
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
     "@arkitektum/altinn-studio-custom-components": "npm:^16.3.0"
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.4.8"
+    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.4.10"
     "@eslint/js": "npm:^10.0.1"
     cors: "npm:^2.8.6"
     dotenv: "npm:^17.4.2"
