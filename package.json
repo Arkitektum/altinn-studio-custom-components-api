@@ -8,7 +8,7 @@
         "@eslint/js": "^10.0.1",
         "cors": "^2.8.6",
         "dotenv": "^17.4.2",
-        "eslint": "^10.5.0",
+        "eslint": "^10.6.0",
         "express": "^5.2.1",
         "fast-xml-parser": "^5.9.3",
         "globals": "^17.7.0",
@@ -17,6 +17,6 @@
     },
     "dependencies": {
         "@arkitektum/altinn-studio-custom-components": "^16.5.1",
-        "@arkitektum/altinn-studio-custom-components-utils": "^1.4.11"
+        "@arkitektum/altinn-studio-custom-components-utils": "^1.4.12"
     }
 }
