@@ -90,6 +90,12 @@ const altinnStudioApps = [
     },
     {
         appOwner: "dibk",
+        appName: "hoeringettersyn-v2",
+        dataType: "HoeringOgOffentligEttersyn",
+        subForms: []
+    },
+    {
+        appOwner: "dibk",
         appName: "ig-v3",
         dataType: "IG",
         subForms: [
