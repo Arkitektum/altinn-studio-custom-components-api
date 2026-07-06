@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/HoeringOgOffentligEttersyn/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFormatProvider="DIBK"
+    dataFormatId="11002" dataFormatVersion="2">
+    <hoeringstype>
+        <kodeverdi>HOFFE</kodeverdi>
+        <kodebeskrivelse>Høring og offentlig ettersyn</kodebeskrivelse>
+    </hoeringstype>
+    <planprosessregel>
+        <kodeverdi>NY-RP</kodeverdi>
+        <kodebeskrivelse>Ny reguleringsplan</kodebeskrivelse>
+    </planprosessregel>
+    <mottakerliste>
+        <beroertpartOgInteressentOgMyndighet>
+            <partstype>
+                <kodeverdi>Organisasjon</kodeverdi>
+                <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+            </partstype>
+            <organisasjonsnummer>810064412</organisasjonsnummer>
+            <rolle>
+                <kodeverdi>sektormyndighet</kodeverdi>
+                <kodebeskrivelse>Berørt sektormyndighet</kodebeskrivelse>
+            </rolle>
+            <navn>LØTEN OG BORGEN AS</navn>
+            <telefon>47759931</telefon>
+            <epost>post@loten-borgen.no</epost>
+            <adresse>
+                <adresselinje1>Grev Wedels Plass 9</adresselinje1>
+                <postnr>0301</postnr>
+                <poststed>Oslo</poststed>
+                <landkode>NO</landkode>
+            </adresse>
+            <systemReferanse>systemref-1</systemReferanse>
+            <gjelderEiendommer>
+                <gjeldereiendom>
+                    <bygningsnummer>123456789</bygningsnummer>
+                    <eiendomsidentifikasjon>
+                        <kommunenummer>4020</kommunenummer>
+                        <gaardsnummer>37</gaardsnummer>
+                        <bruksnummer>41</bruksnummer>
+                    </eiendomsidentifikasjon>
+                    <adresse>
+                        <adresselinje1>Hans Aanrudsvei 12</adresselinje1>
+                        <postnr>0301</postnr>
+                        <poststed>Oslo</poststed>
+                        <landkode>NO</landkode>
+                        <gatenavn>Hans Aanrudsvei</gatenavn>
+                        <husnr>12</husnr>
+                    </adresse>
+                    <kommunenavn>Oslo</kommunenavn>
+                </gjeldereiendom>
+            </gjelderEiendommer>
+        </beroertpartOgInteressentOgMyndighet>
+        <beroertpartOgInteressentOgMyndighet>
+            <partstype>
+                <kodeverdi>Privatperson</kodeverdi>
+                <kodebeskrivelse>Privatperson</kodebeskrivelse>
+            </partstype>
+            <foedselsnummer>
+                OEsJ+/wdcBLT5Z6iePpGTzV/9JzL9aUD59g4epPnHTsl1WLd2p4+fsS1xf+Q62zbNMzKTmAOIgZ8e4luJ0X2y4LY5rdEyEAg0RjesJ8CIEoT3wuiqKZ+G+Oy3JC2kAb9RhQrBXIPJgO5npD2wSPKOObJA5BKXRIF5CDufiaRljc=</foedselsnummer>
+            <rolle>
+                <kodeverdi>hjemmelshaver</kodeverdi>
+                <kodebeskrivelse>Hjemmelshaver eller fester i planområdet</kodebeskrivelse>
+            </rolle>
+            <navn>UGLESETT AVANSE</navn>
+            <telefon>40404040</telefon>
+            <epost>vigdis@example.no</epost>
+            <adresse>
+                <adresselinje1>Storgata 5</adresselinje1>
+                <postnr>0301</postnr>
+                <poststed>Oslo</poststed>
+                <landkode>NO</landkode>
+            </adresse>
+            <systemReferanse>systemref-2</systemReferanse>
+        </beroertpartOgInteressentOgMyndighet>
+    </mottakerliste>
+    <eiendommerSomInngaarIPlanomraadet>
+        <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>0301</kommunenummer>
+                <gaardsnummer>318</gaardsnummer>
+                <bruksnummer>97</bruksnummer>
+                <festenummer>0</festenummer>
+                <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+        </eiendom>
+    </eiendommerSomInngaarIPlanomraadet>
+    <eksisterendePlanerSomBeroeres>
+        <eksisterendePlanSomBeroeres>
+            <navn>Reguleringsplan His Allé 2008</navn>
+            <plantype>
+                <kodeverdi>35</kodeverdi>
+                <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
+            </plantype>
+            <nasjonalArealplanId>
+                <kommunenummer>0301</kommunenummer>
+                <landkode>NO</landkode>
+                <planId>2008-001</planId>
+            </nasjonalArealplanId>
+            <beskrivelseAvFoelger>Felt B2 i gjeldende plan oppheves og erstattes av nytt boligområde
+                i ny plan.</beskrivelseAvFoelger>
+        </eksisterendePlanSomBeroeres>
+    </eksisterendePlanerSomBeroeres>
+    <kommune>
+        <partstype>
+            <kodeverdi>Privatperson</kodeverdi>
+            <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer></organisasjonsnummer>
+        <navn>ULOGISK GELATIN</navn>
+        <adresse>
+            <adresselinje1>Rådhuset</adresselinje1>
+            <postnr>0037</postnr>
+            <poststed>Oslo</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>21802180</telefonnummer>
+        <mobilnummer>90102030</mobilnummer>
+        <epost>postmottak@oslo.kommune.no</epost>
+        <kontaktperson>
+            <navn>Kari Saksbehandler</navn>
+            <tittel>Plansaksbehandler</tittel>
+            <telefonnummer>21802181</telefonnummer>
+            <mobilnummer>91020304</mobilnummer>
+            <epost>kari.saksbehandler@oslo.kommune.no</epost>
+        </kontaktperson>
+        <foedselsnummer>18841049906</foedselsnummer>
+    </kommune>
+    <forslagsstiller>
+        <partstype>
+            <kodeverdi>Organisasjon</kodeverdi>
+            <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer>949145891</organisasjonsnummer>
+        <navn>His Allé Utvikling AS</navn>
+        <adresse>
+            <adresselinje1>His Allé 22</adresselinje1>
+            <postnr>0301</postnr>
+            <poststed>Oslo</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>22334455</telefonnummer>
+        <mobilnummer>90011223</mobilnummer>
+        <epost>post@hisalle-utvikling.no</epost>
+        <kontaktperson>
+            <navn>Nils Forslagsstiller</navn>
+            <tittel>Prosjektleder</tittel>
+            <telefonnummer>22334456</telefonnummer>
+            <mobilnummer>90011224</mobilnummer>
+            <epost>nils@hisalle-utvikling.no</epost>
+        </kontaktperson>
+    </forslagsstiller>
+    <metadata>
+        <fraSluttbrukersystem>Hoffe</fraSluttbrukersystem>
+        <ftbId>FTB-12345</ftbId>
+        <prosjektnavn>His Allé områderegulering</prosjektnavn>
+        <prosjektnr>P-2026-042</prosjektnr>
+        <foretrukketSpraak>
+            <kodeverdi>nb</kodeverdi>
+            <kodebeskrivelse>Bokmål</kodebeskrivelse>
+        </foretrukketSpraak>
+    </metadata>
+    <planforslag>
+        <plannavn>Områdeplan for His Allé</plannavn>
+        <nasjonalArealplanId>
+            <kommunenummer>0301</kommunenummer>
+            <landkode>NO</landkode>
+            <planId>09062018-2</planId>
+        </nasjonalArealplanId>
+        <plantype>
+            <kodeverdi>35</kodeverdi>
+            <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
+        </plantype>
+    </planforslag>
+    <beskrivelseKartutsnitt>Kartutsnittet viser planområdet for Områdeplan for His Allé med
+        plangrense markert, omkringliggende boligbebyggelse og adkomst fra His Allé.</beskrivelseKartutsnitt>
+    <medvirkningIHoeringsperioden>Åpent informasjonsmøte 15. juni, digital høring</medvirkningIHoeringsperioden>
+    <planhensikt>Hensikten med planen er å tilrettelegge for boligbebyggelse med tilhørende
+        uteareal.
+
+        Hovedpunktene er:
+        • Ca. 60 nye boenheter fordelt på leiligheter og rekkehus
+        • 3–5 etasjer, maks gesimshøyde 16 m, samlet BRA ca. 7 200 m²
+        • Felles uteoppholdsareal, lekeplass og grønnstruktur mot His Allé
+        • Berører naboene direkte: ny adkomst fra His Allé og fortau langs planområdet
+</planhensikt>
+    <tilgjengelighetEksemplar>Papireksemplar kan hentes på rådhuset i åpningstid</tilgjengelighetEksemplar>
+    <fristForUttalelse>2026-10-15T23:59:00</fristForUttalelse>
+    <hjemmesidePlanforslag>https://www.oslo.kommune.no/plan/his-alle</hjemmesidePlanforslag>
+    <kommunensSaksnummer>
+        <saksaar>2026</saksaar>
+        <sakssekvensnummer>8062021</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <beskrivelseVedtakOmHoeringOgOffentligEttersyn>Vedtatt utlagt til offentlig ettersyn av
+        bygningsrådet 12.05.2026, sak 42/26</beskrivelseVedtakOmHoeringOgOffentligEttersyn>
+</HoeringOgOffentligEttersyn>

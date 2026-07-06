@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/HoeringOgOffentligEttersyn/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFormatProvider="DIBK"
+    dataFormatId="11002" dataFormatVersion="2">
+    <hoeringstype>
+        <kodeverdi>HOFFE</kodeverdi>
+        <kodebeskrivelse>Høring og offentlig ettersyn</kodebeskrivelse>
+    </hoeringstype>
+    <planprosessregel>
+        <kodeverdi>NY-KP</kodeverdi>
+        <kodebeskrivelse>Ny kommuneplan</kodebeskrivelse>
+    </planprosessregel>
+    <mottakerliste>
+        <beroertpartOgInteressentOgMyndighet>
+            <partstype>
+                <kodeverdi>Organisasjon</kodeverdi>
+                <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+            </partstype>
+            <organisasjonsnummer>810064412</organisasjonsnummer>
+            <rolle>
+                <kodeverdi>sektormyndighet</kodeverdi>
+                <kodebeskrivelse>Berørt sektormyndighet</kodebeskrivelse>
+            </rolle>
+            <navn>LØTEN OG BORGEN AS</navn>
+            <telefon>47759931</telefon>
+            <epost>post@loten-borgen.no</epost>
+            <adresse>
+                <adresselinje1>Grev Wedels Plass 9</adresselinje1>
+                <postnr>0301</postnr>
+                <poststed>Oslo</poststed>
+                <landkode>NO</landkode>
+            </adresse>
+            <systemReferanse>systemref-kp-1</systemReferanse>
+        </beroertpartOgInteressentOgMyndighet>
+    </mottakerliste>
+    <eiendommerSomInngaarIPlanomraadet>
+        <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>4020</kommunenummer>
+                <gaardsnummer>37</gaardsnummer>
+                <bruksnummer>41</bruksnummer>
+                <festenummer>0</festenummer>
+                <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+        </eiendom>
+    </eiendommerSomInngaarIPlanomraadet>
+    <eksisterendePlanerSomBeroeres>
+        <eksisterendePlanSomBeroeres>
+            <navn>Kommuneplan for Oslo 2018-2030</navn>
+            <plantype>
+                <kodeverdi>34</kodeverdi>
+                <kodebeskrivelse>Områderegulering</kodebeskrivelse>
+            </plantype>
+            <nasjonalArealplanId>
+                <kommunenummer>0301</kommunenummer>
+                <landkode>NO</landkode>
+                <planId>2018-KP-1</planId>
+            </nasjonalArealplanId>
+            <beskrivelseAvFoelger>Eksisterende kommuneplan erstattes i sin helhet av ny kommuneplan.</beskrivelseAvFoelger>
+        </eksisterendePlanSomBeroeres>
+    </eksisterendePlanerSomBeroeres>
+    <kommune>
+        <partstype>
+            <kodeverdi>Privatperson</kodeverdi>
+            <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer></organisasjonsnummer>
+        <navn>ULOGISK GELATIN</navn>
+        <adresse>
+            <adresselinje1>Rådhuset</adresselinje1>
+            <postnr>0037</postnr>
+            <poststed>Oslo</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>21802180</telefonnummer>
+        <mobilnummer>90102030</mobilnummer>
+        <epost>postmottak@oslo.kommune.no</epost>
+        <kontaktperson>
+            <navn>Kari Saksbehandler</navn>
+            <tittel>Plansaksbehandler</tittel>
+            <telefonnummer>21802181</telefonnummer>
+            <mobilnummer>91020304</mobilnummer>
+            <epost>kari.saksbehandler@oslo.kommune.no</epost>
+        </kontaktperson>
+        <foedselsnummer>18841049906</foedselsnummer>
+    </kommune>
+    <forslagsstiller>
+        <partstype>
+            <kodeverdi>Organisasjon</kodeverdi>
+            <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer>949145891</organisasjonsnummer>
+        <navn>His Allé Utvikling AS</navn>
+        <adresse>
+            <adresselinje1>His Allé 22</adresselinje1>
+            <postnr>0301</postnr>
+            <poststed>Oslo</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>22334455</telefonnummer>
+        <mobilnummer>90011223</mobilnummer>
+        <epost>post@hisalle-utvikling.no</epost>
+        <kontaktperson>
+            <navn>Nils Forslagsstiller</navn>
+            <tittel>Prosjektleder</tittel>
+            <telefonnummer>22334456</telefonnummer>
+            <mobilnummer>90011224</mobilnummer>
+            <epost>nils@hisalle-utvikling.no</epost>
+        </kontaktperson>
+    </forslagsstiller>
+    <metadata>
+        <fraSluttbrukersystem>Hoffe</fraSluttbrukersystem>
+        <ftbId>FTB-22001</ftbId>
+        <prosjektnavn>Kommuneplan Oslo 2030</prosjektnavn>
+        <prosjektnr>P-2026-101</prosjektnr>
+        <foretrukketSpraak>
+            <kodeverdi>nb</kodeverdi>
+            <kodebeskrivelse>Bokmål</kodebeskrivelse>
+        </foretrukketSpraak>
+    </metadata>
+    <planforslag>
+        <plannavn>Kommuneplan for Oslo 2030-2042</plannavn>
+        <nasjonalArealplanId>
+            <kommunenummer>0301</kommunenummer>
+            <landkode>NO</landkode>
+            <planId>2026-KP-1</planId>
+        </nasjonalArealplanId>
+        <plantype>
+            <kodeverdi>34</kodeverdi>
+            <kodebeskrivelse>Områderegulering</kodebeskrivelse>
+        </plantype>
+    </planforslag>
+    <beskrivelseKartutsnitt>Kartutsnittet viser kommuneplanens arealdel med utviklingsområder,
+        grønne korridorer og kollektivknutepunkt.</beskrivelseKartutsnitt>
+    <medvirkningIHoeringsperioden>Åpne folkemøter i bydelene, digital høring, åpen kontaktdag i
+        Rådhuset</medvirkningIHoeringsperioden>
+    <planhensikt>Hensikten med kommuneplanen er å tilrettelegge for bærekraftig vekst med flere
+        boliger, grønne korridorer og styrket kollektivtilbud.
+
+        Hovedpunktene er:
+        • Tilrettelegging for flere boliger i prioriterte utviklingsområder fram mot 2042
+        • Fortetting rundt kollektivknutepunkt og styrket kollektivtilbud
+        • Sammenhengende grønne korridorer og blågrønn struktur gjennom byen
+        • Berører innbyggerne direkte: nye utbyggingsområder, hensynssoner og omdisponering av areal
+</planhensikt>
+    <tilgjengelighetEksemplar>Papireksemplar kan hentes i Rådhuset, biblioteker og
+        bydelsadministrasjonene</tilgjengelighetEksemplar>
+    <fristForUttalelse>2026-10-15T23:59:00</fristForUttalelse>
+    <hjemmesidePlanforslag>https://www.oslo.kommune.no/plan/kommuneplan-2030</hjemmesidePlanforslag>
+    <kommunensSaksnummer>
+        <saksaar>2026</saksaar>
+        <sakssekvensnummer>5012345</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <beskrivelseVedtakOmHoeringOgOffentligEttersyn>Vedtatt utlagt til offentlig ettersyn av bystyret
+        28.05.2026, sak 78/26</beskrivelseVedtakOmHoeringOgOffentligEttersyn>
+</HoeringOgOffentligEttersyn>

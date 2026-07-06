@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/HoeringOgOffentligEttersyn/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFormatProvider="DIBK"
+    dataFormatId="11002" dataFormatVersion="2">
+    <hoeringstype>
+        <kodeverdi>HOFFE</kodeverdi>
+        <kodebeskrivelse>Høring og offentlig ettersyn</kodebeskrivelse>
+    </hoeringstype>
+    <planprosessregel>
+        <kodeverdi>OPPH-RP</kodeverdi>
+        <kodebeskrivelse>Oppheving av reguleringsplan, ordinær prosess</kodebeskrivelse>
+    </planprosessregel>
+    <mottakerliste>
+        <beroertpartOgInteressentOgMyndighet>
+            <partstype>
+                <kodeverdi>Privatperson</kodeverdi>
+                <kodebeskrivelse>Privatperson</kodebeskrivelse>
+            </partstype>
+            <foedselsnummer>
+                OEsJ+/wdcBLT5Z6iePpGTzV/9JzL9aUD59g4epPnHTsl1WLd2p4+fsS1xf+Q62zbNMzKTmAOIgZ8e4luJ0X2y4LY5rdEyEAg0RjesJ8CIEoT3wuiqKZ+G+Oy3JC2kAb9RhQrBXIPJgO5npD2wSPKOObJA5BKXRIF5CDufiaRljc=</foedselsnummer>
+            <rolle>
+                <kodeverdi>hjemmelshaver</kodeverdi>
+                <kodebeskrivelse>Hjemmelshaver eller fester i planområdet</kodebeskrivelse>
+            </rolle>
+            <navn>UGLESETT AVANSE</navn>
+            <telefon>92929292</telefon>
+            <epost>sigrid@example.no</epost>
+            <adresse>
+                <adresselinje1>Gamlegata 14</adresselinje1>
+                <postnr>0301</postnr>
+                <poststed>Oslo</poststed>
+                <landkode>NO</landkode>
+            </adresse>
+            <systemReferanse>systemref-opph-1</systemReferanse>
+        </beroertpartOgInteressentOgMyndighet>
+    </mottakerliste>
+    <eiendommerSomInngaarIPlanomraadet>
+        <eiendom>
+            <eiendomsidentifikasjon>
+                <kommunenummer>4020</kommunenummer>
+                <gaardsnummer>37</gaardsnummer>
+                <bruksnummer>41</bruksnummer>
+                <festenummer>0</festenummer>
+                <seksjonsnummer>0</seksjonsnummer>
+            </eiendomsidentifikasjon>
+        </eiendom>
+    </eiendommerSomInngaarIPlanomraadet>
+    <eksisterendePlanerSomBeroeres>
+        <eksisterendePlanSomBeroeres>
+            <navn>Reguleringsplan Gamlegata 1995</navn>
+            <plantype>
+                <kodeverdi>35</kodeverdi>
+                <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
+            </plantype>
+            <nasjonalArealplanId>
+                <kommunenummer>0301</kommunenummer>
+                <landkode>NO</landkode>
+                <planId>1995-RP-3</planId>
+            </nasjonalArealplanId>
+            <beskrivelseAvFoelger>Hele planen foreslås opphevet. Området faller tilbake til
+                kommuneplanens bestemmelser.</beskrivelseAvFoelger>
+        </eksisterendePlanSomBeroeres>
+    </eksisterendePlanerSomBeroeres>
+    <kommune>
+        <partstype>
+            <kodeverdi>Privatperson</kodeverdi>
+            <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer></organisasjonsnummer>
+        <navn>ULOGISK GELATIN</navn>
+        <adresse>
+            <adresselinje1>Rådhuset</adresselinje1>
+            <postnr>0037</postnr>
+            <poststed>Oslo</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>21802180</telefonnummer>
+        <mobilnummer>90102030</mobilnummer>
+        <epost>postmottak@oslo.kommune.no</epost>
+        <kontaktperson>
+            <navn>Kari Saksbehandler</navn>
+            <tittel>Plansaksbehandler</tittel>
+            <telefonnummer>21802181</telefonnummer>
+            <mobilnummer>91020304</mobilnummer>
+            <epost>kari.saksbehandler@oslo.kommune.no</epost>
+        </kontaktperson>
+        <foedselsnummer>18841049906</foedselsnummer>
+    </kommune>
+    <forslagsstiller>
+        <partstype>
+            <kodeverdi>Organisasjon</kodeverdi>
+            <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <organisasjonsnummer>949145891</organisasjonsnummer>
+        <navn>His Allé Utvikling AS</navn>
+        <adresse>
+            <adresselinje1>His Allé 22</adresselinje1>
+            <postnr>0301</postnr>
+            <poststed>Oslo</poststed>
+            <landkode>NO</landkode>
+        </adresse>
+        <telefonnummer>22334455</telefonnummer>
+        <mobilnummer>90011223</mobilnummer>
+        <epost>post@hisalle-utvikling.no</epost>
+        <kontaktperson>
+            <navn>Nils Forslagsstiller</navn>
+            <tittel>Prosjektleder</tittel>
+            <telefonnummer>22334456</telefonnummer>
+            <mobilnummer>90011224</mobilnummer>
+            <epost>nils@hisalle-utvikling.no</epost>
+        </kontaktperson>
+    </forslagsstiller>
+    <metadata>
+        <fraSluttbrukersystem>Hoffe</fraSluttbrukersystem>
+        <ftbId>FTB-22005</ftbId>
+        <prosjektnavn>Oppheving Gamlegata 1995</prosjektnavn>
+        <prosjektnr>P-2026-105</prosjektnr>
+        <foretrukketSpraak>
+            <kodeverdi>nb</kodeverdi>
+            <kodebeskrivelse>Bokmål</kodebeskrivelse>
+        </foretrukketSpraak>
+    </metadata>
+    <planforslag>
+        <plannavn>Oppheving av Reguleringsplan Gamlegata 1995</plannavn>
+        <nasjonalArealplanId>
+            <kommunenummer>0301</kommunenummer>
+            <landkode>NO</landkode>
+            <planId>2026-OPPH-1</planId>
+        </nasjonalArealplanId>
+        <plantype>
+            <kodeverdi>35</kodeverdi>
+            <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
+        </plantype>
+    </planforslag>
+    <beskrivelseKartutsnitt>Kartutsnittet viser planområdet for Reguleringsplan Gamlegata 1995 som
+        foreslås opphevet, med plangrense markert.</beskrivelseKartutsnitt>
+    <medvirkningIHoeringsperioden>Åpent informasjonsmøte 10. juni i bydelshuset</medvirkningIHoeringsperioden>
+    <planhensikt>Hensikten med planen er å oppheve en utdatert reguleringsplan slik at området
+        styres av kommuneplanen.
+
+        Hovedpunktene er:
+        • Reguleringsplan Gamlegata fra 1995 oppheves i sin helhet
+        • Området styres etter oppheving av gjeldende kommuneplan
+        • Det foreslås ingen ny utbygging eller endret arealbruk i seg selv
+        • Berører naboene direkte: framtidig arealbruk vurderes etter kommuneplanens bestemmelser
+</planhensikt>
+    <tilgjengelighetEksemplar>Papireksemplar kan hentes på rådhuset i åpningstid</tilgjengelighetEksemplar>
+    <fristForUttalelse>2026-10-15T23:59:00</fristForUttalelse>
+    <hjemmesidePlanforslag>https://www.oslo.kommune.no/plan/gamlegata-oppheving</hjemmesidePlanforslag>
+    <kommunensSaksnummer>
+        <saksaar>2026</saksaar>
+        <sakssekvensnummer>5056789</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <beskrivelseVedtakOmHoeringOgOffentligEttersyn>Vedtatt utlagt til offentlig ettersyn av
+        bygningsrådet 12.05.2026, sak 44/26</beskrivelseVedtakOmHoeringOgOffentligEttersyn>
+</HoeringOgOffentligEttersyn>
