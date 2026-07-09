@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      # Completely remove Yarn 1 so Corepack takes over
+      - name: Remove preinstalled Yarn 1
+        run: sudo rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg || true
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      # This installs Yarn 4.5.0 based on package.json
+      - name: Install Yarn (via Corepack)
+        run: corepack prepare yarn@4.5.0 --activate
+
+      - name: Verify Yarn version
+        run: yarn --version
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
