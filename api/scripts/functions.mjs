@@ -206,8 +206,8 @@ async function getSubFormLayout(appOwner, appName, subFormDataType) {
             throw new Error(`⛔️ No layout found for subform ${subFormDataType} in ${appOwner}/${appName}`);
         }
         return subLayout;
-    } catch {
-        console.error(`⛔️ Error fetching layout for subform ${subFormDataType} in ${appOwner}/${appName}:`);
+    } catch (error) {
+        console.error(`⛔️ Error fetching layout for subform ${subFormDataType} in ${appOwner}/${appName}:`, error.message);
         return null;
     }
 }
@@ -251,8 +251,8 @@ export async function getDisplayLayouts() {
                     subForms
                 };
             })
-            .catch(() => {
-                console.error(`⛔️ Error fetching layout for ${appOwner}/${appName}:`);
+            .catch((error) => {
+                console.error(`⛔️ Error fetching layout for ${appOwner}/${appName}:`, error.message);
                 return null;
             })
     );
@@ -478,8 +478,8 @@ export async function getPackageVersions() {
                     altinnAppFrontendJS: altinnAppFrontendVersions.js
                 }
             };
-        } catch {
-            console.error(`⛔️ Error fetching package versions for ${appOwner}/${appName}`);
+        } catch (error) {
+            console.error(`⛔️ Error fetching package versions for ${appOwner}/${appName}:`, error.message);
             return null;
         }
     });
@@ -560,8 +560,8 @@ export async function getApplicationMetadata() {
                 appName,
                 metadata
             };
-        } catch {
-            console.error(`⛔️ Error fetching application metadata for ${appOwner}/${appName}`);
+        } catch (error) {
+            console.error(`⛔️ Error fetching application metadata for ${appOwner}/${appName}:`, error.message);
             return null;
         }
     });
