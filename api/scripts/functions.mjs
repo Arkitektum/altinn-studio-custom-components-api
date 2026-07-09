@@ -397,10 +397,14 @@ export async function getAppResourceValues() {
  *   or null if an error occurs.
  */
 export async function getDefaultTextResources() {
+    if (defaultTextResourcesCache !== undefined) {
+        return defaultTextResourcesCache;
+    }
     try {
-        return defaultTextResources;
-    } catch {
-        console.error("⛔️ Error reading default text resources:");
+        defaultTextResourcesCache = JSON.parse(fs.readFileSync(defaultTextResourcesFilePath, "utf8"));
+        return defaultTextResourcesCache;
+    } catch (error) {
+        console.error(`⛔️ Error reading default text resources from ${defaultTextResourcesFilePath}:`, error.message);
         return null;
     }
 }
