@@ -75,7 +75,10 @@ async function fetchLatestVersionFromNpm(packageName) {
  */
 async function fetchLatestVersionFromGithub(repo) {
     try {
-        const response = await fetch(`https://api.github.com/repos/${repo}/releases/latest`);
+        // GitHub's REST API rejects requests without a User-Agent header (HTTP 403), so one must be sent explicitly.
+        const response = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
+            headers: { "User-Agent": "altinn-studio-custom-components-api", Accept: "application/vnd.github+json" }
+        });
         if (!response.ok) return null;
         const data = await response.json();
         return data.tag_name?.replace(/^v/, "") ?? null;
