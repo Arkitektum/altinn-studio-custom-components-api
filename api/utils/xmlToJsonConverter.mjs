@@ -37,7 +37,7 @@ function extractArrayPaths(xsdDoc) {
  * @param {string} xsdContent - The XSD schema content as a string.
  * @returns {Object} The JSON representation of the XML, with the root element removed.
  *
- * @throws Will exit the process if the XML does not conform to the XSD schema.
+ * @throws {Error} If the XML does not conform to the XSD schema.
  */
 export function convertXmlToJson(xmlContent, xsdContent) {
     const xmlDoc = libxml.parseXml(xmlContent);
@@ -45,9 +45,11 @@ export function convertXmlToJson(xmlContent, xsdContent) {
 
     // Validate XML
     if (!xmlDoc.validate(xsdDoc)) {
+        const validationMessages = xmlDoc.validationErrors.map((e) => e.message).join("; ");
         console.error("❌ XML does not conform to XSD:");
         xmlDoc.validationErrors.forEach((e) => console.error(e.message));
-        process.exit(1);
+        // Throw instead of process.exit so a single invalid example doesn't take down the whole dev server.
+        throw new Error(`XML does not conform to XSD: ${validationMessages}`);
     }
 
     console.log("✅ XML valid against XSD");
@@ -85,8 +87,9 @@ export function convertXmlToJson(xmlContent, xsdContent) {
 
     const parsed = parser.parse(xmlContent);
 
-    // Remove the top-level/root element
-    const rootKey = Object.keys(parsed)[1];
+    // Remove the top-level/root element. Skip the "?xml" declaration key rather than assuming it is always at index 0,
+    // so files without an <?xml ?> declaration still resolve the correct root element.
+    const rootKey = Object.keys(parsed).find((key) => key !== "?xml");
     const jsonWithoutRoot = parsed[rootKey];
 
     return jsonWithoutRoot;

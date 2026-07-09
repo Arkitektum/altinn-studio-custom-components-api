@@ -130,7 +130,12 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-            throw new Error(`⚠️ Failed to fetch file content from ${url}`);
+            // Missing files are expected (optional layouts/subforms); return null so callers can skip them gracefully.
+            if (response.status === 404) {
+                console.warn(`⚠️ File not found at ${url}, returning null.`);
+                return null;
+            }
+            throw new Error(`⚠️ Failed to fetch file content from ${url} (status ${response.status})`);
         }
         let content = await response.text();
 
@@ -141,10 +146,6 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
 
         return content;
     } catch (error) {
-        if (error.message.includes("404")) {
-            console.warn(`⚠️ File not found at ${url}, returning null.`);
-            return null;
-        }
         console.error(`⚠️ Error fetching file content from ${url}`);
         throw error;
     }
@@ -701,7 +702,12 @@ export async function getJsonExampleData() {
     for (const folder of formsFolders) {
         const dataType = folder.name;
         const folderPath = `${formsExampleDataDir}/${dataType}`;
-        await readExampleFilesForDataType(dataType, folderPath, result, subformsExampleDataDir);
+        try {
+            await readExampleFilesForDataType(dataType, folderPath, result, subformsExampleDataDir);
+        } catch (error) {
+            // Isolate per-folder failures so one bad example/schema doesn't discard every successfully processed folder.
+            console.error(`⛔️ Failed to process example data for data type "${dataType}":`, error.message);
+        }
     }
 
     return result;
