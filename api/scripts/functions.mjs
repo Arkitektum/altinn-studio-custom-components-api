@@ -121,6 +121,11 @@ export async function getLatestPackageVersions() {
 async function fetchGiteaFileContent(appOwner, appName, filePath) {
     const url = `https://altinn.studio/repos/${appOwner}/${appName}/raw/branch/master/${filePath}`;
     const token = process.env.GITEA_TOKEN;
+    // Fail fast with a clear message when the token is missing. Without it Altinn Studio returns an HTML login page,
+    // which otherwise surfaces later as a confusing "Premature end of data in tag div" XML parse error.
+    if (!token || !token.trim()) {
+        throw new Error("GITEA_TOKEN is not set — add it to your .env (see .env.sample) to fetch Altinn Studio data.");
+    }
     const options = {
         method: "GET",
         headers: {
@@ -360,8 +365,8 @@ export async function getAppResourceValues() {
                 appName,
                 resourceValues
             };
-        } catch {
-            console.error(`⛔️ Error fetching resource values for ${appOwner}/${appName}`);
+        } catch (error) {
+            console.error(`⛔️ Error fetching resource values for ${appOwner}/${appName}:`, error.message);
             return null;
         }
     });

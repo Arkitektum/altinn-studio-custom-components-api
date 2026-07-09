@@ -26,6 +26,11 @@ if (port !== parsedPort) {
     console.warn(`Invalid or missing API_PORT environment variable${envPortMsg}. Falling back to default port ${port}.`);
 }
 
+// Warn loudly at startup if the Gitea token is missing — every Altinn Studio fetch depends on it.
+if (!process.env.GITEA_TOKEN || !process.env.GITEA_TOKEN.trim()) {
+    console.warn("⚠️ GITEA_TOKEN is not set. Requests for Altinn Studio data (layouts, metadata, resources, schemas) will fail. Add it to .env — see .env.sample.");
+}
+
 // This API proxies private Altinn Studio content using a Gitea token, so restrict CORS to the local dev client
 // (default: the webpack dev server on port 9000) instead of allowing every origin. Override with CLIENT_ORIGIN.
 const allowedOrigin = process.env.CLIENT_ORIGIN || "http://localhost:9000";
