@@ -349,15 +349,17 @@ function mergeResourceFiles(...files) {
  * If fetching fails for an app, it logs the error and excludes that app from the result.
  *
  * @async
- * @param {string} language - The language code for which to fetch resource values (e.g., 'en', 'nb').
+ * @param {string} [language] - Optional language code to restrict the fetch to (e.g. 'nb', 'nn'). When omitted or
+ *   not one of the supported languages, resource values for all supported languages are returned.
  * @returns {Promise<Array<{ appOwner: string, appName: string, resourceValues: any }>>}
  *   A promise that resolves to an array of resource value objects for each app.
  */
-export async function getAppResourceValues() {
+export async function getAppResourceValues(language) {
+    const languages = language && resourceValueLanguages.includes(language) ? [language] : resourceValueLanguages;
     const appResourcePromises = altinnStudioApps.map(async ({ appOwner, appName }) => {
         try {
             const resourceFiles = await Promise.all(
-                resourceValueLanguages.map((lang) =>
+                languages.map((lang) =>
                     fetchAppResourceFile(appOwner, appName, lang)
                         .then((file) => ({ language: lang, resources: file.resources }))
                         .catch(() => {

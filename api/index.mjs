@@ -68,7 +68,7 @@ app.get("/api/latestPackageVersions", async (req, res) => {
 
 app.get("/api/appResources", async (req, res) => {
     try {
-        const appResources = await getAppResourceValues();
+        const appResources = await getAppResourceValues(req.query.language);
         res.json(appResources);
     } catch (error) {
         console.error("Error fetching app resource values:", error);
