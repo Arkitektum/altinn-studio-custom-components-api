@@ -1,8 +1,8 @@
 // Dependencies
 import { JSDOM } from "jsdom";
+import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 // Data
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
@@ -11,6 +11,7 @@ import subforms from "../data/subforms.mjs";
 
 // Utils
 import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
+import { stripJsonComments } from "../utils/stripJsonComments.mjs";
 
 // Resolve paths relative to this module rather than the current working directory, so the server works
 // regardless of where it is launched from.
@@ -22,47 +23,6 @@ const resourceValueLanguages = ["nb", "nn"];
 // Loaded lazily and cached on first successful read (see getDefaultTextResources), so a missing/malformed
 // resources.json degrades gracefully instead of crashing the server at import time.
 let defaultTextResourcesCache;
-
-/**
- * Strips JavaScript-style comments (//) from JSON content.
- * @param {string} jsonString - The JSON string potentially containing comments.
- * @returns {string} The JSON string with comments removed.
- */
-function stripJsonComments(jsonString) {
-    return jsonString
-        .split("\n")
-        .map((line) => {
-            // Find // that's not inside quotes
-            let inQuotes = false;
-            let commentStart = -1;
-
-            for (let i = 0; i < line.length; i++) {
-                if (line[i] === '"') {
-                    // A quote is a real string delimiter only if preceded by an even number of backslashes.
-                    let backslashes = 0;
-                    for (let j = i - 1; j >= 0 && line[j] === "\\"; j--) {
-                        backslashes++;
-                    }
-                    if (backslashes % 2 === 0) {
-                        inQuotes = !inQuotes;
-                    }
-                } else if (!inQuotes && line[i] === "/" && line[i + 1] === "/") {
-                    commentStart = i;
-                    break;
-                }
-            }
-
-            if (commentStart >= 0) {
-                return line.substring(0, commentStart).trimEnd();
-            }
-            return line;
-        })
-        .filter((line) => {
-            const trimmed = line.trim();
-            return !trimmed.startsWith("//");
-        })
-        .join("\n");
-}
 
 /**
  * Fetches the latest version of a package from the npm registry.
