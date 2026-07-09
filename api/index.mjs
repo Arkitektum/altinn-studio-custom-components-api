@@ -26,7 +26,10 @@ if (port !== parsedPort) {
     console.warn(`Invalid or missing API_PORT environment variable${envPortMsg}. Falling back to default port ${port}.`);
 }
 
-app.use(cors());
+// This API proxies private Altinn Studio content using a Gitea token, so restrict CORS to the local dev client
+// (default: the webpack dev server on port 9000) instead of allowing every origin. Override with CLIENT_ORIGIN.
+const allowedOrigin = process.env.CLIENT_ORIGIN || "http://localhost:9000";
+app.use(cors({ origin: allowedOrigin }));
 
 app.get("/api/displayLayouts", async (req, res) => {
     try {
