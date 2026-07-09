@@ -36,11 +36,17 @@ function stripJsonComments(jsonString) {
             let inQuotes = false;
             let commentStart = -1;
 
-            for (let i = 0; i < line.length - 1; i++) {
-                if (line[i] === '"' && line[i - 1] !== "\\") {
-                    inQuotes = !inQuotes;
-                }
-                if (!inQuotes && line[i] === "/" && line[i + 1] === "/") {
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"') {
+                    // A quote is a real string delimiter only if preceded by an even number of backslashes.
+                    let backslashes = 0;
+                    for (let j = i - 1; j >= 0 && line[j] === "\\"; j--) {
+                        backslashes++;
+                    }
+                    if (backslashes % 2 === 0) {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (!inQuotes && line[i] === "/" && line[i + 1] === "/") {
                     commentStart = i;
                     break;
                 }
