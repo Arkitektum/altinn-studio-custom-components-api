@@ -94,7 +94,9 @@ export async function getLatestPackageVersions() {
  * @throws {Error} If the fetch operation fails or the response is not OK.
  */
 async function fetchGiteaFileContent(appOwner, appName, filePath) {
-    const url = `https://altinn.studio/repos/${appOwner}/${appName}/raw/branch/master/${filePath}`;
+    // Default branch is "master" (Gitea's historical default); override with GITEA_BRANCH for apps that use "main".
+    const branch = process.env.GITEA_BRANCH || "master";
+    const url = `https://altinn.studio/repos/${appOwner}/${appName}/raw/branch/${branch}/${filePath}`;
     const token = process.env.GITEA_TOKEN;
     // Fail fast with a clear message when the token is missing. Without it Altinn Studio returns an HTML login page,
     // which otherwise surfaces later as a confusing "Premature end of data in tag div" XML parse error.
