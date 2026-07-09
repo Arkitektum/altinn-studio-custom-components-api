@@ -2,7 +2,9 @@
     "name": "altinn-studio-custom-components-api",
     "packageManager": "yarn@4.5.0",
     "scripts": {
-        "start": "node api/index.mjs"
+        "start": "node api/index.mjs",
+        "test": "node --test",
+        "lint": "eslint api"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
