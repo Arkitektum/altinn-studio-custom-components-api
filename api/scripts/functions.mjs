@@ -1,6 +1,8 @@
 // Dependencies
 import { JSDOM } from "jsdom";
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 // Data
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
@@ -10,9 +12,16 @@ import subforms from "../data/subforms.mjs";
 // Utils
 import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 
-const defaultTextResourcesFilePath = "node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json";
-const defaultTextResources = JSON.parse(fs.readFileSync(defaultTextResourcesFilePath, "utf8"));
+// Resolve paths relative to this module rather than the current working directory, so the server works
+// regardless of where it is launched from.
+const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(moduleDir, "../..");
+const defaultTextResourcesFilePath = path.join(repoRoot, "node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json");
 const resourceValueLanguages = ["nb", "nn"];
+
+// Loaded lazily and cached on first successful read (see getDefaultTextResources), so a missing/malformed
+// resources.json degrades gracefully instead of crashing the server at import time.
+let defaultTextResourcesCache;
 
 /**
  * Strips JavaScript-style comments (//) from JSON content.
@@ -698,8 +707,8 @@ async function handleSubForms(dataType, appOwner, appName, result, subformsExamp
  * @returns {Promise<Array>} A promise that resolves to an array containing the aggregated example data.
  */
 export async function getJsonExampleData() {
-    const formsExampleDataDir = "./api/data/exampleData/forms";
-    const subformsExampleDataDir = "./api/data/exampleData/subforms";
+    const formsExampleDataDir = path.join(repoRoot, "api/data/exampleData/forms");
+    const subformsExampleDataDir = path.join(repoRoot, "api/data/exampleData/subforms");
     const formsFolders = fs.readdirSync(formsExampleDataDir, { withFileTypes: true }).filter((dirent) => dirent.isDirectory());
 
     const result = [];
