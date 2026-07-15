@@ -1,0 +1,84 @@
+<HoeringOgOffentligEttersynUttalelse
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" dataFormatProvider="DIBK" dataFormatId="11003"
+    dataFormatVersion="2"
+    xmlns="https://skjema.ft.dibk.no/HoeringOgOffentligEttersynUttalelse/v2">
+    <hoeringOgOffentligEttersynReferanse>51638057/8b61600f-2caa-4f7d-a986-9e434252c5ec</hoeringOgOffentligEttersynReferanse>
+    <hoeringOgOffentligEttersynArkivreferanse>9e434252c5ec</hoeringOgOffentligEttersynArkivreferanse>
+    <beroertPart>
+        <partstype>
+            <kodeverdi>Privatperson</kodeverdi>
+            <kodebeskrivelse>Privatperson</kodebeskrivelse>
+        </partstype>
+        <foedselsnummer>
+            dxAEYuzcnZumSdG3qzLSCA5zxbdtVn6XaVYemoTI4fQiNxn8mn0hhQa3nQmAw0i1qSVAN116WbeWGXgJfPtkx2gYy41JMbN2aaPwPdwnHZVUK3oLqr+obcFgY+s0kb/NM3CbQx5fB74VABsAmeq7aQTaHbO0fl328veecUO+2iY=</foedselsnummer>
+        <organisasjonsnummer />
+        <rolle>
+            <kodeverdi>hjemmelshaver</kodeverdi>
+            <kodebeskrivelse>Hjemmelshaver eller fester i planområdet</kodebeskrivelse>
+        </rolle>
+        <navn>Sofie salt</navn>
+        <telefon>40404040</telefon>
+        <epost>vigdis@example.no</epost>
+        <adresse xsi:nil="true" />
+        <systemReferanse>systemref-2</systemReferanse>
+        <gjelderEiendommer xsi:nil="true" />
+        <uttalelse>test</uttalelse>
+        <innsigelse xsi:nil="true" />
+        <kommentarInnsigelse xsi:nil="true" />
+    </beroertPart>
+    <metadata xsi:nil="true" />
+    <hoeringstype>
+        <kodeverdi>HOFFE</kodeverdi>
+        <kodebeskrivelse>Høring og offentlig ettersyn</kodebeskrivelse>
+    </hoeringstype>
+    <planprosessregel>
+        <kodeverdi>NY-RP</kodeverdi>
+        <kodebeskrivelse>Ny reguleringsplan</kodebeskrivelse>
+    </planprosessregel>
+    <kommunensSaksnummer>
+        <saksaar>2026</saksaar>
+        <sakssekvensnummer>8062021</sakssekvensnummer>
+    </kommunensSaksnummer>
+    <planforslag>
+        <plannavn>Områdeplan for His Allé</plannavn>
+        <nasjonalArealplanId>
+            <kommunenummer>0301</kommunenummer>
+            <landkode>NO</landkode>
+            <planId>09062018-2</planId>
+        </nasjonalArealplanId>
+        <plantype>
+            <kodeverdi>35</kodeverdi>
+            <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
+        </plantype>
+    </planforslag>
+    <fristForUttalelse>2026-10-15T21:59:00Z</fristForUttalelse>
+    <forslagsstiller>
+        <partstype>
+            <kodeverdi>Organisasjon</kodeverdi>
+            <kodebeskrivelse>Organisasjon</kodebeskrivelse>
+        </partstype>
+        <foedselsnummer />
+        <organisasjonsnummer>949145891</organisasjonsnummer>
+        <navn>His Allé Utvikling AS</navn>
+        <adresse xsi:nil="true" />
+        <telefonnummer>22334455</telefonnummer>
+        <mobilnummer>90011223</mobilnummer>
+        <epost>post@hisalle-utvikling.no</epost>
+        <kontaktperson xsi:nil="true" />
+    </forslagsstiller>
+    <kommune>
+        <partstype>
+            <kodeverdi>Offentlig myndighet</kodeverdi>
+            <kodebeskrivelse>Offentlig myndighet</kodebeskrivelse>
+        </partstype>
+        <foedselsnummer />
+        <organisasjonsnummer>312901676</organisasjonsnummer>
+        <navn>FYLDIG TRADISJONSBUNDEN TIGER AS</navn>
+        <adresse xsi:nil="true" />
+        <telefonnummer>21802180</telefonnummer>
+        <mobilnummer>90102030</mobilnummer>
+        <epost>postmottak@oslo.kommune.no</epost>
+        <kontaktperson xsi:nil="true" />
+    </kommune>
+</HoeringOgOffentligEttersynUttalelse>
