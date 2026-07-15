@@ -220,6 +220,12 @@ const altinnStudioApps = [
         appOwner: "dibk",
         appName: "varselplanoppstart-v3",
         dataType: "Planvarsel"
+    },
+    {
+        appOwner: "dibk",
+        appName: "varselplanoppstartuttalelse-v3",
+        dataType: "Planuttalelse",
+        layoutFiles: [{ name: "UttalelseSkjemaPdf", path: "App/ui/Planuttalelse/layouts/UttalelseSkjemaPdf.json" }]
     }
 ];
 
