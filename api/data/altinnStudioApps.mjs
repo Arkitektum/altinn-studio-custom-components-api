@@ -218,10 +218,6 @@ const altinnStudioApps = [
     },
     {
         appOwner: "dibk",
-        appName: "varselplanoppstart"
-    },
-    {
-        appOwner: "dibk",
         appName: "varselplanoppstart-v3",
         dataType: "Planvarsel"
     }
