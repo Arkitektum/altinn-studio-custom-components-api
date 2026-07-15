@@ -96,6 +96,16 @@ const altinnStudioApps = [
     },
     {
         appOwner: "dibk",
+        appName: "hoeringettersynuttalelse-v2",
+        dataType: "HoeringOgOffentligEttersynUttalelse",
+        layoutFiles: [
+            { name: "Uttalelse", path: "App/ui/form/layouts/Uttalelse.json" },
+            { name: "UttalelsePdf", path: "App/ui/form/layouts/UttalelsePdf.json" }
+        ],
+        subForms: []
+    },
+    {
+        appOwner: "dibk",
         appName: "ig-v3",
         dataType: "IG",
         subForms: [
