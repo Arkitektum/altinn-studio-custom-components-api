@@ -134,17 +134,22 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
 }
 
 /**
+ * The default display layout used when an app does not define its own `layoutFiles`.
+ */
+const DEFAULT_DISPLAY_LAYOUT_FILE = { name: "DisplayLayout", path: "App/ui/form/layouts/DisplayLayout.json" };
+
+/**
  * Fetches the display layout JSON from an Altinn Studio app repository.
  *
  * @async
  * @function
  * @param {string} appOwner - The owner of the application repository.
  * @param {string} appName - The name of the application repository.
- * @returns {Promise<Object>} The parsed JSON content of the display layout.
+ * @param {string} filePath - The repository path of the display layout file to fetch.
+ * @returns {Promise<Object|null>} The parsed JSON content of the display layout, or null if the file is missing.
  * @throws {Error} If fetching or parsing the display layout fails.
  */
-async function fetchDisplayLayoutFromAltinnStudio(appOwner, appName, layoutFile) {
-    const filePath = layoutFile || "App/ui/form/layouts/DisplayLayout.json";
+async function fetchDisplayLayoutFromAltinnStudio(appOwner, appName, filePath) {
     const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
     if (!fileContent) {
         return null;
@@ -197,9 +202,10 @@ async function getSubFormLayout(appOwner, appName, subFormDataType) {
 /**
  * Fetches the display layouts for all Altinn Studio apps and their associated subforms, and returns them as an array of layout objects.
  *
- * This function iterates over the list of Altinn Studio apps, fetches the main display layout for each app, and if the app has associated subforms,
- * it also fetches the display layouts for those subforms. The resulting array contains layout objects for both main forms and subforms, each including
- * the app owner, app name, data type, layout, and any associated subforms.
+ * This function iterates over the list of Altinn Studio apps, fetches every display layout for each app (as defined by its `layoutFiles`,
+ * falling back to a single default layout), and if the app has associated subforms it also fetches the display layouts for those subforms.
+ * The resulting array contains layout objects for both main-form apps and subforms. Each app object includes the app owner, app name, data type,
+ * an array of named display layouts, and any associated subforms.
  *
  * @async
  * @function
@@ -207,10 +213,17 @@ async function getSubFormLayout(appOwner, appName, subFormDataType) {
  * @throws {Error} If fetching or parsing any of the display layouts fails.
  */
 export async function getDisplayLayouts() {
-    const layoutPromises = altinnStudioApps.map(({ appOwner, appName, dataType, layoutFile, subForms }) =>
-        fetchDisplayLayoutFromAltinnStudio(appOwner, appName, layoutFile)
-            .then(async (layout) => {
-                if (!layout) {
+    const layoutPromises = altinnStudioApps.map(({ appOwner, appName, dataType, layoutFiles, subForms }) => {
+        const layoutFilesToFetch = layoutFiles?.length ? layoutFiles : [DEFAULT_DISPLAY_LAYOUT_FILE];
+        return Promise.all(
+            layoutFilesToFetch.map(async ({ name, path }) => {
+                const layout = await fetchDisplayLayoutFromAltinnStudio(appOwner, appName, path);
+                return layout ? { name, path, layout } : null;
+            })
+        )
+            .then(async (fetchedLayouts) => {
+                const displayLayouts = fetchedLayouts.filter((displayLayout) => displayLayout !== null);
+                if (!displayLayouts.length) {
                     throw new Error(`No layout found for ${appOwner}/${appName}`);
                 }
                 if (subForms) {
@@ -229,15 +242,15 @@ export async function getDisplayLayouts() {
                     appOwner,
                     appName,
                     dataType,
-                    layout,
+                    displayLayouts,
                     subForms
                 };
             })
             .catch((error) => {
                 console.error(`⛔️ Error fetching layout for ${appOwner}/${appName}:`, error.message);
                 return null;
-            })
-    );
+            });
+    });
     const layouts = await Promise.all(layoutPromises);
     const allLayouts = layouts.filter((layout) => layout !== null).concat(subforms);
     return allLayouts;

@@ -109,7 +109,7 @@ const altinnStudioApps = [
         appOwner: "dibk",
         appName: "innsending-planforslag",
         dataType: "OversendelseReguleringsplanforslag",
-        layoutFile: "App/ui/hovedskjema/layouts/DisplayLayout.json"
+        layoutFiles: [{ name: "DisplayLayout", path: "App/ui/hovedskjema/layouts/DisplayLayout.json" }]
     },
     {
         appOwner: "dibk",
@@ -131,7 +131,7 @@ const altinnStudioApps = [
         appOwner: "dibk",
         appName: "nabovarsel-svar-v5",
         dataType: "NVS",
-        layoutFile: "App/ui/svarskjema/layouts/SvarSkjemaPdf.json"
+        layoutFiles: [{ name: "SvarSkjemaPdf", path: "App/ui/svarskjema/layouts/SvarSkjemaPdf.json" }]
     },
     {
         appOwner: "dibk",
