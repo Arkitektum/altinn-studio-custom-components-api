@@ -1,7 +1,6 @@
 // Dependencies
-import { JSDOM } from "jsdom";
 import { fileURLToPath } from "node:url";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import path from "node:path";
 
 // Data
@@ -11,6 +10,7 @@ import subforms from "../data/subforms.mjs";
 
 // Utils
 import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
+import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
 import { stripJsonComments } from "../utils/stripJsonComments.mjs";
 
 // Resolve paths relative to this module rather than the current working directory, so the server works
@@ -390,7 +390,7 @@ export async function getDefaultTextResources() {
         return defaultTextResourcesCache;
     }
     try {
-        defaultTextResourcesCache = JSON.parse(fs.readFileSync(defaultTextResourcesFilePath, "utf8"));
+        defaultTextResourcesCache = JSON.parse(await fs.readFile(defaultTextResourcesFilePath, "utf8"));
         return defaultTextResourcesCache;
     } catch (error) {
         console.error(`⛔️ Error reading default text resources from ${defaultTextResourcesFilePath}:`, error.message);
@@ -425,35 +425,6 @@ function extractAltinnStudioCustomComponentsVersion(packageLock) {
         return altinnStudioCustomComponents.version;
     }
     throw new Error("altinn-studio-custom-components not found in package-lock.json");
-}
-
-/**
- * Extracts the versions of the altinn-app-frontend CSS and JS files referenced in the given HTML string.
- * @param {string} htmlString - The HTML content of the Index.cshtml file.
- * @returns {Object} An object containing the extracted CSS and JS versions.
- */
-function extractAltinnAppFrontendVersions(htmlString) {
-    const dom = new JSDOM(htmlString);
-    const doc = dom.window.document;
-
-    const result = {
-        css: new Set(),
-        js: doc?.querySelector("meta[data-altinn-app-frontend-version]")?.dataset?.altinnAppFrontendVersion || null
-    };
-
-    const cssRegex = /altinn-app-frontend\/([^/]+)\/altinn-app-frontend\.css$/;
-
-    doc.querySelectorAll('link[rel="stylesheet"][href]').forEach((link) => {
-        const match = link.href.match(cssRegex);
-        if (match) {
-            result.css.add(match[1]);
-        }
-    });
-
-    return {
-        css: result.css.size > 0 ? Array.from(result.css)[0] : null,
-        js: result.js
-    };
 }
 
 /**
@@ -630,7 +601,7 @@ function getSubformsFromDataType(dataType) {
  * @returns {Promise<void>} Resolves when all files and subforms have been processed.
  */
 async function readExampleFilesForDataType(dataType, folderPath, result, subformsExampleDataDir) {
-    const files = fs.readdirSync(folderPath, { withFileTypes: true }).filter((dirent) => dirent.isFile() && dirent.name.endsWith(".xml"));
+    const files = (await fs.readdir(folderPath, { withFileTypes: true })).filter((dirent) => dirent.isFile() && dirent.name.endsWith(".xml"));
     const { appOwner, appName } = getAppOwnerAndNameFromDataType(dataType);
     if (!appOwner || !appName) {
         console.warn(`⛔️ No app owner or app name found for data type: ${dataType}. Skipping folder: ${folderPath}`);
@@ -640,7 +611,7 @@ async function readExampleFilesForDataType(dataType, folderPath, result, subform
 
     for (const file of files) {
         const filePath = `${folderPath}/${file.name}`;
-        const content = fs.readFileSync(filePath, "utf8");
+        const content = await fs.readFile(filePath, "utf8");
         const existing = result.find((r) => r.dataType === dataType);
         console.log(`📄 Processing XML: ${appOwner}/${appName} - ${dataType} (${file.name})`);
         if (existing) {
@@ -674,19 +645,26 @@ async function handleSubForms(dataType, appOwner, appName, result, subformsExamp
         if (existingSubForm) {
             continue;
         }
-        if (fs.existsSync(subFormFolderPath)) {
-            const subFormFiles = fs.readdirSync(subFormFolderPath, { withFileTypes: true }).filter((dirent) => dirent.isFile());
-            const subXmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, subFormDataType);
-            for (const subFormFile of subFormFiles) {
-                const subFormFilePath = `${subFormFolderPath}/${subFormFile.name}`;
-                const subFormContent = fs.readFileSync(subFormFilePath, "utf8");
-                const existing = result.find((r) => r.dataType === subFormDataType);
-                console.log(`📄 Processing XML: ${appOwner}/${appName} - ${subFormDataType} (${subFormFile.name})`);
-                if (existing) {
-                    existing.data[subFormFile.name] = convertXmlToJson(subFormContent, subXmlSchema);
-                } else {
-                    result.push({ dataType: subFormDataType, data: { [subFormFile.name]: convertXmlToJson(subFormContent, subXmlSchema) } });
-                }
+        let subFormFiles;
+        try {
+            subFormFiles = (await fs.readdir(subFormFolderPath, { withFileTypes: true })).filter((dirent) => dirent.isFile());
+        } catch (error) {
+            // Missing subform example folder is expected — skip it. Re-throw anything else.
+            if (error.code === "ENOENT") {
+                continue;
+            }
+            throw error;
+        }
+        const subXmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, subFormDataType);
+        for (const subFormFile of subFormFiles) {
+            const subFormFilePath = `${subFormFolderPath}/${subFormFile.name}`;
+            const subFormContent = await fs.readFile(subFormFilePath, "utf8");
+            const existing = result.find((r) => r.dataType === subFormDataType);
+            console.log(`📄 Processing XML: ${appOwner}/${appName} - ${subFormDataType} (${subFormFile.name})`);
+            if (existing) {
+                existing.data[subFormFile.name] = convertXmlToJson(subFormContent, subXmlSchema);
+            } else {
+                result.push({ dataType: subFormDataType, data: { [subFormFile.name]: convertXmlToJson(subFormContent, subXmlSchema) } });
             }
         }
     }
@@ -705,7 +683,7 @@ async function handleSubForms(dataType, appOwner, appName, result, subformsExamp
 export async function getJsonExampleData() {
     const formsExampleDataDir = path.join(repoRoot, "api/data/exampleData/forms");
     const subformsExampleDataDir = path.join(repoRoot, "api/data/exampleData/subforms");
-    const formsFolders = fs.readdirSync(formsExampleDataDir, { withFileTypes: true }).filter((dirent) => dirent.isDirectory());
+    const formsFolders = (await fs.readdir(formsExampleDataDir, { withFileTypes: true })).filter((dirent) => dirent.isDirectory());
 
     const result = [];
 

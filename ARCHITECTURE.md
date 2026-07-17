@@ -94,7 +94,7 @@ api/
 - **Node.js** with native ES modules (`.mjs`).
 - **Express 5** + **cors**.
 - **Yarn 4** via Corepack (pinned through `packageManager`).
-- XML parsing via **fast-xml-parser**, **libxmljs2**, and **jsdom**.
+- XML parsing via **fast-xml-parser** and **libxmljs2**.
 - **ESLint** (flat config) for linting.
 
 There are no automated tests or CI workflows in this repository; it is a local developer tool.
