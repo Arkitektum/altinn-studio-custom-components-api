@@ -5,20 +5,20 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@arkitektum/altinn-studio-custom-components-utils@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:1.5.0"
-  checksum: 10c0/18cac65683b09b4f17475cd29f470b56a86b64d2a5f8a9a540f2241a6131efe4a88d07449caa6351828709b7d5876960b89d89e06b723fcf92dabbf31a826554
+"@arkitektum/altinn-studio-custom-components-utils@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:1.5.1"
+  checksum: 10c0/4ac0a1677596927f09bf9b9d52cdaf706f2fe2f63c78b4ac77c0145896dfe198d5c1e5a019220b781f013009f4f42c3f13d869dbb32ac72a56ac8594734ed9f4
   languageName: node
   linkType: hard
 
-"@arkitektum/altinn-studio-custom-components@npm:^16.6.0":
-  version: 16.6.0
-  resolution: "@arkitektum/altinn-studio-custom-components@npm:16.6.0"
+"@arkitektum/altinn-studio-custom-components@npm:^16.7.0":
+  version: 16.7.0
+  resolution: "@arkitektum/altinn-studio-custom-components@npm:16.7.0"
   dependencies:
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.0"
+    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.1"
     "@arkitektum/client-logger": "npm:^1.2.1"
-  checksum: 10c0/c8fccd1719e91602a5882f7cab947eaad295707ba5c3500d87a8a1abd6078b091305a3379efa54f00a5c3ab34458eff22f7d0689ce98556c98a84fe4ea6e3b79
+  checksum: 10c0/69c851bf3773cca860dd3dec6e7ec4925838354d38044c76530bb5c0795c5dbd5b59a3633ab97619893dce4253a5686972266d5c6a4a9e8977683f70b59d45bf
   languageName: node
   linkType: hard
 
@@ -291,8 +291,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
-    "@arkitektum/altinn-studio-custom-components": "npm:^16.6.0"
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.0"
+    "@arkitektum/altinn-studio-custom-components": "npm:^16.7.0"
+    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.1"
     "@eslint/js": "npm:^10.0.1"
     cors: "npm:^2.8.6"
     dotenv: "npm:^17.4.2"
