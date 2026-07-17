@@ -32,7 +32,8 @@ let defaultTextResourcesCache;
  */
 async function fetchLatestVersionFromNpm(packageName) {
     try {
-        const encodedName = packageName.replace("/", "%2F");
+        // Encode every "/" so scoped names like "@scope/name" become "@scope%2Fname" for the registry path.
+        const encodedName = packageName.replaceAll("/", "%2F");
         const response = await fetch(`https://registry.npmjs.org/${encodedName}/latest`);
         if (!response.ok) return null;
         const data = await response.json();
