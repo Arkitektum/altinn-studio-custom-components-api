@@ -269,6 +269,9 @@ export async function getDisplayLayouts() {
 async function fetchPackageLockFromAltinnStudio(appOwner, appName) {
     const filePath = "App/package-lock.json";
     const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
+    if (!fileContent) {
+        return null;
+    }
     const jsonResponse = JSON.parse(fileContent);
     return jsonResponse;
 }
@@ -285,6 +288,9 @@ async function fetchPackageLockFromAltinnStudio(appOwner, appName) {
 async function fetchAppResourceFile(appOwner, appName, language = "nb") {
     const filePath = `App/config/texts/resource.${language}.json`;
     const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
+    if (!fileContent) {
+        return null;
+    }
     const jsonResponse = JSON.parse(fileContent);
     return jsonResponse;
 }
@@ -536,6 +542,9 @@ async function fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType) {
 async function fetchApplicationMetadataFromAltinnStudio(appOwner, appName) {
     const filePath = "App/config/applicationmetadata.json";
     const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
+    if (!fileContent) {
+        return null;
+    }
     const jsonResponse = JSON.parse(fileContent);
     return jsonResponse;
 }
