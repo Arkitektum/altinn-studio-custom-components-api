@@ -14,8 +14,22 @@ import {
     getLatestPackageVersions,
     getPackageVersions
 } from "./scripts/functions.mjs";
+import { createCachedFunction } from "./utils/cache.mjs";
 
 const app = express();
+
+// Each endpoint below re-fetches from Altinn Studio / npm / disk for every tracked app. Cache the expensive
+// getters so repeated "Synchronize" runs within a session don't re-fan-out. The TTL is short so an intentional
+// re-sync after editing an app still reflects the changes; tune or disable via CACHE_TTL_MS (0 disables).
+const cacheTtlEnv = Number.parseInt(process.env.CACHE_TTL_MS, 10);
+const cacheTtlMs = Number.isInteger(cacheTtlEnv) && cacheTtlEnv >= 0 ? cacheTtlEnv : 60000;
+
+const cachedGetDisplayLayouts = createCachedFunction(getDisplayLayouts, { ttlMs: cacheTtlMs });
+const cachedGetPackageVersions = createCachedFunction(getPackageVersions, { ttlMs: cacheTtlMs });
+const cachedGetLatestPackageVersions = createCachedFunction(getLatestPackageVersions, { ttlMs: cacheTtlMs });
+const cachedGetAppResourceValues = createCachedFunction(getAppResourceValues, { ttlMs: cacheTtlMs });
+const cachedGetApplicationMetadata = createCachedFunction(getApplicationMetadata, { ttlMs: cacheTtlMs });
+const cachedGetJsonExampleData = createCachedFunction(getJsonExampleData, { ttlMs: cacheTtlMs });
 
 const envPort = process.env.API_PORT;
 const parsedPort = envPort === undefined ? Number.NaN : Number.parseInt(envPort, 10);
@@ -38,7 +52,7 @@ app.use(cors({ origin: allowedOrigin }));
 
 app.get("/api/displayLayouts", async (req, res) => {
     try {
-        const layouts = await getDisplayLayouts();
+        const layouts = await cachedGetDisplayLayouts();
         res.json(layouts);
     } catch (error) {
         console.error("Error fetching display layouts:", error);
@@ -48,7 +62,7 @@ app.get("/api/displayLayouts", async (req, res) => {
 
 app.get("/api/packageVersions", async (req, res) => {
     try {
-        const packageVersions = await getPackageVersions();
+        const packageVersions = await cachedGetPackageVersions();
         res.json(packageVersions);
     } catch (error) {
         console.error("Error fetching package.json files:", error);
@@ -58,7 +72,7 @@ app.get("/api/packageVersions", async (req, res) => {
 
 app.get("/api/latestPackageVersions", async (req, res) => {
     try {
-        const packageVersions = await getLatestPackageVersions();
+        const packageVersions = await cachedGetLatestPackageVersions();
         res.json(packageVersions);
     } catch (error) {
         console.error("Error fetching latest package versions:", error);
@@ -68,7 +82,7 @@ app.get("/api/latestPackageVersions", async (req, res) => {
 
 app.get("/api/appResources", async (req, res) => {
     try {
-        const appResources = await getAppResourceValues(req.query.language);
+        const appResources = await cachedGetAppResourceValues(req.query.language);
         res.json(appResources);
     } catch (error) {
         console.error("Error fetching app resource values:", error);
@@ -98,7 +112,7 @@ app.get("/api/altinnStudioForms", (req, res) => {
 
 app.get("/api/exampleData", async (req, res) => {
     try {
-        const exampleData = await getJsonExampleData();
+        const exampleData = await cachedGetJsonExampleData();
         res.json(exampleData);
     } catch (error) {
         console.error("Error fetching example data:", error);
@@ -108,7 +122,7 @@ app.get("/api/exampleData", async (req, res) => {
 
 app.get("/api/applicationMetadata", async (req, res) => {
     try {
-        const applicationMetadata = await getApplicationMetadata();
+        const applicationMetadata = await cachedGetApplicationMetadata();
         res.json(applicationMetadata);
     } catch (error) {
         console.error("Error fetching application metadata:", error);

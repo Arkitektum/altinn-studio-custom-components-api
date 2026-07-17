@@ -50,7 +50,12 @@ All routes are `GET` under `/api` and return JSON (`api/index.mjs`):
 | `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
 
 The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`).
-CORS is enabled for all origins.
+CORS is restricted to a single origin (`CLIENT_ORIGIN`, default `http://localhost:9000`).
+
+The expensive getters (everything except the static forms list and the already-cached default resources) are wrapped in a
+short-lived in-memory TTL cache (`api/utils/cache.mjs`) so repeated "Synchronize" runs within a session don't re-fan-out to
+Altinn Studio / npm / disk. Concurrent identical requests share one in-flight fetch, and failures are not cached. The TTL
+defaults to 60s and is configurable via `CACHE_TTL_MS` (`0` disables caching).
 
 ---
 
