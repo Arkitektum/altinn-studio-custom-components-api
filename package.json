@@ -1,6 +1,6 @@
 {
     "name": "altinn-studio-custom-components-api",
-    "packageManager": "yarn@4.5.0",
+    "packageManager": "yarn@4.15.0",
     "scripts": {
         "start": "node api/index.mjs",
         "test": "node --test",
@@ -10,10 +10,10 @@
         "@eslint/js": "^10.0.1",
         "cors": "^2.8.6",
         "dotenv": "^17.4.2",
-        "eslint": "^10.7.0",
+        "eslint": "^10.8.1",
         "express": "^5.2.1",
-        "fast-xml-parser": "^5.10.1",
-        "globals": "^17.7.0",
+        "fast-xml-parser": "^5.11.0",
+        "globals": "^17.11.0",
         "libxmljs2": "^0.37.0"
     },
     "dependencies": {

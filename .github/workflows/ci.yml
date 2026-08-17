@@ -28,10 +28,6 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      # This installs Yarn 4.5.0 based on package.json
-      - name: Install Yarn (via Corepack)
-        run: corepack prepare yarn@4.5.0 --activate
-
       - name: Verify Yarn version
         run: yarn --version
 
