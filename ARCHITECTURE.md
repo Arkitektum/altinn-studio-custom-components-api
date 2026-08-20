@@ -63,16 +63,23 @@ defaults to 60s and is configurable via `CACHE_TTL_MS` (`0` disables caching).
 
 ```text
 api/
-├── index.mjs                 # Express app: route definitions + server bootstrap
+├── index.mjs                        # Express app: route definitions + server bootstrap
+├── smoke.test.mjs                   # Boots the server and checks it accepts connections
 ├── scripts/
-│   └── functions.mjs         # All data fetching/parsing (Gitea, npm, GitHub, local files)
+│   ├── functions.mjs                # All data fetching/parsing (Gitea, npm, GitHub, local files)
+│   └── functions.test.mjs
 ├── utils/
-│   └── xmlToJsonConverter.mjs# Converts example form XML into JSON
+│   ├── altinnAppFrontendVersions.mjs# Extracts frontend asset versions from Index.cshtml
+│   ├── cache.mjs                    # In-memory TTL cache used by the expensive endpoints
+│   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
+│   ├── xmlToJsonConverter.mjs       # Converts example form XML into JSON
+│   └── *.test.mjs
 └── data/
-    ├── altinnStudioApps.mjs  # The tracked apps (appOwner / appName / dataType / subForms)
-    ├── subforms.mjs          # Subform definitions + their layouts
-    ├── packageSources.mjs    # Which packages to look up latest versions for (npm / GitHub)
-    └── exampleData/          # Bundled example XML (forms/ and subforms/)
+    ├── altinnStudioApps.mjs         # The tracked apps (appOwner / appName / dataType / subForms)
+    ├── subforms.mjs                 # Subform definitions + their layouts
+    ├── subforms/                    # One module per subform, re-exported by subforms.mjs
+    ├── packageSources.mjs           # Which packages to look up latest versions for (npm / GitHub)
+    └── exampleData/                 # Bundled example XML (forms/ and subforms/)
 ```
 
 ---
@@ -80,8 +87,10 @@ api/
 ## 5. External data sources
 
 - **Altinn Studio (Gitea).**
-  `fetchGiteaFileContent` reads raw files from `https://altinn.studio/repos/{owner}/{repo}/raw/branch/master/{path}` using a **`GITEA_TOKEN`** (sent as `Authorization: Bearer …`).
+  `fetchGiteaFileContent` reads raw files from `https://altinn.studio/repos/{owner}/{repo}/raw/branch/{branch}/{path}` using a **`GITEA_TOKEN`** (sent as `Authorization: Bearer …`).
+  The branch defaults to `master` and is configurable via **`GITEA_BRANCH`**, for apps that use `main`.
   This is how layouts, app resources, and application metadata are retrieved.
+  A missing token fails fast with a clear message, because Altinn Studio otherwise answers with an HTML login page that surfaces later as a confusing XML parse error.
 - **npm registry & GitHub releases.**
   `getLatestPackageVersions` resolves the latest version for each entry in `packageSources.mjs` — from `registry.npmjs.org` for `npm` sources and from the GitHub releases API for `github` sources.
 - **Local files.**
@@ -96,5 +105,14 @@ api/
 - **Yarn 4** via Corepack (pinned through `packageManager`).
 - XML parsing via **fast-xml-parser** and **libxmljs2**.
 - **ESLint** (flat config) for linting.
+- **`node --test`** (the built-in Node test runner) for tests — no test framework is installed.
 
-There are no automated tests or CI workflows in this repository; it is a local developer tool.
+Tests live next to the code they cover as `*.test.mjs`. Most target the leaf utilities, which are pure and need no
+network; `functions.test.mjs` stubs global `fetch` to exercise the fan-out logic, and `smoke.test.mjs` boots the
+server in a child process to check it starts and accepts connections.
+
+Two GitHub Actions workflows cover `main`: `ci.yml` runs `yarn lint` and `yarn test` on every push and pull request,
+and `eslint.yml` uploads ESLint results to the repository's security tab on the same events plus a weekly schedule.
+
+Note that `libxmljs2` is a native module, so its binding is built for the platform that installed it. A `node_modules`
+tree copied between platforms fails to load it, which takes down anything importing `functions.mjs`.

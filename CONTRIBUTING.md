@@ -64,7 +64,8 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 | Command | What it does |
 | ------- | ------------ |
 | `yarn start` | Run the Express API (`node api/index.mjs`). |
-| `npx eslint .` | Lint the source (ESLint flat config in `eslint.config.mjs`). |
+| `yarn test` | Run the tests with the built-in Node test runner (`node --test`). |
+| `yarn lint` | Lint the source (ESLint flat config in `eslint.config.mjs`). |
 
 ---
 
@@ -86,6 +87,9 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 
 - **Native ES modules** (`.mjs`) and `async/await`.
 - **JSDoc** on exported functions.
+- **Tests** as `*.test.mjs` next to the code they cover, using `node:test` and `node:assert/strict`.
+  Prefer testing the leaf utilities directly; where a function reaches the network, stub global `fetch` rather than
+  adding a mocking library.
 - **Formatting & linting** via Prettier (`.prettierrc`) and ESLint (`eslint.config.mjs`).
 - Keep secrets in `.env`; read them via `process.env`.
 
@@ -94,6 +98,6 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 ## Pull requests
 
 1. Branch off `main`.
-2. Keep changes focused and lint-clean.
+2. Keep changes focused, and make sure `yarn lint` and `yarn test` both pass — CI runs both on every pull request.
 3. Verify the affected endpoints respond correctly and the Statistics dashboard still loads against your local API.
 4. Open a PR against `main`.
