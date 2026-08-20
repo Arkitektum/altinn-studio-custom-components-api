@@ -34,11 +34,14 @@ jobs:
           cache: "npm"
 
       # ------------------------------
-      # 3. Install ESLint + SARIF formatter
+      # 3. Install the SARIF formatter (ESLint itself comes from package.json)
       # ------------------------------
+      # Only the formatter is pinned here. ESLint is left to resolve from package.json so the scan uses the same
+      # version as `yarn lint`, and stays in lockstep with @eslint/js — pinning it separately meant this workflow
+      # silently scanned with 10.0.3 while the repositories had moved to ^10.8.1.
       - name: Install ESLint and SARIF formatter
         run: |
-          npm install eslint@10.0.3 @microsoft/eslint-formatter-sarif@3.1.0
+          npm install @microsoft/eslint-formatter-sarif@3.1.0
 
       # ------------------------------
       # 4. Run ESLint (Flat Config)
@@ -60,7 +63,7 @@ jobs:
       - name: Check if SARIF exists
         run: |
           if [ ! -f eslint-results.sarif ]; then
-            echo "No SARIF file generated. Skipping upload."
+            echo "::warning::ESLint produced no SARIF file, so nothing was uploaded. Check the Run ESLint step."
             exit 0
           fi
 
