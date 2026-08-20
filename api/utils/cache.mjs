@@ -7,8 +7,11 @@
  * fetch for `ttlMs`, and de-duplicates concurrent in-flight calls (they share one promise). It is deliberately
  * simple and process-local — appropriate for this dev-only tool, not a distributed cache.
  *
- * Failures are never cached: if the wrapped call rejects, the entry is evicted so the next call retries. A `ttlMs`
- * of 0 effectively disables caching while still de-duplicating calls made within the same tick.
+ * Failures are never cached: if the wrapped call rejects, the entry is evicted so the next call retries.
+ *
+ * De-duplication and the TTL are independent: an in-flight call is always shared, while a settled result is only
+ * reused while it is still fresh. A `ttlMs` of 0 therefore disables caching without letting concurrent callers fan
+ * out to separate upstream fetches.
  *
  * @param {(...args: any[]) => Promise<any>} fn - The async function to memoize.
  * @param {Object} [options]
@@ -16,7 +19,7 @@
  * @returns {(...args: any[]) => Promise<any>} A wrapped function with the same call signature.
  */
 export function createCachedFunction(fn, { ttlMs = 60000 } = {}) {
-    // key (stringified args) -> { promise, expiresAt }
+    // key (stringified args) -> { promise, expiresAt, settled }
     const cache = new Map();
 
     return function cached(...args) {
@@ -24,20 +27,30 @@ export function createCachedFunction(fn, { ttlMs = 60000 } = {}) {
         const now = Date.now();
         const entry = cache.get(key);
 
-        if (entry && entry.expiresAt > now) {
+        // Share a call that is still running whatever the TTL says, so concurrent callers never trigger the same
+        // upstream fetch twice. Only once it has settled does freshness decide — which for a ttlMs of 0 is never,
+        // since expiresAt is then the moment the call started.
+        if (entry && (!entry.settled || entry.expiresAt > now)) {
             return entry.promise;
         }
 
         // Start from a resolved promise so a synchronous throw in `fn` becomes a rejection rather than propagating.
         const promise = Promise.resolve().then(() => fn(...args));
-        cache.set(key, { promise, expiresAt: now + ttlMs });
+        const newEntry = { promise, expiresAt: now + ttlMs, settled: false };
+        cache.set(key, newEntry);
 
-        // Don't let a failed fetch stay cached — evict it (unless a newer entry has already replaced it).
-        promise.catch(() => {
-            if (cache.get(key)?.promise === promise) {
-                cache.delete(key);
+        promise.then(
+            () => {
+                newEntry.settled = true;
+            },
+            () => {
+                // Don't let a failed fetch stay cached — evict it (unless a newer entry has already replaced it).
+                // Evicting is enough to make it unreachable, so it never needs marking as settled.
+                if (cache.get(key)?.promise === promise) {
+                    cache.delete(key);
+                }
             }
-        });
+        );
 
         return promise;
     };
