@@ -343,8 +343,17 @@ export async function getAppResourceValues(language) {
             const resourceFiles = await Promise.all(
                 languages.map((lang) =>
                     fetchAppResourceFile(appOwner, appName, lang)
-                        .then((file) => ({ language: lang, resources: file.resources }))
-                        .catch(() => {
+                        .then((file) => {
+                            // A missing file resolves to null, and an app can ship a resource file without a
+                            // "resources" array. Skip either case: passing one on would throw inside
+                            // mergeResourceFiles and take down every language for this app, not just this one.
+                            if (!Array.isArray(file?.resources)) {
+                                return null;
+                            }
+                            return { language: lang, resources: file.resources };
+                        })
+                        .catch((error) => {
+                            console.warn(`⚠️ Could not read ${lang} resources for ${appOwner}/${appName}: ${error.message}`);
                             return null;
                         })
                 )
