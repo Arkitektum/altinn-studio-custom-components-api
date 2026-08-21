@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "@arkitektum/altinn-studio-custom-components": "^16.7.2",
-        "@arkitektum/altinn-studio-custom-components-utils": "^1.5.2",
+        "@arkitektum/altinn-studio-custom-components-utils": "^1.5.3",
         "cors": "^2.8.6",
         "dotenv": "^17.4.2",
         "express": "^5.2.1",

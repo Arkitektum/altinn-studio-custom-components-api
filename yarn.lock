@@ -5,10 +5,10 @@ __metadata:
   version: 10
   cacheKey: 10c0
 
-"@arkitektum/altinn-studio-custom-components-utils@npm:^1.5.2":
-  version: 1.5.2
-  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:1.5.2"
-  checksum: 10c0/8949db5e0e90458d5930bd0191f608ff3d12ca403d04f71f4461344b6cabac39af79c0715c67328d26200660dd32c597240f3f30369327e4ca3b9b241ee81d47
+"@arkitektum/altinn-studio-custom-components-utils@npm:^1.5.2, @arkitektum/altinn-studio-custom-components-utils@npm:^1.5.3":
+  version: 1.5.3
+  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:1.5.3"
+  checksum: 10c0/34f85929cc952c96ef817f6915922e7e728685d88572aae534525c56d458e54ef0ebe7ac46f59afc1a0cb9dddaddf94f567d58adc11b067784ec7146297ec010
   languageName: node
   linkType: hard
 
@@ -292,7 +292,7 @@ __metadata:
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
     "@arkitektum/altinn-studio-custom-components": "npm:^16.7.2"
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.2"
+    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.3"
     "@eslint/js": "npm:^10.0.1"
     cors: "npm:^2.8.6"
     dotenv: "npm:^17.4.2"
@@ -532,7 +532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"content-type@npm:^2.0.0":
+"content-type@npm:^2.0.0, content-type@npm:^2.1.0":
   version: 2.1.0
   resolution: "content-type@npm:2.1.0"
   checksum: 10c0/f5d420f55fd0c7a7f7cbae9637777ce67a074aa79b489d8d9fee8599089592b5f8bb194e1d6885741fee20271034baca0d68d5419535b52d070c4f7e39f4b448
@@ -1634,9 +1634,11 @@ __metadata:
   linkType: hard
 
 "negotiator@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "negotiator@npm:1.0.0"
-  checksum: 10c0/4c559dd52669ea48e1914f9d634227c561221dd54734070791f999c52ed0ff36e437b2e07d5c1f6e32909fc625fe46491c16e4a8f0572567d4dd15c3a4fda04b
+  version: 1.1.0
+  resolution: "negotiator@npm:1.1.0"
+  dependencies:
+    content-type: "npm:^2.1.0"
+  checksum: 10c0/656fa57de02f1a0c4c09f9e17eb78e8182547c07093e810ff8f16249b6ae31f2c546a3d457905e94f3276b25f0e2741ea1a3bc3912192932ed7e493adfea535e
   languageName: node
   linkType: hard
 
