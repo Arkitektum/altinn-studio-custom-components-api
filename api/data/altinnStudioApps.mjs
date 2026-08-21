@@ -75,6 +75,17 @@ const altinnStudioApps = [
     },
     {
         appOwner: "dibk",
+        appName: "fa-v5",
+        dataType: "FA",
+        subForms: [
+            {
+                appName: "gjennomfoeringsplan-v7",
+                dataType: "GjennomfoeringsplanDataV7"
+            }
+        ]
+    },
+    {
+        appOwner: "dibk",
         appName: "fts-v1",
         dataType: "FTS",
         subForms: [
@@ -117,6 +128,17 @@ const altinnStudioApps = [
     },
     {
         appOwner: "dibk",
+        appName: "ig-v5",
+        dataType: "IG",
+        subForms: [
+            {
+                appName: "gjennomfoeringsplan-v7",
+                dataType: "GjennomfoeringsplanDataV7"
+            }
+        ]
+    },
+    {
+        appOwner: "dibk",
         appName: "innsending-planforslag",
         dataType: "OversendelseReguleringsplanforslag",
         layoutFiles: [{ name: "DisplayLayout", path: "App/ui/hovedskjema/layouts/DisplayLayout.json" }]
@@ -129,6 +151,17 @@ const altinnStudioApps = [
     {
         appOwner: "dibk",
         appName: "mb-v3",
+        dataType: "MB",
+        subForms: [
+            {
+                appName: "gjennomfoeringsplan-v7",
+                dataType: "GjennomfoeringsplanDataV7"
+            }
+        ]
+    },
+    {
+        appOwner: "dibk",
+        appName: "mb-v5",
         dataType: "MB",
         subForms: [
             {
