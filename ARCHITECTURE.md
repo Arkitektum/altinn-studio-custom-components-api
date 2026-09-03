@@ -71,6 +71,7 @@ api/
 ├── utils/
 │   ├── altinnAppFrontendVersions.mjs# Extracts frontend asset versions from Index.cshtml
 │   ├── cache.mjs                    # In-memory TTL cache used by the expensive endpoints
+│   ├── logger.mjs                   # Run-scoped logging: one aggregated report per request
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
 │   ├── xmlToJsonConverter.mjs       # Converts example form XML into JSON
 │   └── *.test.mjs
@@ -98,7 +99,52 @@ api/
 
 ---
 
-## 6. Tooling
+## 6. Logging
+
+Each fan-out endpoint runs inside a **logging run** (`api/utils/logger.mjs`). Instead of logging a line per step —
+which made a single "Synchronize" produce hundreds of interleaved lines — the fetch/parse helpers *record* events
+(`log.ok` / `log.warn` / `log.error`), and the run prints one report when the request finishes:
+
+```text
+Example data · 4.2s · 2 errors · 26 warnings
+
+ Source                             OK  Warn  Error
+ dibk/hoeringettersynuttalelse-v2    ·     1      1
+ dibk/sa-v2                          ·     1      1
+ 24 other sources · all clear       71     ·      ·
+ ──────────────────────────────────────────────────
+ Total                              71    26      2
+
+⛔️ Example data not processed (2)
+   dibk/hoeringettersynuttalelse-v2 · HoeringOgOffentligEttersynUttalelse
+     uttalelse.xml: XML does not conform to XSD:
+     Element '…Uttalelse': No matching global declaration available for the validation root.
+   …
+
+⚠️ File not found in Altinn Studio (26)
+   App/config/texts/resource.nn.json — 26 sources
+     dat/byggesak-samtykke-v3, dibk/an-v2, dibk/disp-v1, dibk/es-v2, …
+```
+
+Successes are counted only. Warnings and errors keep their full text, grouped by cause, and within a cause the
+sources that failed the same way are listed together instead of one line each. Sources with nothing to flag are
+folded into a single table row, and a run with no warnings or errors at all collapses to one line. A run that
+recorded nothing (a cache hit) prints one line too.
+
+The report is assembled into a single string and written with one call, so reports from concurrent requests never
+interleave, and it is printed even if the run throws.
+
+The active run is tracked with `AsyncLocalStorage`, so the nested helpers need no context argument. Events recorded
+outside a run (startup checks, `/api/resources`) fall back to plain `console` output. Set **`LOG_VERBOSE=1`** to also
+print every event as it happens — the old line-per-step behaviour, useful when following one failing app.
+
+Because of this, code in `api/scripts/functions.mjs` should record events rather than call `console.*` directly, and
+leaf utilities such as `xmlToJsonConverter.mjs` stay silent and report through the error they throw — the caller knows
+which app and file the failure belongs to.
+
+---
+
+## 7. Tooling
 
 - **Node.js** with native ES modules (`.mjs`).
 - **Express 5** + **cors**.

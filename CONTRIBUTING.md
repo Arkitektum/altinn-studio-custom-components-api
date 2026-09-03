@@ -75,6 +75,10 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
   Keep each route thin — delegate the actual work to a function in `api/scripts/functions.mjs`.
 - **Data fetching/parsing** belongs in `api/scripts/functions.mjs`.
   Wrap external calls in `try/catch` and return a `500` with a clear message, matching the existing routes.
+- **Logging** goes through `api/utils/logger.mjs` — record `log.ok` / `log.warn` / `log.error` instead of calling
+  `console.*`, so the events end up in the request's summary report (see
+  [ARCHITECTURE § Logging](./ARCHITECTURE.md#6-logging)). Wrap a new fan-out route in `withRunLog("<name>", …)`.
+  Run with `LOG_VERBOSE=1` to see every event as it happens while debugging.
 - **Tracked apps** are configured in `api/data/altinnStudioApps.mjs` (and subforms in `api/data/subforms.mjs`).
   Add an app there to include it in the statistics.
 - **Version sources** for `latestPackageVersions` are configured in `api/data/packageSources.mjs` (`npm` or `github`).
