@@ -37,22 +37,20 @@ function extractArrayPaths(xsdDoc) {
  * @param {string} xsdContent - The XSD schema content as a string.
  * @returns {Object} The JSON representation of the XML, with the root element removed.
  *
- * @throws {Error} If the XML does not conform to the XSD schema.
+ * @throws {Error} If the XML does not conform to the XSD schema. The message lists one validation error per line.
  */
 export function convertXmlToJson(xmlContent, xsdContent) {
     const xmlDoc = libxml.parseXml(xmlContent);
     const xsdDoc = libxml.parseXml(xsdContent);
 
-    // Validate XML
+    // Validate XML. This converter has no idea which app or file it was handed, so it stays silent and reports through
+    // the thrown error — the caller knows the context and records it (see api/utils/logger.mjs).
     if (!xmlDoc.validate(xsdDoc)) {
-        const validationMessages = xmlDoc.validationErrors.map((e) => e.message).join("; ");
-        console.error("❌ XML does not conform to XSD:");
-        xmlDoc.validationErrors.forEach((e) => console.error(e.message));
+        // One error per line: the logger indents multi-line details under the file they belong to.
+        const validationMessages = xmlDoc.validationErrors.map((e) => e.message.trim()).join("\n");
         // Throw instead of process.exit so a single invalid example doesn't take down the whole dev server.
-        throw new Error(`XML does not conform to XSD: ${validationMessages}`);
+        throw new Error(`XML does not conform to XSD:\n${validationMessages}`);
     }
-
-    console.log("✅ XML valid against XSD");
 
     const arrayPaths = extractArrayPaths(xsdDoc);
 

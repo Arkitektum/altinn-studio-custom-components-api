@@ -11,6 +11,7 @@ import subforms from "../data/subforms.mjs";
 // Utils
 import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
+import { log } from "../utils/logger.mjs";
 import { stripJsonComments } from "../utils/stripJsonComments.mjs";
 
 // Resolve paths relative to this module rather than the current working directory, so the server works
@@ -70,14 +71,20 @@ async function fetchLatestVersionFromGithub(repo) {
  */
 export async function getLatestPackageVersions() {
     const versionPromises = Object.entries(packageSources).map(async ([key, source]) => {
+        const origin = source.package ?? source.repo ?? source.type;
+        let version = null;
         if (source.type === "npm") {
-            const version = await fetchLatestVersionFromNpm(source.package);
-            return { [key]: version };
+            version = await fetchLatestVersionFromNpm(source.package);
         } else if (source.type === "github") {
-            const version = await fetchLatestVersionFromGithub(source.repo);
-            return { [key]: version };
+            version = await fetchLatestVersionFromGithub(source.repo);
         }
-        return { [key]: null };
+        // The fetch helpers swallow their errors and answer null, so this is the only place the outcome is visible.
+        if (version) {
+            log.ok({ scope: key, category: "Latest version", message: `${version} (${origin})` });
+        } else {
+            log.warn({ scope: key, category: "Latest version not resolved", message: `${source.type}: ${origin}` });
+        }
+        return { [key]: version };
     });
 
     return Promise.all(versionPromises).then((versions) => Object.assign({}, ...versions));
@@ -115,10 +122,11 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
         if (!response.ok) {
             // Missing files are expected (optional layouts/subforms); return null so callers can skip them gracefully.
             if (response.status === 404) {
-                console.warn(`⚠️ File not found at ${url}, returning null.`);
+                log.warn({ scope: `${appOwner}/${appName}`, category: "File not found in Altinn Studio", message: filePath });
                 return null;
             }
-            throw new Error(`⚠️ Failed to fetch file content from ${url} (status ${response.status})`);
+            // No severity marker in the message: it is reported as the detail of whichever event the caller records.
+            throw new Error(`Failed to fetch ${filePath} (status ${response.status}) from ${url}`);
         }
         let content = await response.text();
 
@@ -129,7 +137,9 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
 
         return content;
     } catch (error) {
-        console.error(`⚠️ Error fetching file content from ${url}`);
+        // The caller records this failure with its own context (which app, which endpoint), so logging it here too
+        // would only duplicate a line in the report. Keep the exact URL for verbose runs.
+        log.progress(`⚠️ Error fetching file content from ${url}: ${error.message}`);
         throw error;
     }
 }
@@ -191,11 +201,17 @@ async function getSubFormLayout(appOwner, appName, subFormDataType) {
     try {
         const subLayout = await fetchSubFormDisplayLayoutFromAltinnStudio(appOwner, appName, subFormDataType);
         if (!subLayout) {
-            throw new Error(`⛔️ No layout found for subform ${subFormDataType} in ${appOwner}/${appName}`);
+            throw new Error(`No layout file found for subform ${subFormDataType}`);
         }
+        log.ok({ scope: `${appOwner}/${appName}`, category: "Subform layout" });
         return subLayout;
     } catch (error) {
-        console.error(`⛔️ Error fetching layout for subform ${subFormDataType} in ${appOwner}/${appName}:`, error.message);
+        log.error({
+            scope: `${appOwner}/${appName}`,
+            category: "Subform layout not fetched",
+            message: subFormDataType,
+            detail: error.message
+        });
         return null;
     }
 }
@@ -219,7 +235,11 @@ export async function getDisplayLayouts() {
         return Promise.all(
             layoutFilesToFetch.map(async ({ name, path }) => {
                 const layout = await fetchDisplayLayoutFromAltinnStudio(appOwner, appName, path);
-                return layout ? { name, path, layout } : null;
+                if (!layout) {
+                    return null;
+                }
+                log.ok({ scope: `${appOwner}/${appName}`, category: "Display layout", message: name });
+                return { name, path, layout };
             })
         )
             .then(async (fetchedLayouts) => {
@@ -248,7 +268,7 @@ export async function getDisplayLayouts() {
                 };
             })
             .catch((error) => {
-                console.error(`⛔️ Error fetching layout for ${appOwner}/${appName}:`, error.message);
+                log.error({ scope: `${appOwner}/${appName}`, category: "Display layouts not fetched", detail: error.message });
                 return null;
             });
     });
@@ -350,10 +370,16 @@ export async function getAppResourceValues(language) {
                             if (!Array.isArray(file?.resources)) {
                                 return null;
                             }
+                            log.ok({ scope: `${appOwner}/${appName}`, category: "App resources", message: lang });
                             return { language: lang, resources: file.resources };
                         })
                         .catch((error) => {
-                            console.warn(`⚠️ Could not read ${lang} resources for ${appOwner}/${appName}: ${error.message}`);
+                            log.warn({
+                                scope: `${appOwner}/${appName}`,
+                                category: "App resources unreadable",
+                                message: `resource.${lang}.json`,
+                                detail: error.message
+                            });
                             return null;
                         })
                 )
@@ -362,7 +388,11 @@ export async function getAppResourceValues(language) {
             const validResourceFiles = resourceFiles.filter((file) => file !== null);
 
             if (validResourceFiles.length === 0) {
-                console.warn(`⛔️ No valid resource files found for ${appOwner}/${appName}. Skipping this app.`);
+                log.warn({
+                    scope: `${appOwner}/${appName}`,
+                    category: "App skipped — no readable resource file",
+                    message: languages.map((lang) => `resource.${lang}.json`).join(", ")
+                });
                 return null;
             }
 
@@ -374,7 +404,7 @@ export async function getAppResourceValues(language) {
                 resourceValues
             };
         } catch (error) {
-            console.error(`⛔️ Error fetching resource values for ${appOwner}/${appName}:`, error.message);
+            log.error({ scope: `${appOwner}/${appName}`, category: "App resources not fetched", detail: error.message });
             return null;
         }
     });
@@ -403,7 +433,12 @@ export async function getDefaultTextResources() {
         defaultTextResourcesCache = JSON.parse(await fs.readFile(defaultTextResourcesFilePath, "utf8"));
         return defaultTextResourcesCache;
     } catch (error) {
-        console.error(`⛔️ Error reading default text resources from ${defaultTextResourcesFilePath}:`, error.message);
+        log.error({
+            scope: "@arkitektum/altinn-studio-custom-components",
+            category: "Default text resources unreadable",
+            message: defaultTextResourcesFilePath,
+            detail: error.message
+        });
         return null;
     }
 }
@@ -457,6 +492,7 @@ export async function getPackageVersions() {
             ]);
             const altinnStudioCustomComponentsVersion = extractAltinnStudioCustomComponentsVersion(packageLock);
             const altinnAppFrontendVersions = extractAltinnAppFrontendVersions(indexHtml);
+            log.ok({ scope: `${appOwner}/${appName}`, category: "Package versions", message: altinnStudioCustomComponentsVersion });
             return {
                 appOwner,
                 appName,
@@ -467,7 +503,7 @@ export async function getPackageVersions() {
                 }
             };
         } catch (error) {
-            console.error(`⛔️ Error fetching package versions for ${appOwner}/${appName}:`, error.message);
+            log.error({ scope: `${appOwner}/${appName}`, category: "Package versions not resolved", detail: error.message });
             return null;
         }
     });
@@ -546,13 +582,16 @@ export async function getApplicationMetadata() {
     const metadataPromises = altinnStudioApps.map(async ({ appOwner, appName }) => {
         try {
             const metadata = await fetchApplicationMetadataFromAltinnStudio(appOwner, appName);
+            if (metadata) {
+                log.ok({ scope: `${appOwner}/${appName}`, category: "Application metadata" });
+            }
             return {
                 appOwner,
                 appName,
                 metadata
             };
         } catch (error) {
-            console.error(`⛔️ Error fetching application metadata for ${appOwner}/${appName}:`, error.message);
+            log.error({ scope: `${appOwner}/${appName}`, category: "Application metadata not fetched", detail: error.message });
             return null;
         }
     });
@@ -600,6 +639,27 @@ function getSubformsFromDataType(dataType) {
 }
 
 /**
+ * Converts one example XML file, tagging any failure with the name of the file it came from.
+ *
+ * A conversion failure is reported by the per-folder handler in getJsonExampleData, which knows only the data type —
+ * without this, a report of an invalid example would not say which of the folder's files was invalid.
+ *
+ * @param {string} fileName - Name of the example file being converted.
+ * @param {string} content - The XML content of the file.
+ * @param {string} xmlSchema - The XSD to validate against.
+ * @returns {Object} The JSON representation of the XML.
+ * @throws {Error} If the XML cannot be converted, with the file name prefixed to the message.
+ */
+function convertExampleFile(fileName, content, xmlSchema) {
+    try {
+        return convertXmlToJson(content, xmlSchema);
+    } catch (error) {
+        error.message = `${fileName}: ${error.message}`;
+        throw error;
+    }
+}
+
+/**
  * Reads example files for a given data type from a specified folder, converts their XML content to JSON using the corresponding XML schema,
  * and adds the results to the provided result array. Also handles subforms by delegating to the handleSubForms function.
  *
@@ -614,7 +674,12 @@ async function readExampleFilesForDataType(dataType, folderPath, result, subform
     const files = (await fs.readdir(folderPath, { withFileTypes: true })).filter((dirent) => dirent.isFile() && dirent.name.endsWith(".xml"));
     const { appOwner, appName } = getAppOwnerAndNameFromDataType(dataType);
     if (!appOwner || !appName) {
-        console.warn(`⛔️ No app owner or app name found for data type: ${dataType}. Skipping folder: ${folderPath}`);
+        log.warn({
+            scope: dataType,
+            category: "Folder skipped — data type not tracked",
+            message: path.relative(repoRoot, folderPath),
+            detail: "No app in altinnStudioApps.mjs or subforms.mjs declares this data type."
+        });
         return;
     }
     const xmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType);
@@ -623,12 +688,13 @@ async function readExampleFilesForDataType(dataType, folderPath, result, subform
         const filePath = `${folderPath}/${file.name}`;
         const content = await fs.readFile(filePath, "utf8");
         const existing = result.find((r) => r.dataType === dataType);
-        console.log(`📄 Processing XML: ${appOwner}/${appName} - ${dataType} (${file.name})`);
+        log.progress(`📄 Processing XML: ${appOwner}/${appName} - ${dataType} (${file.name})`);
         if (existing) {
-            existing.data[file.name] = convertXmlToJson(content, xmlSchema);
+            existing.data[file.name] = convertExampleFile(file.name, content, xmlSchema);
         } else {
-            result.push({ dataType, data: { [file.name]: convertXmlToJson(content, xmlSchema) } });
+            result.push({ dataType, data: { [file.name]: convertExampleFile(file.name, content, xmlSchema) } });
         }
+        log.ok({ scope: `${appOwner}/${appName}`, category: "Example data", message: `${dataType} (${file.name})` });
     }
 
     await handleSubForms(dataType, appOwner, appName, result, subformsExampleDataDir);
@@ -670,12 +736,13 @@ async function handleSubForms(dataType, appOwner, appName, result, subformsExamp
             const subFormFilePath = `${subFormFolderPath}/${subFormFile.name}`;
             const subFormContent = await fs.readFile(subFormFilePath, "utf8");
             const existing = result.find((r) => r.dataType === subFormDataType);
-            console.log(`📄 Processing XML: ${appOwner}/${appName} - ${subFormDataType} (${subFormFile.name})`);
+            log.progress(`📄 Processing XML: ${appOwner}/${appName} - ${subFormDataType} (${subFormFile.name})`);
             if (existing) {
-                existing.data[subFormFile.name] = convertXmlToJson(subFormContent, subXmlSchema);
+                existing.data[subFormFile.name] = convertExampleFile(subFormFile.name, subFormContent, subXmlSchema);
             } else {
-                result.push({ dataType: subFormDataType, data: { [subFormFile.name]: convertXmlToJson(subFormContent, subXmlSchema) } });
+                result.push({ dataType: subFormDataType, data: { [subFormFile.name]: convertExampleFile(subFormFile.name, subFormContent, subXmlSchema) } });
             }
+            log.ok({ scope: `${appOwner}/${appName}`, category: "Example data", message: `${subFormDataType} (${subFormFile.name})` });
         }
     }
 }
@@ -704,7 +771,13 @@ export async function getJsonExampleData() {
             await readExampleFilesForDataType(dataType, folderPath, result, subformsExampleDataDir);
         } catch (error) {
             // Isolate per-folder failures so one bad example/schema doesn't discard every successfully processed folder.
-            console.error(`⛔️ Failed to process example data for data type "${dataType}":`, error.message);
+            const { appOwner, appName } = getAppOwnerAndNameFromDataType(dataType);
+            log.error({
+                scope: appOwner && appName ? `${appOwner}/${appName}` : dataType,
+                category: "Example data not processed",
+                message: dataType,
+                detail: error.message
+            });
         }
     }
 

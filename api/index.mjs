@@ -15,6 +15,7 @@ import {
     getPackageVersions
 } from "./scripts/functions.mjs";
 import { createCachedFunction } from "./utils/cache.mjs";
+import { withRunLog } from "./utils/logger.mjs";
 
 const app = express();
 
@@ -52,7 +53,7 @@ app.use(cors({ origin: allowedOrigin }));
 
 app.get("/api/displayLayouts", async (req, res) => {
     try {
-        const layouts = await cachedGetDisplayLayouts();
+        const layouts = await withRunLog("Display layouts", cachedGetDisplayLayouts);
         res.json(layouts);
     } catch (error) {
         console.error("Error fetching display layouts:", error);
@@ -62,7 +63,7 @@ app.get("/api/displayLayouts", async (req, res) => {
 
 app.get("/api/packageVersions", async (req, res) => {
     try {
-        const packageVersions = await cachedGetPackageVersions();
+        const packageVersions = await withRunLog("Package versions", cachedGetPackageVersions);
         res.json(packageVersions);
     } catch (error) {
         console.error("Error fetching package.json files:", error);
@@ -72,7 +73,7 @@ app.get("/api/packageVersions", async (req, res) => {
 
 app.get("/api/latestPackageVersions", async (req, res) => {
     try {
-        const packageVersions = await cachedGetLatestPackageVersions();
+        const packageVersions = await withRunLog("Latest package versions", cachedGetLatestPackageVersions);
         res.json(packageVersions);
     } catch (error) {
         console.error("Error fetching latest package versions:", error);
@@ -82,7 +83,7 @@ app.get("/api/latestPackageVersions", async (req, res) => {
 
 app.get("/api/appResources", async (req, res) => {
     try {
-        const appResources = await cachedGetAppResourceValues(req.query.language);
+        const appResources = await withRunLog("App resources", () => cachedGetAppResourceValues(req.query.language));
         res.json(appResources);
     } catch (error) {
         console.error("Error fetching app resource values:", error);
@@ -112,7 +113,7 @@ app.get("/api/altinnStudioForms", (req, res) => {
 
 app.get("/api/exampleData", async (req, res) => {
     try {
-        const exampleData = await cachedGetJsonExampleData();
+        const exampleData = await withRunLog("Example data", cachedGetJsonExampleData);
         res.json(exampleData);
     } catch (error) {
         console.error("Error fetching example data:", error);
@@ -122,7 +123,7 @@ app.get("/api/exampleData", async (req, res) => {
 
 app.get("/api/applicationMetadata", async (req, res) => {
     try {
-        const applicationMetadata = await cachedGetApplicationMetadata();
+        const applicationMetadata = await withRunLog("Application metadata", cachedGetApplicationMetadata);
         res.json(applicationMetadata);
     } catch (error) {
         console.error("Error fetching application metadata:", error);
