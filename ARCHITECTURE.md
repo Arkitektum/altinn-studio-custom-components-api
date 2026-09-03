@@ -106,20 +106,18 @@ which made a single "Synchronize" produce hundreds of interleaved lines — the 
 (`log.ok` / `log.warn` / `log.error`), and the run prints one report when the request finishes:
 
 ```text
-Example data · 4.2s · 2 errors · 26 warnings
+Example data · 4.2s · 1 error · 26 warnings
 
- Source                             OK  Warn  Error
- dibk/hoeringettersynuttalelse-v2    ·     1      1
- dibk/sa-v2                          ·     1      1
- 24 other sources · all clear       71     ·      ·
- ──────────────────────────────────────────────────
- Total                              71    26      2
+ Source                        OK  Warn  Error
+ dibk/disp-v1                   3     1      1
+ 18 other sources · all clear  69     ·      ·
+ ─────────────────────────────────────────────
+ Total                         72    26      1
 
-⛔️ Example data not processed (2)
-   dibk/hoeringettersynuttalelse-v2 · HoeringOgOffentligEttersynUttalelse
-     uttalelse.xml: XML does not conform to XSD:
-     Element '…Uttalelse': No matching global declaration available for the validation root.
-   …
+⛔️ Example file skipped (1)
+   dibk/disp-v1 · DS (02_Maksimumsversjon.xml)
+     XML does not conform to XSD:
+     Element 'Dispensasjon': No matching global declaration available for the validation root.
 
 ⚠️ File not found in Altinn Studio (26)
    App/config/texts/resource.nn.json — 26 sources

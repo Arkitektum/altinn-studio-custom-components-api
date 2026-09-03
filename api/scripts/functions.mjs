@@ -639,23 +639,38 @@ function getSubformsFromDataType(dataType) {
 }
 
 /**
- * Converts one example XML file, tagging any failure with the name of the file it came from.
+ * Reads one example XML file, converts it to JSON and adds it to the result array under its data type.
  *
- * A conversion failure is reported by the per-folder handler in getJsonExampleData, which knows only the data type —
- * without this, a report of an invalid example would not say which of the folder's files was invalid.
+ * A failure is recorded and swallowed rather than thrown: one example that no longer validates against its schema
+ * should cost that one file, not the rest of its folder and not the folder's subforms.
  *
- * @param {string} fileName - Name of the example file being converted.
- * @param {string} content - The XML content of the file.
- * @param {string} xmlSchema - The XSD to validate against.
- * @returns {Object} The JSON representation of the XML.
- * @throws {Error} If the XML cannot be converted, with the file name prefixed to the message.
+ * @async
+ * @param {Object} params
+ * @param {string} params.dataType - The data type the file belongs to.
+ * @param {string} params.appOwner - The owner of the Altinn Studio application.
+ * @param {string} params.appName - The name of the Altinn Studio application.
+ * @param {string} params.folderPath - The folder holding the example file.
+ * @param {string} params.fileName - The name of the example file.
+ * @param {string} params.xmlSchema - The XSD to validate the file against.
+ * @param {Array<Object>} params.result - The array to add the converted data to.
+ * @returns {Promise<void>} Resolves once the file has been added or its failure recorded.
  */
-function convertExampleFile(fileName, content, xmlSchema) {
+async function addExampleFile({ dataType, appOwner, appName, folderPath, fileName, xmlSchema, result }) {
+    const scope = `${appOwner}/${appName}`;
     try {
-        return convertXmlToJson(content, xmlSchema);
+        const content = await fs.readFile(`${folderPath}/${fileName}`, "utf8");
+        log.progress(`📄 Processing XML: ${scope} - ${dataType} (${fileName})`);
+        // Convert before touching `result`, so a failed file never leaves a half-populated entry behind.
+        const data = convertXmlToJson(content, xmlSchema);
+        const existing = result.find((r) => r.dataType === dataType);
+        if (existing) {
+            existing.data[fileName] = data;
+        } else {
+            result.push({ dataType, data: { [fileName]: data } });
+        }
+        log.ok({ scope, category: "Example data", message: `${dataType} (${fileName})` });
     } catch (error) {
-        error.message = `${fileName}: ${error.message}`;
-        throw error;
+        log.error({ scope, category: "Example file skipped", message: `${dataType} (${fileName})`, detail: error.message });
     }
 }
 
@@ -685,16 +700,7 @@ async function readExampleFilesForDataType(dataType, folderPath, result, subform
     const xmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType);
 
     for (const file of files) {
-        const filePath = `${folderPath}/${file.name}`;
-        const content = await fs.readFile(filePath, "utf8");
-        const existing = result.find((r) => r.dataType === dataType);
-        log.progress(`📄 Processing XML: ${appOwner}/${appName} - ${dataType} (${file.name})`);
-        if (existing) {
-            existing.data[file.name] = convertExampleFile(file.name, content, xmlSchema);
-        } else {
-            result.push({ dataType, data: { [file.name]: convertExampleFile(file.name, content, xmlSchema) } });
-        }
-        log.ok({ scope: `${appOwner}/${appName}`, category: "Example data", message: `${dataType} (${file.name})` });
+        await addExampleFile({ dataType, appOwner, appName, folderPath, fileName: file.name, xmlSchema, result });
     }
 
     await handleSubForms(dataType, appOwner, appName, result, subformsExampleDataDir);
@@ -733,16 +739,15 @@ async function handleSubForms(dataType, appOwner, appName, result, subformsExamp
         }
         const subXmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, subFormDataType);
         for (const subFormFile of subFormFiles) {
-            const subFormFilePath = `${subFormFolderPath}/${subFormFile.name}`;
-            const subFormContent = await fs.readFile(subFormFilePath, "utf8");
-            const existing = result.find((r) => r.dataType === subFormDataType);
-            log.progress(`📄 Processing XML: ${appOwner}/${appName} - ${subFormDataType} (${subFormFile.name})`);
-            if (existing) {
-                existing.data[subFormFile.name] = convertExampleFile(subFormFile.name, subFormContent, subXmlSchema);
-            } else {
-                result.push({ dataType: subFormDataType, data: { [subFormFile.name]: convertExampleFile(subFormFile.name, subFormContent, subXmlSchema) } });
-            }
-            log.ok({ scope: `${appOwner}/${appName}`, category: "Example data", message: `${subFormDataType} (${subFormFile.name})` });
+            await addExampleFile({
+                dataType: subFormDataType,
+                appOwner,
+                appName,
+                folderPath: subFormFolderPath,
+                fileName: subFormFile.name,
+                xmlSchema: subXmlSchema,
+                result
+            });
         }
     }
 }
@@ -770,11 +775,12 @@ export async function getJsonExampleData() {
         try {
             await readExampleFilesForDataType(dataType, folderPath, result, subformsExampleDataDir);
         } catch (error) {
-            // Isolate per-folder failures so one bad example/schema doesn't discard every successfully processed folder.
+            // Individual example files are handled by addExampleFile, so this is the backstop for what fails for the
+            // folder as a whole — an unreadable directory, or a schema that can't be fetched from Altinn Studio.
             const { appOwner, appName } = getAppOwnerAndNameFromDataType(dataType);
             log.error({
                 scope: appOwner && appName ? `${appOwner}/${appName}` : dataType,
-                category: "Example data not processed",
+                category: "Example data folder not processed",
                 message: dataType,
                 detail: error.message
             });
