@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/HoeringOgOffentligEttersyn/v2"
+<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/hoeringogoffentligettersyn/v2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFormatProvider="DIBK"
     dataFormatId="11002" dataFormatVersion="2">
     <hoeringstype>
@@ -55,7 +55,7 @@
             <nasjonalArealplanId>
                 <kommunenummer>0301</kommunenummer>
                 <landkode>NO</landkode>
-                <planId>2020-RP-22</planId>
+                <planId>2008-001</planId>
             </nasjonalArealplanId>
             <beskrivelseAvFoelger>Mindre endring av byggegrense i felt A1.</beskrivelseAvFoelger>
         </eksisterendePlanSomBeroeres>
@@ -66,7 +66,7 @@
             <kodebeskrivelse>Privatperson</kodebeskrivelse>
         </partstype>
         <organisasjonsnummer></organisasjonsnummer>
-        <navn>ULOGISK GELATIN</navn>
+        <navn>UKLAR PLAST</navn>
         <adresse>
             <adresselinje1>Rådhuset</adresselinje1>
             <postnr>0037</postnr>
@@ -83,7 +83,7 @@
             <mobilnummer>91020304</mobilnummer>
             <epost>kari.saksbehandler@oslo.kommune.no</epost>
         </kontaktperson>
-        <foedselsnummer>18841049906</foedselsnummer>
+        <foedselsnummer>10921148513</foedselsnummer>
     </kommune>
     <forslagsstiller>
         <partstype>
@@ -120,11 +120,11 @@
         </foretrukketSpraak>
     </metadata>
     <planforslag>
-        <plannavn>Begrenset endring av Reguleringsplan Lillegata — felt A1</plannavn>
+        <plannavn>Områdeplan for His Allé</plannavn>
         <nasjonalArealplanId>
             <kommunenummer>0301</kommunenummer>
             <landkode>NO</landkode>
-            <planId>2026-RP-13</planId>
+            <planId>09062018-2</planId>
         </nasjonalArealplanId>
         <plantype>
             <kodeverdi>35</kodeverdi>
@@ -144,7 +144,7 @@
         • Berører naboene direkte: bebyggelse nærmere Lillegata og justert byggegrense
 </planhensikt>
     <tilgjengelighetEksemplar>Planforslag kan ses hos plankontoret etter avtale</tilgjengelighetEksemplar>
-    <fristForUttalelse>2026-10-15T23:59:00</fristForUttalelse>
+    <fristForUttalelse>2026-12-15T23:59:00</fristForUttalelse>
     <hjemmesidePlanforslag>https://www.oslo.kommune.no/plan/lillegata-a1</hjemmesidePlanforslag>
     <kommunensSaksnummer>
         <saksaar>2026</saksaar>

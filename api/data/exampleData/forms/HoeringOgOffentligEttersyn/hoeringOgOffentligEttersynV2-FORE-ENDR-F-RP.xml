@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/HoeringOgOffentligEttersyn/v2"
+<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/hoeringogoffentligettersyn/v2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFormatProvider="DIBK"
     dataFormatId="11002" dataFormatVersion="2">
     <hoeringstype>
@@ -16,7 +16,7 @@
                 <kodeverdi>Organisasjon</kodeverdi>
                 <kodebeskrivelse>Organisasjon</kodebeskrivelse>
             </partstype>
-            <organisasjonsnummer>810064412</organisasjonsnummer>
+            <organisasjonsnummer>312278057</organisasjonsnummer>
             <rolle>
                 <kodeverdi>sektormyndighet</kodeverdi>
                 <kodebeskrivelse>Berørt sektormyndighet</kodebeskrivelse>
@@ -54,7 +54,7 @@
             <nasjonalArealplanId>
                 <kommunenummer>0301</kommunenummer>
                 <landkode>NO</landkode>
-                <planId>2017-RP-44</planId>
+                <planId>2008-001</planId>
             </nasjonalArealplanId>
             <beskrivelseAvFoelger>Mindre teknisk justering av avkjørsel — forenklet behandling jf.
                 pbl. § 12-14 andre ledd.</beskrivelseAvFoelger>
@@ -66,7 +66,7 @@
             <kodebeskrivelse>Privatperson</kodebeskrivelse>
         </partstype>
         <organisasjonsnummer></organisasjonsnummer>
-        <navn>ULOGISK GELATIN</navn>
+        <navn>UKLAR PLAST</navn>
         <adresse>
             <adresselinje1>Rådhuset</adresselinje1>
             <postnr>0037</postnr>
@@ -83,7 +83,7 @@
             <mobilnummer>91020304</mobilnummer>
             <epost>kari.saksbehandler@oslo.kommune.no</epost>
         </kontaktperson>
-        <foedselsnummer>18841049906</foedselsnummer>
+        <foedselsnummer>10921148513</foedselsnummer>
     </kommune>
     <forslagsstiller>
         <partstype>
@@ -120,11 +120,11 @@
         </foretrukketSpraak>
     </metadata>
     <planforslag>
-        <plannavn>Forenklet endring av Reguleringsplan Vestre Gravlund — avkjørsel</plannavn>
+        <plannavn>Områdeplan for His Allé</plannavn>
         <nasjonalArealplanId>
             <kommunenummer>0301</kommunenummer>
             <landkode>NO</landkode>
-            <planId>2026-RP-14</planId>
+            <planId>09062018-2</planId>
         </nasjonalArealplanId>
         <plantype>
             <kodeverdi>35</kodeverdi>
@@ -143,7 +143,7 @@
         • Berører naboene direkte: ny avkjørselsplassering og justert frisiktsone mot Vestre
         Gravlund
 </planhensikt>
-    <fristForUttalelse>2026-10-15T23:59:00</fristForUttalelse>
+    <fristForUttalelse>2026-12-15T23:59:00</fristForUttalelse>
     <hjemmesidePlanforslag>https://www.oslo.kommune.no/plan/vestre-gravlund</hjemmesidePlanforslag>
     <kommunensSaksnummer>
         <saksaar>2026</saksaar>

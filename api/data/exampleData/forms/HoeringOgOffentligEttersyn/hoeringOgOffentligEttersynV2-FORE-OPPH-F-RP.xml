@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/HoeringOgOffentligEttersyn/v2"
+<HoeringOgOffentligEttersyn xmlns="https://skjema.ft.dibk.no/hoeringogoffentligettersyn/v2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFormatProvider="DIBK"
     dataFormatId="11002" dataFormatVersion="2">
     <hoeringstype>
-        <kodeverdi>HOFFE</kodeverdi>
-        <kodebeskrivelse>Høring og offentlig ettersyn</kodebeskrivelse>
+        <kodeverdi>FORE</kodeverdi>
+        <kodebeskrivelse>Forelegging</kodebeskrivelse>
     </hoeringstype>
     <planprosessregel>
-        <kodeverdi>NY-KP</kodeverdi>
-        <kodebeskrivelse>Ny kommuneplan</kodebeskrivelse>
+        <kodeverdi>OPPH-F-RP</kodeverdi>
+        <kodebeskrivelse>Oppheving av reguleringsplan etter forenklet behandling</kodebeskrivelse>
     </planprosessregel>
     <mottakerliste>
         <beroertpartOgInteressentOgMyndighet>
@@ -16,21 +16,21 @@
                 <kodeverdi>Organisasjon</kodeverdi>
                 <kodebeskrivelse>Organisasjon</kodebeskrivelse>
             </partstype>
-            <organisasjonsnummer>810064412</organisasjonsnummer>
+            <organisasjonsnummer>312278057</organisasjonsnummer>
             <rolle>
                 <kodeverdi>sektormyndighet</kodeverdi>
                 <kodebeskrivelse>Berørt sektormyndighet</kodebeskrivelse>
             </rolle>
-            <navn>LØTEN OG BORGEN AS</navn>
-            <telefon>47759931</telefon>
-            <epost>post@loten-borgen.no</epost>
+            <navn>STATENS VEGVESEN</navn>
+            <telefon>22073000</telefon>
+            <epost>firmapost@vegvesen.no</epost>
             <adresse>
-                <adresselinje1>Grev Wedels Plass 9</adresselinje1>
-                <postnr>0301</postnr>
+                <adresselinje1>Brynsengfaret 6A</adresselinje1>
+                <postnr>0667</postnr>
                 <poststed>Oslo</poststed>
                 <landkode>NO</landkode>
             </adresse>
-            <systemReferanse>systemref-kp-1</systemReferanse>
+            <systemReferanse>systemref-fore-1</systemReferanse>
         </beroertpartOgInteressentOgMyndighet>
     </mottakerliste>
     <eiendommerSomInngaarIPlanomraadet>
@@ -46,17 +46,18 @@
     </eiendommerSomInngaarIPlanomraadet>
     <eksisterendePlanerSomBeroeres>
         <eksisterendePlanSomBeroeres>
-            <navn>Kommuneplan for Oslo 2018-2030</navn>
+            <navn>Reguleringsplan Vestre Gravlund 2017</navn>
             <plantype>
-                <kodeverdi>34</kodeverdi>
-                <kodebeskrivelse>Områderegulering</kodebeskrivelse>
+                <kodeverdi>35</kodeverdi>
+                <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
             </plantype>
             <nasjonalArealplanId>
                 <kommunenummer>0301</kommunenummer>
                 <landkode>NO</landkode>
-                <planId>2018-KP-1</planId>
+                <planId>2008-001</planId>
             </nasjonalArealplanId>
-            <beskrivelseAvFoelger>Eksisterende kommuneplan erstattes i sin helhet av ny kommuneplan.</beskrivelseAvFoelger>
+            <beskrivelseAvFoelger>Mindre teknisk justering av avkjørsel — forenklet behandling jf.
+                pbl. § 12-14 andre ledd.</beskrivelseAvFoelger>
         </eksisterendePlanSomBeroeres>
     </eksisterendePlanerSomBeroeres>
     <kommune>
@@ -65,7 +66,7 @@
             <kodebeskrivelse>Privatperson</kodebeskrivelse>
         </partstype>
         <organisasjonsnummer></organisasjonsnummer>
-        <navn>ULOGISK GELATIN</navn>
+        <navn>UKLAR PLAST</navn>
         <adresse>
             <adresselinje1>Rådhuset</adresselinje1>
             <postnr>0037</postnr>
@@ -82,7 +83,7 @@
             <mobilnummer>91020304</mobilnummer>
             <epost>kari.saksbehandler@oslo.kommune.no</epost>
         </kontaktperson>
-        <foedselsnummer>18841049906</foedselsnummer>
+        <foedselsnummer>10921148513</foedselsnummer>
     </kommune>
     <forslagsstiller>
         <partstype>
@@ -110,47 +111,44 @@
     </forslagsstiller>
     <metadata>
         <fraSluttbrukersystem>Hoffe</fraSluttbrukersystem>
-        <ftbId>FTB-22001</ftbId>
-        <prosjektnavn>Kommuneplan Oslo 2030</prosjektnavn>
-        <prosjektnr>P-2026-101</prosjektnr>
+        <ftbId>FTB-22004</ftbId>
+        <prosjektnavn>Vestre Gravlund avkjørsel</prosjektnavn>
+        <prosjektnr>P-2026-104</prosjektnr>
         <foretrukketSpraak>
             <kodeverdi>nb</kodeverdi>
             <kodebeskrivelse>Bokmål</kodebeskrivelse>
         </foretrukketSpraak>
     </metadata>
     <planforslag>
-        <plannavn>Kommuneplan for Oslo 2030-2042</plannavn>
+        <plannavn>Områdeplan for His Allé</plannavn>
         <nasjonalArealplanId>
             <kommunenummer>0301</kommunenummer>
             <landkode>NO</landkode>
-            <planId>2026-KP-1</planId>
+            <planId>09062018-2</planId>
         </nasjonalArealplanId>
         <plantype>
-            <kodeverdi>34</kodeverdi>
-            <kodebeskrivelse>Områderegulering</kodebeskrivelse>
+            <kodeverdi>35</kodeverdi>
+            <kodebeskrivelse>Detaljregulering</kodebeskrivelse>
         </plantype>
     </planforslag>
-    <beskrivelseKartutsnitt>Kartutsnittet viser kommuneplanens arealdel med utviklingsområder,
-        grønne korridorer og kollektivknutepunkt.</beskrivelseKartutsnitt>
-    <medvirkningIHoeringsperioden>Åpne folkemøter i bydelene, digital høring, åpen kontaktdag i
-        Rådhuset</medvirkningIHoeringsperioden>
-    <planhensikt>Hensikten med kommuneplanen er å tilrettelegge for bærekraftig vekst med flere
-        boliger, grønne korridorer og styrket kollektivtilbud.
+    <beskrivelseKartutsnitt>Kartutsnittet viser dagens og foreslått plassering av avkjørselen samt
+        justerte frisiktsoner langs vegen.</beskrivelseKartutsnitt>
+    <planhensikt>Hensikten med den forenklede endringen er å justere plassering av avkjørsel for å
+        bedre trafikksikkerheten.
 
         Hovedpunktene er:
-        • Tilrettelegging for flere boliger i prioriterte utviklingsområder fram mot 2042
-        • Fortetting rundt kollektivknutepunkt og styrket kollektivtilbud
-        • Sammenhengende grønne korridorer og blågrønn struktur gjennom byen
-        • Berører innbyggerne direkte: nye utbyggingsområder, hensynssoner og omdisponering av areal
+        • Avkjørselen flyttes ca. 25 m sørover, bort fra uoversiktlig kurve
+        • Ingen endring i tillatt utnyttelse eller byggehøyder
+        • Frisiktsoner oppdateres i tråd med vegnormalen
+        • Berører naboene direkte: ny avkjørselsplassering og justert frisiktsone mot Vestre
+        Gravlund
 </planhensikt>
-    <tilgjengelighetEksemplar>Papireksemplar kan hentes i Rådhuset, biblioteker og
-        bydelsadministrasjonene</tilgjengelighetEksemplar>
-    <fristForUttalelse>2026-10-15T23:59:00</fristForUttalelse>
-    <hjemmesidePlanforslag>https://www.oslo.kommune.no/plan/kommuneplan-2030</hjemmesidePlanforslag>
+    <fristForUttalelse>2026-12-15T23:59:00</fristForUttalelse>
+    <hjemmesidePlanforslag>https://www.oslo.kommune.no/plan/vestre-gravlund</hjemmesidePlanforslag>
     <kommunensSaksnummer>
         <saksaar>2026</saksaar>
-        <sakssekvensnummer>5012345</sakssekvensnummer>
+        <sakssekvensnummer>5045678</sakssekvensnummer>
     </kommunensSaksnummer>
-    <beskrivelseVedtakOmHoeringOgOffentligEttersyn>Vedtatt utlagt til offentlig ettersyn av bystyret
-        28.05.2026, sak 78/26</beskrivelseVedtakOmHoeringOgOffentligEttersyn>
+    <beskrivelseVedtakOmHoeringOgOffentligEttersyn>Vedtatt forelagt etter forenklet behandling av
+        plansjefen 25.05.2026</beskrivelseVedtakOmHoeringOgOffentligEttersyn>
 </HoeringOgOffentligEttersyn>

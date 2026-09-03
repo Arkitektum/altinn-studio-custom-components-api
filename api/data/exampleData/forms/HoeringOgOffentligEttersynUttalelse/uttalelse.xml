@@ -2,7 +2,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" dataFormatProvider="DIBK" dataFormatId="11003"
     dataFormatVersion="2"
-    xmlns="https://skjema.ft.dibk.no/HoeringOgOffentligEttersynUttalelse/v2">
+    xmlns="https://skjema.ft.dibk.no/hoeringogoffentligettersynuttalelse/v2">
     <hoeringOgOffentligEttersynReferanse>51638057/8b61600f-2caa-4f7d-a986-9e434252c5ec</hoeringOgOffentligEttersynReferanse>
     <hoeringOgOffentligEttersynArkivreferanse>9e434252c5ec</hoeringOgOffentligEttersynArkivreferanse>
     <beroertPart>
