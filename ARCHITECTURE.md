@@ -54,7 +54,8 @@ CORS is restricted to a single origin (`CLIENT_ORIGIN`, default `http://localhos
 
 The expensive getters (everything except the static forms list and the already-cached default resources) are wrapped in a
 short-lived in-memory TTL cache (`api/utils/cache.mjs`) so repeated "Synchronize" runs within a session don't re-fan-out to
-Altinn Studio / npm / disk. Concurrent identical requests share one in-flight fetch, and failures are not cached. The TTL
+Altinn Studio / npm / disk. Concurrent identical requests share one in-flight fetch, and failures are not cached. Reusing
+a call is noted on the request's log report (see [§ Logging](#6-logging)), so a request that logged nothing says why. The TTL
 defaults to 60s and is configurable via `CACHE_TTL_MS` (`0` disables caching).
 
 ---
@@ -124,8 +125,9 @@ Successes are counted only. A file whose absence is expected — not every app s
 the caller already reports with better context is fetched with `{ optional: true }` and does not warn, so the warning
 list stays worth reading. Warnings and errors keep their full text, grouped by cause, and within a cause the
 sources that failed the same way are listed together instead of one line each. Sources with nothing to flag are
-folded into a single table row, and a run with no warnings or errors at all collapses to one line. A run that
-recorded nothing (a cache hit) prints one line too.
+folded into a single table row, and a run with no warnings or errors at all collapses to one line. A run that did no
+work of its own prints one line saying why — `served from cache (fresh for another 43s)` when the TTL cache answered,
+or `joined a request already in flight` when it shared a concurrent call.
 
 The report is assembled into a single string and written with one call, so reports from concurrent requests never
 interleave, and it is printed even if the run throws.

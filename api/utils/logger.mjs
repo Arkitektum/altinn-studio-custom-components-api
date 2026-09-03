@@ -124,6 +124,15 @@ export const log = {
         if (verbose) {
             console.log(dim(message));
         }
+    },
+    /**
+     * Annotates the active run's headline with a fact about the run itself rather than an event within it — why it
+     * did no work, for instance. A no-op outside a run, since there is no headline to annotate.
+     *
+     * @param {string} note
+     */
+    note: (note) => {
+        runStorage.getStore()?.notes.add(note);
     }
 };
 
@@ -294,13 +303,16 @@ function renderGroups(groups) {
 /**
  * Assembles and prints the report for a finished run, as a single write so concurrent runs never interleave.
  *
- * @param {{name: string, startedAt: number, counts: Map, groups: Map}} run
+ * @param {{name: string, startedAt: number, counts: Map, groups: Map, notes: Set<string>}} run
  */
 function printReport(run) {
     const duration = formatDuration(Date.now() - run.startedAt);
+    const notes = [...run.notes];
 
     if (run.counts.size === 0) {
-        console.log(`${dim("▪")} ${bold(run.name)} ${dim(`· ${duration} · nothing to report`)}`);
+        // A run with no events either did no work (the cache answered) or had nothing to do; the notes say which.
+        const why = notes.length ? notes.join(" · ") : "nothing to report";
+        console.log(`${dim("▪")} ${bold(run.name)} ${dim(`· ${duration} · ${why}`)}`);
         return;
     }
 
@@ -313,7 +325,8 @@ function printReport(run) {
         `${bold(run.name)} ${dim(`· ${duration}`)}`,
         totals.error ? red(`${totals.error} error${totals.error === 1 ? "" : "s"}`) : null,
         totals.warn ? yellow(`${totals.warn} warning${totals.warn === 1 ? "" : "s"}`) : null,
-        !totals.error && !totals.warn ? green("all clear") : null
+        !totals.error && !totals.warn ? green("all clear") : null,
+        ...notes.map(dim)
     ]
         .filter(Boolean)
         .join(dim(" · "));
@@ -339,7 +352,7 @@ function printReport(run) {
  * @returns {Promise<T>} Whatever `fn` resolves to.
  */
 export async function withRunLog(name, fn) {
-    const run = { name, startedAt: Date.now(), counts: new Map(), groups: new Map() };
+    const run = { name, startedAt: Date.now(), counts: new Map(), groups: new Map(), notes: new Set() };
     try {
         return await runStorage.run(run, fn);
     } finally {

@@ -1,3 +1,6 @@
+// Utils
+import { log } from "./logger.mjs";
+
 /**
  * Wraps an async function in a small in-memory TTL cache, keyed by its arguments.
  *
@@ -31,6 +34,13 @@ export function createCachedFunction(fn, { ttlMs = 60000 } = {}) {
         // upstream fetch twice. Only once it has settled does freshness decide — which for a ttlMs of 0 is never,
         // since expiresAt is then the moment the call started.
         if (entry && (!entry.settled || entry.expiresAt > now)) {
+            // Reusing a call means the request logs nothing of its own. Say why, so a report with no events reads as
+            // "the cache answered" rather than as a request that mysteriously did nothing.
+            log.note(
+                entry.settled
+                    ? `served from cache (fresh for another ${Math.round((entry.expiresAt - now) / 1000)}s)`
+                    : "joined a request already in flight"
+            );
             return entry.promise;
         }
 

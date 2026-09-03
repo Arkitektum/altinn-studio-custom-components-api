@@ -132,6 +132,33 @@ test("reports a run that recorded nothing as a single line", async () => {
     assert.match(captured(), /Application metadata .*nothing to report/);
 });
 
+test("explains an eventless run with the note it was given", async () => {
+    // What the cache does when it answers a request without doing any work.
+    await withRunLog("Example data", async () => {
+        log.note("served from cache (fresh for another 43s)");
+        return "cached";
+    });
+
+    assert.match(captured(), /Example data · 0ms · served from cache \(fresh for another 43s\)/);
+    assert.ok(!captured().includes("nothing to report"));
+});
+
+test("keeps a note in the headline of a run that did record events", async () => {
+    await withRunLog("Package versions", async () => {
+        log.note("joined a request already in flight");
+        log.warn({ scope: "dibk/ko-v2", category: "Package versions not resolved" });
+    });
+
+    assert.match(captured(), /Package versions .* 1 warning.*joined a request already in flight/);
+});
+
+test("ignores a note when no run is active", () => {
+    log.note("served from cache");
+
+    // There is no headline to annotate, and a bare note is not worth a line of its own.
+    assert.equal(output.length, 0);
+});
+
 test("still prints the report when the run throws", async () => {
     await assert.rejects(
         withRunLog("Package versions", async () => {
