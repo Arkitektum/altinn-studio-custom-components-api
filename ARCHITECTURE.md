@@ -48,6 +48,7 @@ All routes are `GET` under `/api` and return JSON (`api/index.mjs`):
 | `/api/altinnStudioForms` | The configured list of tracked Altinn apps / forms. |
 | `/api/exampleData` | Example form + subform data, converted from XML to JSON. |
 | `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
+| `/api/diagnostics` | What the data endpoints above last ran into — counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches. |
 
 The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`).
 CORS is restricted to a single origin (`CLIENT_ORIGIN`, default `http://localhost:9000`).
@@ -145,6 +146,35 @@ print every event as it happens — the old line-per-step behaviour, useful when
 Because of this, code in `api/scripts/functions.mjs` should record events rather than call `console.*` directly, and
 leaf utilities such as `xmlToJsonConverter.mjs` stay silent and report through the error they throw — the caller knows
 which app and file the failure belongs to.
+
+### Diagnostics over HTTP
+
+The console report is only useful while you are watching the terminal, so each run's summary is also retained in
+memory and served by **`/api/diagnostics`** — the same structure the report is rendered from, so the two cannot drift:
+
+```jsonc
+{
+  "generatedAt": "2026-09-03T10:37:13.288Z",
+  "totals": { "ok": 71, "warn": 2, "error": 1 },   // across every retained run
+  "runs": [{
+    "name": "Package versions",
+    "observedAt": "…",        // when these numbers were produced
+    "requestedAt": "…",       // when the endpoint was last asked, cache hit or not
+    "requestNotes": ["served from cache (fresh for another 43s)"],
+    "durationMs": 4210,
+    "totals": { "ok": 25, "warn": 0, "error": 1 },
+    "sources": [{ "source": "dibk/ko-v2", "ok": 0, "warn": 0, "error": 1 }],
+    "issues": [{ "level": "error", "category": "Package versions not resolved", "count": 1, "outcomes": [ … ] }]
+  }]
+}
+```
+
+Runs are worst-first, one entry per endpoint, so the map is bounded. A request that did no work does **not** overwrite
+the summary of the run that did — otherwise a second "Synchronize" within the cache TTL would report a clean bill of
+health — it only updates `requestedAt` and `requestNotes`.
+
+Nothing consumes this yet: the Statistics dashboard in the components repo would need to call it to show the problems
+it reports.
 
 ---
 

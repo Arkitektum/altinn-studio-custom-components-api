@@ -61,6 +61,7 @@ All routes are `GET` under `/api` and return JSON:
 | `/api/altinnStudioForms` | The configured list of tracked Altinn apps / forms. |
 | `/api/exampleData` | Example form + subform data, converted from XML to JSON. |
 | `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
+| `/api/diagnostics` | What the endpoints above last ran into: counts per app plus the grouped warnings and errors. |
 
 Tracked apps are configured in `api/data/altinnStudioApps.mjs` (and subforms in `api/data/subforms.mjs`).
 

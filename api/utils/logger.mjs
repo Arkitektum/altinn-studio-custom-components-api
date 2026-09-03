@@ -240,14 +240,14 @@ function renderTable(counts) {
  * becomes one entry listing 26 sources rather than 26 near-identical lines.
  *
  * @param {Object[]} entries
- * @returns {Array<{message?: string, detail?: string, scopes: string[], total: number}>}
+ * @returns {Array<{message?: string, detail?: string, sources: Array<{source: string, count: number}>, total: number}>}
  */
 function summariseEntries(entries) {
     const byOutcome = new Map();
     for (const entry of entries) {
         const key = `${entry.message ?? ""}::${entry.detail ?? ""}`;
-        const outcome = byOutcome.get(key) ?? { message: entry.message, detail: entry.detail, scopes: [], total: 0 };
-        outcome.scopes.push(entry.count > 1 ? `${entry.scope} ×${entry.count}` : entry.scope);
+        const outcome = byOutcome.get(key) ?? { message: entry.message, detail: entry.detail, sources: [], total: 0 };
+        outcome.sources.push({ source: entry.scope, count: entry.count });
         outcome.total += entry.count;
         byOutcome.set(key, outcome);
     }
@@ -255,32 +255,68 @@ function summariseEntries(entries) {
 }
 
 /**
+ * Reduces a finished run to a plain, serialisable summary: the counts behind the table, and the grouped warnings and
+ * errors behind the detail sections. Both the console report and `getDiagnostics` are built from this, so what the
+ * terminal shows and what the API serves can't drift apart.
+ *
+ * @param {{name: string, startedAt: number, counts: Map, groups: Map, notes: Set<string>}} run
+ * @returns {Object} The run summary.
+ */
+function summariseRun(run) {
+    const totals = { ok: 0, warn: 0, error: 0 };
+    const sources = [];
+    for (const [source, tally] of run.counts) {
+        totals.ok += tally.ok;
+        totals.warn += tally.warn;
+        totals.error += tally.error;
+        sources.push({ source, ...tally });
+    }
+
+    const issues = [...run.groups.values()]
+        .sort((a, b) => (a.level === b.level ? 0 : a.level === "error" ? -1 : 1) || b.entries.size - a.entries.size || a.category.localeCompare(b.category))
+        .map((group) => {
+            const outcomes = summariseEntries([...group.entries.values()]);
+            return {
+                level: group.level,
+                category: group.category,
+                count: outcomes.reduce((sum, outcome) => sum + outcome.total, 0),
+                outcomes
+            };
+        });
+
+    return {
+        name: run.name,
+        durationMs: Date.now() - run.startedAt,
+        notes: [...run.notes],
+        totals,
+        sources,
+        issues
+    };
+}
+
+/**
  * Renders the detail sections — the full text of every warning and error, grouped by cause and then by outcome.
  *
- * @param {Map<string, {level: string, category: string, entries: Map<string, Object>}>} groups
+ * @param {Array<{level: string, category: string, count: number, outcomes: Object[]}>} issues - From summariseRun.
  * @returns {string[]} The rendered lines.
  */
-function renderGroups(groups) {
-    const ordered = [...groups.values()].sort(
-        (a, b) => (a.level === b.level ? 0 : a.level === "error" ? -1 : 1) || b.entries.size - a.entries.size || a.category.localeCompare(b.category)
-    );
-
+function renderGroups(issues) {
     const lines = [];
-    for (const group of ordered) {
-        const outcomes = summariseEntries([...group.entries.values()]);
-        const total = outcomes.reduce((sum, outcome) => sum + outcome.total, 0);
+    for (const group of issues) {
         lines.push("");
-        lines.push(`${levelMarkers[group.level]} ${levelColors[group.level](bold(group.category))} ${dim(`(${total})`)}`);
+        lines.push(`${levelMarkers[group.level]} ${levelColors[group.level](bold(group.category))} ${dim(`(${group.count})`)}`);
 
-        for (const outcome of outcomes.slice(0, maxDetailsPerGroup)) {
-            if (outcome.scopes.length === 1) {
-                lines.push(`   ${bold(outcome.scopes[0])}${outcome.message ? dim(" · ") + outcome.message : ""}`);
+        for (const outcome of group.outcomes.slice(0, maxDetailsPerGroup)) {
+            // A source that hit the same outcome more than once carries its own count.
+            const labels = outcome.sources.map(({ source, count }) => (count > 1 ? `${source} ×${count}` : source));
+            if (labels.length === 1) {
+                lines.push(`   ${bold(labels[0])}${outcome.message ? dim(" · ") + outcome.message : ""}`);
             } else {
                 // Without a message there is nothing to head the list with — repeating the category would just echo
                 // the group heading directly above.
-                const count = `${outcome.scopes.length} sources`;
+                const count = `${labels.length} sources`;
                 lines.push(outcome.message ? `   ${outcome.message} ${dim(`— ${count}`)}` : `   ${dim(count)}`);
-                lines.push(...wrapList(outcome.scopes, "     ").map(dim));
+                lines.push(...wrapList(labels, "     ").map(dim));
             }
             if (outcome.detail) {
                 // Multi-line details (XSD validation output) keep their own line breaks, indented under the entry.
@@ -292,7 +328,7 @@ function renderGroups(groups) {
             }
         }
 
-        const hidden = outcomes.length - maxDetailsPerGroup;
+        const hidden = group.outcomes.length - maxDetailsPerGroup;
         if (hidden > 0) {
             lines.push(dim(`   … and ${hidden} more (LOG_VERBOSE=1 to see every event as it happens)`));
         }
@@ -303,26 +339,22 @@ function renderGroups(groups) {
 /**
  * Assembles and prints the report for a finished run, as a single write so concurrent runs never interleave.
  *
- * @param {{name: string, startedAt: number, counts: Map, groups: Map, notes: Set<string>}} run
+ * @param {Map<string, {ok: number, warn: number, error: number}>} counts - The run's per-source tallies.
+ * @param {Object} summary - The run summary from summariseRun.
  */
-function printReport(run) {
-    const duration = formatDuration(Date.now() - run.startedAt);
-    const notes = [...run.notes];
+function printReport(counts, summary) {
+    const { name, totals, notes, issues } = summary;
+    const duration = formatDuration(summary.durationMs);
 
-    if (run.counts.size === 0) {
+    if (counts.size === 0) {
         // A run with no events either did no work (the cache answered) or had nothing to do; the notes say which.
         const why = notes.length ? notes.join(" · ") : "nothing to report";
-        console.log(`${dim("▪")} ${bold(run.name)} ${dim(`· ${duration} · ${why}`)}`);
+        console.log(`${dim("▪")} ${bold(name)} ${dim(`· ${duration} · ${why}`)}`);
         return;
     }
 
-    const totals = [...run.counts.values()].reduce((sum, tally) => ({ ok: sum.ok + tally.ok, warn: sum.warn + tally.warn, error: sum.error + tally.error }), {
-        ok: 0,
-        warn: 0,
-        error: 0
-    });
     const headline = [
-        `${bold(run.name)} ${dim(`· ${duration}`)}`,
+        `${bold(name)} ${dim(`· ${duration}`)}`,
         totals.error ? red(`${totals.error} error${totals.error === 1 ? "" : "s"}`) : null,
         totals.warn ? yellow(`${totals.warn} warning${totals.warn === 1 ? "" : "s"}`) : null,
         !totals.error && !totals.warn ? green("all clear") : null,
@@ -333,13 +365,67 @@ function printReport(run) {
 
     // A run with nothing to flag needs no table: the headline already says everything the table would.
     if (!totals.error && !totals.warn && !verbose) {
-        const sources = `${run.counts.size} source${run.counts.size === 1 ? "" : "s"}`;
+        const sources = `${counts.size} source${counts.size === 1 ? "" : "s"}`;
         console.log(`${green("✅")} ${headline} ${dim(`· ${totals.ok} OK across ${sources}`)}`);
         return;
     }
 
-    const lines = ["", headline, "", ...renderTable(run.counts), ...renderGroups(run.groups), ""];
+    const lines = ["", headline, "", ...renderTable(counts), ...renderGroups(issues), ""];
     console.log(lines.join("\n"));
+}
+
+// The most recent summary per run name, so the console report is not the only place the outcome exists — see
+// getDiagnostics. Bounded by the number of endpoints, so it can't grow.
+const retainedSummaries = new Map();
+
+/**
+ * Retains a finished run's summary for `getDiagnostics`.
+ *
+ * A run that recorded nothing did no work — the cache answered it — so it must not overwrite the summary of the run
+ * that did. Its timestamp is still recorded, which is what distinguishes "checked a moment ago and all is well" from
+ * "these numbers are from twenty minutes ago".
+ *
+ * @param {{name: string, startedAt: number, counts: Map, notes: Set<string>}} run
+ * @param {Object} summary - The run summary from summariseRun.
+ */
+function retainSummary(run, summary) {
+    const requestedAt = new Date(run.startedAt + summary.durationMs).toISOString();
+    const previous = retainedSummaries.get(run.name);
+
+    if (run.counts.size === 0 && previous) {
+        retainedSummaries.set(run.name, { ...previous, requestedAt, requestNotes: summary.notes });
+        return;
+    }
+
+    retainedSummaries.set(run.name, {
+        ...summary,
+        observedAt: new Date(run.startedAt).toISOString(),
+        requestedAt,
+        requestNotes: summary.notes
+    });
+}
+
+/**
+ * The most recent outcome of each run, for serving over HTTP.
+ *
+ * The console report is fine when you are watching the terminal, but the Statistics dashboard is the consumer that
+ * actually cares whether an app failed to load. This exposes the same summary the report is rendered from, so the
+ * dashboard can show the problems instead of the developer having to notice them scroll past.
+ *
+ * @returns {{generatedAt: string, totals: {ok: number, warn: number, error: number}, runs: Object[]}} The retained
+ *   summaries, worst first, with totals across all of them.
+ */
+export function getDiagnostics() {
+    const runs = [...retainedSummaries.values()].sort(
+        (a, b) => b.totals.error - a.totals.error || b.totals.warn - a.totals.warn || a.name.localeCompare(b.name)
+    );
+
+    const totals = runs.reduce(
+        (sum, run) => ({ ok: sum.ok + run.totals.ok, warn: sum.warn + run.totals.warn, error: sum.error + run.totals.error }),
+        { ok: 0, warn: 0, error: 0 }
+    );
+
+    return { generatedAt: new Date().toISOString(), totals, runs };
 }
 
 /**
@@ -356,6 +442,8 @@ export async function withRunLog(name, fn) {
     try {
         return await runStorage.run(run, fn);
     } finally {
-        printReport(run);
+        const summary = summariseRun(run);
+        retainSummary(run, summary);
+        printReport(run.counts, summary);
     }
 }

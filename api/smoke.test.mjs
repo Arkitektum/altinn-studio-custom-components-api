@@ -6,6 +6,9 @@ import { test } from "node:test";
 const SERVER_ENTRY = fileURLToPath(new URL("./index.mjs", import.meta.url));
 const TEST_PORT = 9099;
 const BOOT_TIMEOUT_MS = 20000;
+// Address the loopback interface directly: "localhost" resolves differently across setups (and to a non-loopback
+// address inside some containers), which fails the request for reasons that have nothing to do with the server.
+const BASE_URL = `http://127.0.0.1:${TEST_PORT}`;
 
 /**
  * Starts the API server as a child process and resolves once it logs that it is listening.
@@ -49,8 +52,25 @@ test("server boots and accepts HTTP connections", async () => {
     const child = await startServer();
     try {
         // Any HTTP response (even a 404 for an unknown route) proves the server booted and is accepting connections.
-        const response = await fetch(`http://localhost:${TEST_PORT}/__smoke__`);
+        const response = await fetch(`${BASE_URL}/__smoke__`);
         assert.equal(typeof response.status, "number");
+    } finally {
+        child.kill("SIGTERM");
+    }
+});
+
+test("serves diagnostics for a server that has not run anything yet", async () => {
+    const child = await startServer();
+    try {
+        // The only endpoint that needs neither Altinn Studio nor the native XML module, so it is the one route whose
+        // response this test can assert on. A freshly booted server has nothing retained yet.
+        const response = await fetch(`${BASE_URL}/api/diagnostics`);
+        assert.equal(response.status, 200);
+
+        const body = await response.json();
+        assert.deepEqual(body.totals, { ok: 0, warn: 0, error: 0 });
+        assert.deepEqual(body.runs, []);
+        assert.match(body.generatedAt, /^\d{4}-\d{2}-\d{2}T/);
     } finally {
         child.kill("SIGTERM");
     }

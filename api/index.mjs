@@ -14,8 +14,8 @@ import {
     getLatestPackageVersions,
     getPackageVersions
 } from "./scripts/functions.mjs";
+import { getDiagnostics, withRunLog } from "./utils/logger.mjs";
 import { createCachedFunction } from "./utils/cache.mjs";
-import { withRunLog } from "./utils/logger.mjs";
 
 const app = express();
 
@@ -128,6 +128,18 @@ app.get("/api/applicationMetadata", async (req, res) => {
     } catch (error) {
         console.error("Error fetching application metadata:", error);
         res.status(500).json({ error: "Failed to fetch application metadata" });
+    }
+});
+
+// Reports what the data endpoints last ran into, so the Statistics dashboard can surface problems instead of leaving
+// them in the terminal. Deliberately not wrapped in withRunLog: it does no work of its own, and polling it would
+// otherwise print a report line per request.
+app.get("/api/diagnostics", (req, res) => {
+    try {
+        res.json(getDiagnostics());
+    } catch (error) {
+        console.error("Error building diagnostics:", error);
+        res.status(500).json({ error: "Failed to build diagnostics" });
     }
 });
 
