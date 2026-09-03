@@ -267,7 +267,10 @@ function renderGroups(groups) {
             if (outcome.scopes.length === 1) {
                 lines.push(`   ${bold(outcome.scopes[0])}${outcome.message ? dim(" · ") + outcome.message : ""}`);
             } else {
-                lines.push(`   ${outcome.message ?? group.category} ${dim(`— ${outcome.scopes.length} sources`)}`);
+                // Without a message there is nothing to head the list with — repeating the category would just echo
+                // the group heading directly above.
+                const count = `${outcome.scopes.length} sources`;
+                lines.push(outcome.message ? `   ${outcome.message} ${dim(`— ${count}`)}` : `   ${dim(count)}`);
                 lines.push(...wrapList(outcome.scopes, "     ").map(dim));
             }
             if (outcome.detail) {

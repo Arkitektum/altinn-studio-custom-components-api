@@ -106,25 +106,23 @@ which made a single "Synchronize" produce hundreds of interleaved lines — the 
 (`log.ok` / `log.warn` / `log.error`), and the run prints one report when the request finishes:
 
 ```text
-Example data · 4.2s · 1 error · 26 warnings
+Example data · 4.2s · 1 error
 
  Source                        OK  Warn  Error
- dibk/disp-v1                   3     1      1
+ dibk/disp-v1                   3     ·      1
  18 other sources · all clear  69     ·      ·
  ─────────────────────────────────────────────
- Total                         72    26      1
+ Total                         72     ·      1
 
 ⛔️ Example file skipped (1)
    dibk/disp-v1 · DS (02_Maksimumsversjon.xml)
      XML does not conform to XSD:
      Element 'Dispensasjon': No matching global declaration available for the validation root.
-
-⚠️ File not found in Altinn Studio (26)
-   App/config/texts/resource.nn.json — 26 sources
-     dat/byggesak-samtykke-v3, dibk/an-v2, dibk/disp-v1, dibk/es-v2, …
 ```
 
-Successes are counted only. Warnings and errors keep their full text, grouped by cause, and within a cause the
+Successes are counted only. A file whose absence is expected — not every app ships a nynorsk resource file — or which
+the caller already reports with better context is fetched with `{ optional: true }` and does not warn, so the warning
+list stays worth reading. Warnings and errors keep their full text, grouped by cause, and within a cause the
 sources that failed the same way are listed together instead of one line each. Sources with nothing to flag are
 folded into a single table row, and a run with no warnings or errors at all collapses to one line. A run that
 recorded nothing (a cache hit) prints one line too.

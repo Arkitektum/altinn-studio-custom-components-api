@@ -99,6 +99,18 @@ test("groups warnings and errors by category and shows the full detail text", as
     assert.match(report, /No matching global declaration available for the validation root\./);
 });
 
+test("lists the sources without a heading when events carry no message of their own", async () => {
+    await withRunLog("Application metadata", async () => {
+        log.error({ scope: "dibk/rs-v4", category: "Application metadata not fetched", detail: "connect ETIMEDOUT" });
+        log.error({ scope: "dibk/ko-v2", category: "Application metadata not fetched", detail: "connect ETIMEDOUT" });
+    });
+
+    const report = captured();
+    assert.match(report, /Application metadata not fetched \(2\)\n {3}2 sources\n {5}dibk\/rs-v4, dibk\/ko-v2/);
+    // The category is the group heading; repeating it as the entry heading would say the same thing twice.
+    assert.equal(report.match(/Application metadata not fetched/g).length, 1);
+});
+
 test("collapses repeated identical events into one entry with a count", async () => {
     await withRunLog("Display layouts", async () => {
         log.warn({ scope: "dibk/rs-v4", category: "File not found in Altinn Studio", message: "DisplayLayout.json" });

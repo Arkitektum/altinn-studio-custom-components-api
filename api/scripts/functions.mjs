@@ -98,10 +98,14 @@ export async function getLatestPackageVersions() {
  * @param {string} appOwner - The owner of the application repository.
  * @param {string} appName - The name of the application repository.
  * @param {string} filePath - The path to the file within the repository.
+ * @param {Object} [options]
+ * @param {boolean} [options.optional=false] - Set when a missing file is either expected (not every app ships a
+ *   nynorsk resource file) or already reported by the caller with better context. A 404 is then recorded as progress
+ *   instead of a warning, so the report only warns about files that are actually supposed to be there.
  * @returns {Promise<string>} The content of the requested file as a string.
  * @throws {Error} If the fetch operation fails or the response is not OK.
  */
-async function fetchGiteaFileContent(appOwner, appName, filePath) {
+async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = false } = {}) {
     // Default branch is "master" (Gitea's historical default); override with GITEA_BRANCH for apps that use "main".
     const branch = process.env.GITEA_BRANCH || "master";
     const url = `https://altinn.studio/repos/${appOwner}/${appName}/raw/branch/${branch}/${filePath}`;
@@ -122,7 +126,11 @@ async function fetchGiteaFileContent(appOwner, appName, filePath) {
         if (!response.ok) {
             // Missing files are expected (optional layouts/subforms); return null so callers can skip them gracefully.
             if (response.status === 404) {
-                log.warn({ scope: `${appOwner}/${appName}`, category: "File not found in Altinn Studio", message: filePath });
+                if (optional) {
+                    log.progress(`⚠️ Optional file not found: ${appOwner}/${appName} ${filePath}`);
+                } else {
+                    log.warn({ scope: `${appOwner}/${appName}`, category: "File not found in Altinn Studio", message: filePath });
+                }
                 return null;
             }
             // No severity marker in the message: it is reported as the detail of whichever event the caller records.
@@ -182,7 +190,9 @@ async function fetchDisplayLayoutFromAltinnStudio(appOwner, appName, filePath) {
  */
 async function fetchSubFormDisplayLayoutFromAltinnStudio(appOwner, appName, subFormDataType) {
     const filePath = `App/ui/subform-${subFormDataType}/layouts/${subFormDataType}.json`;
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
+    // getSubFormLayout reports a missing layout as an error naming the subform, so a 404 warning here would only
+    // report the same thing twice.
+    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath, { optional: true });
     if (!fileContent) {
         return null;
     }
@@ -289,7 +299,9 @@ export async function getDisplayLayouts() {
  */
 async function fetchPackageLockFromAltinnStudio(appOwner, appName) {
     const filePath = "App/package-lock.json";
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
+    // getPackageVersions reports the app as unresolved, which covers a missing lockfile as well as one that
+    // doesn't list the components package.
+    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath, { optional: true });
     if (!fileContent) {
         return null;
     }
@@ -308,7 +320,9 @@ async function fetchPackageLockFromAltinnStudio(appOwner, appName) {
  */
 async function fetchAppResourceFile(appOwner, appName, language = "nb") {
     const filePath = `App/config/texts/resource.${language}.json`;
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
+    // Apps are not required to ship every language — most have no nynorsk file — so a missing one is normal and not
+    // worth a warning. getAppResourceValues still warns about an app with no readable resource file at all.
+    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath, { optional: true });
     if (!fileContent) {
         return null;
     }
@@ -461,9 +475,14 @@ async function fetchAltinnAppIndexHtml(appOwner, appName) {
  * Extracts the version of the altinn-studio-custom-components package from the given package-lock.json content.
  * @param {Object} packageLock - The parsed JSON content of the package-lock.json file.
  * @returns {string} The version of the altinn-studio-custom-components package.
- * @throws {Error} If the altinn-studio-custom-components package is not found in the package-lock.json.
+ * @throws {Error} If the package-lock.json is missing, or does not list the altinn-studio-custom-components package.
  */
 function extractAltinnStudioCustomComponentsVersion(packageLock) {
+    // Distinguish "no lockfile in the repo" from "lockfile without the package" — the fetch no longer reports the
+    // missing file itself, so this message is the only explanation the report gets.
+    if (!packageLock) {
+        throw new Error("App/package-lock.json not found in the repository");
+    }
     const dependencies = packageLock?.packages || {};
     const altinnStudioCustomComponents = dependencies?.["node_modules/@arkitektum/altinn-studio-custom-components"];
     if (altinnStudioCustomComponents?.version) {
@@ -532,6 +551,17 @@ export function getAltinnStudioForms() {
 }
 
 /**
+ * The repository path of the XSD for a data type. Shared so the callers that report a missing schema name the same
+ * path that was fetched.
+ *
+ * @param {string} dataType - The data type to build the schema path for.
+ * @returns {string} The path to the schema file within the repository.
+ */
+function xmlSchemaFilePath(dataType) {
+    return `App/models/${dataType}.xsd`;
+}
+
+/**
  * Fetches the XML schema (XSD) file content for a given data type from an Altinn Studio app repository.
  *
  * @async
@@ -541,9 +571,9 @@ export function getAltinnStudioForms() {
  * @returns {Promise<string>} The content of the XML schema file as a string.
  */
 async function fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType) {
-    const filePath = `App/models/${dataType}.xsd`;
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
-    return fileContent;
+    // Reported once by the caller, which then skips the affected example files rather than failing each of them with
+    // an opaque parser error about a schema that was never there.
+    return fetchGiteaFileContent(appOwner, appName, xmlSchemaFilePath(dataType), { optional: true });
 }
 
 /**
@@ -699,10 +729,20 @@ async function readExampleFilesForDataType(dataType, folderPath, result, subform
     }
     const xmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType);
 
-    for (const file of files) {
-        await addExampleFile({ dataType, appOwner, appName, folderPath, fileName: file.name, xmlSchema, result });
+    if (xmlSchema) {
+        for (const file of files) {
+            await addExampleFile({ dataType, appOwner, appName, folderPath, fileName: file.name, xmlSchema, result });
+        }
+    } else {
+        log.error({
+            scope: `${appOwner}/${appName}`,
+            category: "Schema not found — example files skipped",
+            message: xmlSchemaFilePath(dataType),
+            detail: `${files.length} example file${files.length === 1 ? "" : "s"} could not be validated.`
+        });
     }
 
+    // Subforms carry their own schemas, so they are still worth processing even when this data type has none.
     await handleSubForms(dataType, appOwner, appName, result, subformsExampleDataDir);
 }
 
@@ -738,6 +778,15 @@ async function handleSubForms(dataType, appOwner, appName, result, subformsExamp
             throw error;
         }
         const subXmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, subFormDataType);
+        if (!subXmlSchema) {
+            log.error({
+                scope: `${appOwner}/${appName}`,
+                category: "Schema not found — example files skipped",
+                message: xmlSchemaFilePath(subFormDataType),
+                detail: `${subFormFiles.length} subform example file${subFormFiles.length === 1 ? "" : "s"} could not be validated.`
+            });
+            continue;
+        }
         for (const subFormFile of subFormFiles) {
             await addExampleFile({
                 dataType: subFormDataType,
