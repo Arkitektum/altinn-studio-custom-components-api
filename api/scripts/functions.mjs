@@ -10,6 +10,7 @@ import subforms from "../data/subforms.mjs";
 
 // Utils
 import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
+import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
 import { log } from "../utils/logger.mjs";
 import { stripJsonComments } from "../utils/stripJsonComments.mjs";
@@ -24,6 +25,15 @@ const resourceValueLanguages = ["nb", "nn"];
 // Loaded lazily and cached on first successful read (see getDefaultTextResources), so a missing/malformed
 // resources.json degrades gracefully instead of crashing the server at import time.
 let defaultTextResourcesCache;
+
+// Every endpoint fans out over all tracked apps at once, and the dashboard calls several endpoints together, so
+// without a cap one "Synchronize" opens well over a hundred connections to Altinn Studio at the same time (measured:
+// ~180 requests, peaking at ~160 concurrent). All requests share this one gate, whatever mix of endpoints is in
+// flight. The default trades a little wall-clock for being a reasonable client; raise ALTINN_STUDIO_CONCURRENCY for a
+// faster cold sync, lower it if Altinn Studio starts refusing connections.
+const parsedConcurrency = Number.parseInt(process.env.ALTINN_STUDIO_CONCURRENCY, 10);
+const altinnStudioConcurrency = Number.isInteger(parsedConcurrency) && parsedConcurrency > 0 ? parsedConcurrency : 16;
+const limitAltinnStudioRequest = createConcurrencyLimiter(altinnStudioConcurrency);
 
 /**
  * Fetches the latest version of a package from the npm registry.
@@ -122,28 +132,32 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
         }
     };
     try {
-        const response = await fetch(url, options);
-        if (!response.ok) {
-            // Missing files are expected (optional layouts/subforms); return null so callers can skip them gracefully.
-            if (response.status === 404) {
-                if (optional) {
-                    log.progress(`⚠️ Optional file not found: ${appOwner}/${appName} ${filePath}`);
-                } else {
-                    log.warn({ scope: `${appOwner}/${appName}`, category: "File not found in Altinn Studio", message: filePath });
+        // The slot is held until the body has been read, so the cap bounds open connections rather than just how many
+        // requests have been started.
+        return await limitAltinnStudioRequest(async () => {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                // Missing files are expected (optional layouts/subforms); return null so callers can skip them gracefully.
+                if (response.status === 404) {
+                    if (optional) {
+                        log.progress(`⚠️ Optional file not found: ${appOwner}/${appName} ${filePath}`);
+                    } else {
+                        log.warn({ scope: `${appOwner}/${appName}`, category: "File not found in Altinn Studio", message: filePath });
+                    }
+                    return null;
                 }
-                return null;
+                // No severity marker in the message: it is reported as the detail of whichever event the caller records.
+                throw new Error(`Failed to fetch ${filePath} (status ${response.status}) from ${url}`);
             }
-            // No severity marker in the message: it is reported as the detail of whichever event the caller records.
-            throw new Error(`Failed to fetch ${filePath} (status ${response.status}) from ${url}`);
-        }
-        let content = await response.text();
+            let content = await response.text();
 
-        // If it's a JSON file, strip comments to prevent JSON.parse() failures
-        if (filePath.toLowerCase().endsWith(".json")) {
-            content = stripJsonComments(content);
-        }
+            // If it's a JSON file, strip comments to prevent JSON.parse() failures
+            if (filePath.toLowerCase().endsWith(".json")) {
+                content = stripJsonComments(content);
+            }
 
-        return content;
+            return content;
+        });
     } catch (error) {
         // The caller records this failure with its own context (which app, which endpoint), so logging it here too
         // would only duplicate a line in the report. Keep the exact URL for verbose runs.

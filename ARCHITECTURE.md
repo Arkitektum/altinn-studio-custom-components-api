@@ -72,6 +72,7 @@ api/
 ├── utils/
 │   ├── altinnAppFrontendVersions.mjs# Extracts frontend asset versions from Index.cshtml
 │   ├── cache.mjs                    # In-memory TTL cache used by the expensive endpoints
+│   ├── concurrencyLimiter.mjs       # Caps simultaneous Altinn Studio requests
 │   ├── logger.mjs                   # Run-scoped logging: one aggregated report per request
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
 │   ├── xmlToJsonConverter.mjs       # Converts example form XML into JSON
@@ -93,6 +94,11 @@ api/
   The branch defaults to `master` and is configurable via **`GITEA_BRANCH`**, for apps that use `main`.
   This is how layouts, app resources, and application metadata are retrieved.
   A missing token fails fast with a clear message, because Altinn Studio otherwise answers with an HTML login page that surfaces later as a confusing XML parse error.
+  Requests go through a shared concurrency gate (`api/utils/concurrencyLimiter.mjs`), because each endpoint fans out over
+  every tracked app and the dashboard calls several endpoints at once — uncapped, one sync peaks at ~160 simultaneous
+  connections. The limit is **`ALTINN_STUDIO_CONCURRENCY`** (default `16`): raise it for a faster cold sync, lower it if
+  Altinn Studio starts refusing connections. The gate is around the request helper rather than each fan-out, so the
+  budget is shared however many endpoints are in flight.
 - **npm registry & GitHub releases.**
   `getLatestPackageVersions` resolves the latest version for each entry in `packageSources.mjs` — from `registry.npmjs.org` for `npm` sources and from the GitHub releases API for `github` sources.
 - **Local files.**
