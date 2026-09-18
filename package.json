@@ -18,7 +18,7 @@
         "@arkitektum/altinn-studio-custom-components": "^16.7.5",
         "@arkitektum/altinn-studio-custom-components-utils": "^1.5.3",
         "cors": "^2.8.6",
-        "dotenv": "^17.4.2",
+        "dotenv": "^18.0.0",
         "express": "^5.2.1",
         "fast-xml-parser": "^5.11.1",
         "libxmljs2": "^0.37.0"
