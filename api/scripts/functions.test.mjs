@@ -1,12 +1,19 @@
 import { afterEach, beforeEach, test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 
+import { getAppResourceValues, getJsonExampleData } from "./functions.mjs";
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
-import { getAppResourceValues } from "./functions.mjs";
+import { clearTestmotorCache } from "../utils/testmotorClient.mjs";
 
 const originalFetch = globalThis.fetch;
 const originalToken = process.env.GITEA_TOKEN;
+const originalExampleDir = process.env.EXAMPLE_DATA_DIR;
 const originalWarn = console.warn;
+const originalError = console.error;
+const originalLog = console.log;
 
 /**
  * Stubs global fetch with a Gitea-like response. `bodyForUrl` returns the file content for a requested URL, or
@@ -24,8 +31,11 @@ function stubFetch(bodyForUrl) {
 
 beforeEach(() => {
     process.env.GITEA_TOKEN = "test-token";
-    // The skip paths log deliberately; keep the test output readable.
+    // The skip paths log deliberately, and outside a run the logger writes straight to the console. Keep the test
+    // output readable.
     console.warn = () => {};
+    console.error = () => {};
+    console.log = () => {};
 });
 
 afterEach(() => {
@@ -35,7 +45,15 @@ afterEach(() => {
     } else {
         process.env.GITEA_TOKEN = originalToken;
     }
+    if (originalExampleDir === undefined) {
+        delete process.env.EXAMPLE_DATA_DIR;
+    } else {
+        process.env.EXAMPLE_DATA_DIR = originalExampleDir;
+    }
     console.warn = originalWarn;
+    console.error = originalError;
+    console.log = originalLog;
+    clearTestmotorCache();
 });
 
 test("merges values per language when every resource file parses", async () => {
@@ -90,4 +108,269 @@ test("restricts the fetch to a single supported language", async () => {
 
     assert.ok(requested.every((url) => url.includes("resource.nb.json")));
     assert.deepEqual(result[0].resourceValues, [{ id: "a", values: { nb: "bokmål" } }]);
+});
+
+/**
+ * Example data, assembled from the testmotor and from disk.
+ *
+ * These run against the real app catalogue, because which apps share a data type is exactly what is under test —
+ * a fixture catalogue could not go wrong in the way the real one does. Everything else is stubbed: the testmotor,
+ * the schemas fetched from Altinn Studio, and the example directory.
+ */
+
+/** A schema every fixture file below validates against. */
+const XSD = `<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="skjema">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tittel" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>`;
+
+/**
+ * An example file that validates against XSD, carrying its own name so a test can tell the files apart.
+ *
+ * @param {string} tittel
+ * @returns {string}
+ */
+function xml(tittel) {
+    return `<?xml version="1.0" encoding="utf-8"?><skjema><tittel>${tittel}</tittel></skjema>`;
+}
+
+/** An example file that does not validate against XSD. */
+const INVALID_XML = `<?xml version="1.0" encoding="utf-8"?><skjema><ukjentFelt>nei</ukjentFelt></skjema>`;
+
+/**
+ * Stubs both upstreams: the testmotor's two endpoints and the schema fetch from Altinn Studio.
+ *
+ * @param {Object} options
+ * @param {Array<{appId: string, mainFormId: string}>} [options.apps] - What /api/altinn-app answers.
+ * @param {Object<string, Array<{name: string, contents: string}>>} [options.xmlByApp] - What /api/xml/{appId} answers.
+ * @param {boolean} [options.testmotorDown] - Make every testmotor request fail.
+ * @param {string|null} [options.xsd] - The schema every data type resolves to, or null to answer 404.
+ */
+function stubExampleSources({ apps = [], xmlByApp = {}, testmotorDown = false, xsd = XSD }) {
+    clearTestmotorCache();
+    globalThis.fetch = async (url) => {
+        const target = String(url);
+        if (target.includes("app-ftpb-testmotor")) {
+            if (testmotorDown) {
+                throw new TypeError("fetch failed");
+            }
+            const body = target.endsWith("/api/altinn-app") ? apps : (xmlByApp[decodeURIComponent(target.split("/api/xml/")[1])] ?? []);
+            return { ok: true, status: 200, statusText: "OK", json: async () => body, text: async () => JSON.stringify(body) };
+        }
+        if (target.endsWith(".xsd") && xsd !== null) {
+            return { ok: true, status: 200, text: async () => xsd };
+        }
+        return { ok: false, status: 404, text: async () => "" };
+    };
+}
+
+/**
+ * Writes an example directory and points EXAMPLE_DATA_DIR at it for the duration of the test.
+ *
+ * @param {import("node:test").TestContext} t
+ * @param {Object<string, string>} files - Path under the example root, relative, to file contents.
+ * @returns {Promise<string>} The directory.
+ */
+async function withExampleDir(t, files) {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "example-data-"));
+    for (const [relativePath, contents] of Object.entries(files)) {
+        const filePath = path.join(dir, relativePath);
+        await fs.mkdir(path.dirname(filePath), { recursive: true });
+        await fs.writeFile(filePath, contents, "utf8");
+    }
+    process.env.EXAMPLE_DATA_DIR = dir;
+    t.after(() => fs.rm(dir, { recursive: true, force: true }));
+    return dir;
+}
+
+/**
+ * The entry for one app's own examples.
+ *
+ * @param {Array<Object>} result
+ * @param {string} appName
+ * @returns {Object|undefined}
+ */
+function entryForApp(result, appName) {
+    return result.find((entry) => entry.appName === appName);
+}
+
+test("keys main form examples on the app, so two apps sharing a data type keep their own", async () => {
+    // fa-v3 and fa-v5 are both filed under FA and hold different files. Keyed on the data type alone, one of them
+    // was being shown the other's examples.
+    stubExampleSources({
+        apps: [
+            { appId: "fa-v3", mainFormId: "FA" },
+            { appId: "fa-v5", mainFormId: "FA" }
+        ],
+        xmlByApp: {
+            "fa-v3": [{ name: "Standard", contents: xml("v3 standard") }],
+            "fa-v5": [
+                { name: "Standard", contents: xml("v5 standard") },
+                { name: "Automatiseringskrav", contents: xml("v5 automatisering") }
+            ]
+        }
+    });
+
+    const result = await getJsonExampleData();
+
+    assert.deepEqual(entryForApp(result, "fa-v3").files, [{ name: "Standard", data: { tittel: "v3 standard" } }]);
+    assert.deepEqual(entryForApp(result, "fa-v5").files, [
+        { name: "Standard", data: { tittel: "v5 standard" } },
+        { name: "Automatiseringskrav", data: { tittel: "v5 automatisering" } }
+    ]);
+});
+
+test("keeps the order the testmotor answers files in", async () => {
+    // The ordering prefix is stripped before the files arrive, so sorting the stems would put Maksimumsversjon
+    // ahead of Minimumsversjon by accident rather than by intent.
+    stubExampleSources({
+        apps: [{ appId: "an-v2", mainFormId: "AN" }],
+        xmlByApp: {
+            "an-v2": [
+                { name: "Maksimumsversjon", contents: xml("maks") },
+                { name: "Minimumsversjon", contents: xml("min") },
+                { name: "Automatiseringskrav", contents: xml("auto") }
+            ]
+        }
+    });
+
+    const result = await getJsonExampleData();
+
+    assert.deepEqual(
+        entryForApp(result, "an-v2").files.map((file) => file.name),
+        ["Maksimumsversjon", "Minimumsversjon", "Automatiseringskrav"]
+    );
+});
+
+test("reads from disk for an app the testmotor does not hold, stripping the prefix and the extension", async (t) => {
+    // hoeringettersynuttalelse-v2 is the one main form the testmotor has no data for.
+    await withExampleDir(t, {
+        "forms/HoeringOgOffentligEttersynUttalelse/02_uttalelse.xml": xml("uttalelse"),
+        "forms/HoeringOgOffentligEttersynUttalelse/01_standard.xml": xml("standard")
+    });
+    stubExampleSources({ apps: [{ appId: "an-v2", mainFormId: "AN" }] });
+
+    const result = await getJsonExampleData();
+    const entry = entryForApp(result, "hoeringettersynuttalelse-v2");
+
+    assert.equal(entry.error, null);
+    assert.deepEqual(entry.files, [
+        { name: "standard", data: { tittel: "standard" } },
+        { name: "uttalelse", data: { tittel: "uttalelse" } }
+    ]);
+});
+
+test("refuses a disk folder that two apps claim", async (t) => {
+    // A folder is named after the data type, so a folder called FA cannot say whether it is fa-v3's or fa-v5's.
+    await withExampleDir(t, { "forms/FA/01_Standard.xml": xml("whose is this?") });
+    stubExampleSources({ apps: [] });
+
+    const result = await getJsonExampleData();
+
+    assert.deepEqual(entryForApp(result, "fa-v3").files, []);
+    assert.deepEqual(entryForApp(result, "fa-v5").files, []);
+});
+
+test("carries the reason on every app when the testmotor cannot be reached", async () => {
+    // "No examples" and "could not reach the examples" are different answers, and only one of them is ours.
+    stubExampleSources({ testmotorDown: true });
+
+    const result = await getJsonExampleData();
+    const entry = entryForApp(result, "fa-v5");
+
+    assert.deepEqual(entry.files, []);
+    assert.match(entry.error, /could not be reached: fetch failed/);
+});
+
+test("still serves a disk-backed app when the testmotor is down", async (t) => {
+    // Its examples never depended on the testmotor, so an outage there is not a reason to lose them.
+    await withExampleDir(t, { "forms/HoeringOgOffentligEttersynUttalelse/01_uttalelse.xml": xml("uttalelse") });
+    stubExampleSources({ testmotorDown: true });
+
+    const result = await getJsonExampleData();
+    const entry = entryForApp(result, "hoeringettersynuttalelse-v2");
+
+    assert.equal(entry.error, null);
+    assert.deepEqual(entry.files, [{ name: "uttalelse", data: { tittel: "uttalelse" } }]);
+});
+
+test("gives an app with no examples anywhere an entry and no error", async () => {
+    // ts-v1 is one of the reply forms, which have example data from neither source. That is an absence, not a
+    // failure, and it has to read as one.
+    stubExampleSources({ apps: [{ appId: "an-v2", mainFormId: "AN" }] });
+
+    const result = await getJsonExampleData();
+    const entry = entryForApp(result, "ts-v1");
+
+    assert.deepEqual(entry.files, []);
+    assert.equal(entry.error, null);
+});
+
+test("skips one example that fails validation and keeps the rest", async () => {
+    stubExampleSources({
+        apps: [{ appId: "an-v2", mainFormId: "AN" }],
+        xmlByApp: {
+            "an-v2": [
+                { name: "Maksimumsversjon", contents: xml("maks") },
+                { name: "Ugyldig", contents: INVALID_XML },
+                { name: "Minimumsversjon", contents: xml("min") }
+            ]
+        }
+    });
+
+    const result = await getJsonExampleData();
+
+    assert.deepEqual(
+        entryForApp(result, "an-v2").files.map((file) => file.name),
+        ["Maksimumsversjon", "Minimumsversjon"]
+    );
+});
+
+test("reports the schema when it is the schema that could not be read", async () => {
+    stubExampleSources({
+        apps: [{ appId: "an-v2", mainFormId: "AN" }],
+        xmlByApp: { "an-v2": [{ name: "Maksimumsversjon", contents: xml("maks") }] },
+        xsd: null
+    });
+
+    const result = await getJsonExampleData();
+    const entry = entryForApp(result, "an-v2");
+
+    assert.deepEqual(entry.files, []);
+    assert.match(entry.error, /App\/models\/AN\.xsd could not be read from Altinn Studio/);
+});
+
+test("files a subform under no app, once, however many apps declare it", async (t) => {
+    // GjennomfoeringsplanDataV7 is declared by several apps and its examples are one shared set, so the entry
+    // matches any app that declares the data type rather than naming whichever parent reached it first.
+    await withExampleDir(t, {
+        "subforms/GjennomfoeringsplanDataV7/GjennomfoeringsplanDataV7.xml": xml("gjennomfoeringsplan")
+    });
+    stubExampleSources({ apps: [] });
+
+    const result = await getJsonExampleData();
+    const subformEntries = result.filter((entry) => entry.dataType === "GjennomfoeringsplanDataV7");
+
+    assert.equal(subformEntries.length, 1);
+    assert.equal(subformEntries[0].appName, null);
+    assert.equal(subformEntries[0].appOwner, null);
+    assert.deepEqual(subformEntries[0].files, [{ name: "GjennomfoeringsplanDataV7", data: { tittel: "gjennomfoeringsplan" } }]);
+
+    const declaringApps = altinnStudioApps.filter((app) => app.subForms?.some((subForm) => subForm.dataType === "GjennomfoeringsplanDataV7"));
+    assert.ok(declaringApps.length > 1);
+});
+
+test("gives every tracked app an entry of its own", async () => {
+    stubExampleSources({ apps: [] });
+
+    const result = await getJsonExampleData();
+    const mainFormEntries = result.filter((entry) => entry.appName !== null);
+
+    assert.equal(mainFormEntries.length, altinnStudioApps.length);
 });

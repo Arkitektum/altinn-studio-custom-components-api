@@ -31,6 +31,10 @@ cp .env.sample .env
 
 - `API_PORT` — the port to listen on (use `9001`, which the Statistics dashboard expects).
 - `GITEA_TOKEN` — a token for reading files from Altinn Studio's Gitea.
+- `TESTMOTOR_URL` — the FtPB testmotor, which serves the main form example data. The default is the hosted instance; override it to work against your own.
+- `EXAMPLE_DATA_DIR` — where the example data the testmotor does not serve lives. Defaults to `api/data/exampleData`.
+
+See `.env.sample` for the rest.
 
 Generate a Gitea token at <https://altinn.studio/repos/user/settings/applications> with the **`read:repository`** scope, then put it in `.env` (replacing `your_token_here`).
 
@@ -59,7 +63,7 @@ All routes are `GET` under `/api` and return JSON:
 | `/api/appResources` | App-level text-resource values (accepts a `language` query param). |
 | `/api/resources` | The package's default text resources. |
 | `/api/altinnStudioForms` | The configured list of tracked Altinn apps / forms. |
-| `/api/exampleData` | Example form + subform data, converted from XML to JSON. |
+| `/api/exampleData` | Example form + subform data, converted from XML to JSON. Main forms come from the FtPB testmotor; subforms come from disk. |
 | `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
 | `/api/diagnostics` | What the endpoints above last ran into: counts per app plus the grouped warnings and errors. |
 

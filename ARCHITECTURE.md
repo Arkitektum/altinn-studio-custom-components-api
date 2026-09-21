@@ -23,14 +23,14 @@ It is not published to npm and is not deployed — each developer runs it locall
   altinn-studio-custom-components (dev server)
         statistics.html  ──HTTP──▶  this API (localhost:9001)
                                         │
-                          ┌─────────────┼───────────────────────────────┐
-                          ▼             ▼                               ▼
-                  Altinn Studio    npm registry / GitHub          local example data
-                  (Gitea repos)    (latest versions)              (api/data/exampleData)
+                  ┌─────────────┬───────┴────────┬──────────────────────┐
+                  ▼             ▼                ▼                      ▼
+          Altinn Studio   npm registry     FtPB testmotor        local example data
+          (Gitea repos)   / GitHub         (main form data)      (subforms + the rest)
 ```
 
 - The **Statistics** dashboard is the only consumer.
-- This API reads live data from **Altinn Studio's Gitea** (raw files via `https://altinn.studio/repos/...`), looks up **latest package versions** from the npm registry and GitHub releases, and serves **bundled example form data** from disk.
+- This API reads live data from **Altinn Studio's Gitea** (raw files via `https://altinn.studio/repos/...`), looks up **latest package versions** from the npm registry and GitHub releases, and reads **main form example data** from the FtPB testmotor. Only the subforms, and the one main form the testmotor has no data for, are files in this repo.
 
 ---
 
@@ -46,7 +46,7 @@ All routes are `GET` under `/api` and return JSON (`api/index.mjs`):
 | `/api/appResources` | App-level text-resource values (accepts a `language` query param). |
 | `/api/resources` | The package's default text resources. |
 | `/api/altinnStudioForms` | The configured list of tracked Altinn apps / forms. |
-| `/api/exampleData` | Example form + subform data, converted from XML to JSON. |
+| `/api/exampleData` | Example form + subform data, converted from XML to JSON. One entry per tracked app, plus one per subform; carries an `error` when an app's examples could not be fetched. |
 | `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
 | `/api/diagnostics` | What the data endpoints above last ran into — counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches. |
 
@@ -68,14 +68,17 @@ api/
 ├── index.mjs                        # Express app: route definitions + server bootstrap
 ├── smoke.test.mjs                   # Boots the server and checks it accepts connections
 ├── scripts/
-│   ├── functions.mjs                # All data fetching/parsing (Gitea, npm, GitHub, local files)
-│   └── functions.test.mjs
+│   ├── catalogueDrift.mjs           # `yarn drift`: where the catalogue and the testmotor disagree
+│   ├── functions.mjs                # All data fetching/parsing (Gitea, npm, GitHub, testmotor, local files)
+│   └── *.test.mjs
 ├── utils/
 │   ├── altinnAppFrontendVersions.mjs# Extracts frontend asset versions from Index.cshtml
 │   ├── cache.mjs                    # In-memory TTL cache used by the expensive endpoints
 │   ├── concurrencyLimiter.mjs       # Caps simultaneous Altinn Studio requests
+│   ├── exampleFiles.mjs             # Reading the example XML still kept on disk
 │   ├── logger.mjs                   # Run-scoped logging: one aggregated report per request
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
+│   ├── testmotorClient.mjs          # The FtPB testmotor, which holds the main form examples
 │   ├── xmlToJsonConverter.mjs       # Converts example form XML into JSON
 │   └── *.test.mjs
 └── data/
@@ -83,7 +86,7 @@ api/
     ├── subforms.mjs                 # Subform definitions + their layouts
     ├── subforms/                    # One module per subform, re-exported by subforms.mjs
     ├── packageSources.mjs           # Which packages to look up latest versions for (npm / GitHub)
-    └── exampleData/                 # Bundled example XML (forms/ and subforms/)
+    └── exampleData/                 # Example XML the testmotor does not serve (subforms/, and one form)
 ```
 
 ---
@@ -102,8 +105,29 @@ api/
   budget is shared however many endpoints are in flight.
 - **npm registry & GitHub releases.**
   `getLatestPackageVersions` resolves the latest version for each entry in `packageSources.mjs` — from `registry.npmjs.org` for `npm` sources and from the GitHub releases API for `github` sources.
+- **FtPB testmotor.**
+  `api/utils/testmotorClient.mjs` reads the main form example data from `TESTMOTOR_URL` (default `https://app-ftpb-testmotor.azurewebsites.net`). No token is sent; both endpoints are open.
+
+  | Endpoint | Answers |
+  | -------- | ------- |
+  | `GET /api/altinn-app` | The apps it holds data for, and each one's main form data type. |
+  | `GET /api/xml/{appId}` | That app's example files, contents and all. |
+
+  It serves the copy the DiBK test team maintains out of an Azure file share, and **re-stamps the date fields on every request** with a date ten days out. That is the whole reason these examples are not files here: a ferdigattest example is only valid while its `bekreftelseInnen` and `utfoertInnen` fall inside the next fortnight, so a committed copy is right on the day it is committed and stale a couple of weeks later. Several other form types have a rule of that shape.
+
+  It is keyed by **app id**, and has to be: `fa-v3` and `fa-v5` are both filed under the data type `FA` and hold different files. This is why `/api/exampleData` names the app on each entry rather than only the data type.
+
+  Answers are cached for five minutes, which is how long the testmotor caches its own reads of the share. File names arrive as bare stems — `01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon` — and are **not sorted**, because the prefix that carried the order is already gone.
+
+  There is a third endpoint, `GET /api/altinn-app/{appId}`, which answers the same files alongside parties, metadata and attachments. It is deliberately unused: it makes Altinn calls this API has no use for.
+
+  If it cannot be reached there is **no fallback to disk**; the affected entries carry the reason instead, so the dashboard can tell "no examples" from "could not fetch the examples".
+
+  The catalogue in `altinnStudioApps.mjs` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land.
 - **Local files.**
-  Default text resources are read from the installed package at `node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json`, and example data is read from `api/data/exampleData`.
+  Default text resources are read from the installed package at `node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json`. Example data the testmotor does not serve — every subform, and `hoeringettersynuttalelse-v2`, the one main form it has no data for — is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml` and `subforms/{dataType}/*.xml`.
+
+  A `forms/` folder is named after the data type rather than the app, so it is only read when exactly one tracked app claims that data type. A folder named `FA` could not say whether it was `fa-v3`'s or `fa-v5`'s.
 
 ---
 
@@ -188,8 +212,9 @@ it reports.
 - **`node --test`** (the built-in Node test runner) for tests — no test framework is installed.
 
 Tests live next to the code they cover as `*.test.mjs`. Most target the leaf utilities, which are pure and need no
-network; `functions.test.mjs` stubs global `fetch` to exercise the fan-out logic, and `smoke.test.mjs` boots the
-server in a child process to check it starts and accepts connections.
+network; `functions.test.mjs` stubs global `fetch` — for both Altinn Studio and the testmotor — and points
+`EXAMPLE_DATA_DIR` at a temporary directory, so the example-data assembly runs end to end without either upstream.
+`smoke.test.mjs` boots the server in a child process to check it starts and accepts connections.
 
 Two GitHub Actions workflows cover `main`: `ci.yml` runs `yarn lint` and `yarn test` on every push and pull request,
 and `eslint.yml` uploads ESLint results to the repository's security tab on the same events plus a weekly schedule.
