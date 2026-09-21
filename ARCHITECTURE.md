@@ -68,12 +68,14 @@ api/
 ├── index.mjs                        # Express app: route definitions + server bootstrap
 ├── smoke.test.mjs                   # Boots the server and checks it accepts connections
 ├── scripts/
+│   ├── catalogueDrift.mjs           # `yarn drift`: where the catalogue and the testmotor disagree
 │   ├── functions.mjs                # All data fetching/parsing (Gitea, npm, GitHub, testmotor, local files)
-│   └── functions.test.mjs
+│   └── *.test.mjs
 ├── utils/
 │   ├── altinnAppFrontendVersions.mjs# Extracts frontend asset versions from Index.cshtml
 │   ├── cache.mjs                    # In-memory TTL cache used by the expensive endpoints
 │   ├── concurrencyLimiter.mjs       # Caps simultaneous Altinn Studio requests
+│   ├── exampleFiles.mjs             # Reading the example XML still kept on disk
 │   ├── logger.mjs                   # Run-scoped logging: one aggregated report per request
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
 │   ├── testmotorClient.mjs          # The FtPB testmotor, which holds the main form examples
@@ -120,6 +122,8 @@ api/
   There is a third endpoint, `GET /api/altinn-app/{appId}`, which answers the same files alongside parties, metadata and attachments. It is deliberately unused: it makes Altinn calls this API has no use for.
 
   If it cannot be reached there is **no fallback to disk**; the affected entries carry the reason instead, so the dashboard can tell "no examples" from "could not fetch the examples".
+
+  The catalogue in `altinnStudioApps.mjs` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land.
 - **Local files.**
   Default text resources are read from the installed package at `node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json`. Example data the testmotor does not serve — every subform, and `hoeringettersynuttalelse-v2`, the one main form it has no data for — is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml` and `subforms/{dataType}/*.xml`.
 

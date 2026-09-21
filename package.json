@@ -7,7 +7,8 @@
     "scripts": {
         "start": "node api/index.mjs",
         "test": "node --test",
-        "lint": "eslint api"
+        "lint": "eslint api",
+        "drift": "node api/scripts/catalogueDrift.mjs"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",

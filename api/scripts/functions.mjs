@@ -9,6 +9,7 @@ import packageSources from "../data/packageSources.mjs";
 import subforms from "../data/subforms.mjs";
 
 // Utils
+import { exampleDataDir, readExampleFilesFromDisk } from "../utils/exampleFiles.mjs";
 import { fetchTestmotorApps, fetchTestmotorFormXml } from "../utils/testmotorClient.mjs";
 import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
@@ -661,66 +662,6 @@ export async function getApplicationMetadata() {
  *   dashboard has to tell "there are no examples for this" from "the examples could not be fetched".
  * @property {ExampleFile[]} files - In source order: the testmotor's own for a main form, prefix order on disk.
  */
-
-/**
- * Where the on-disk example data lives. Overridable so a test can point at fixtures, and so the directory can be
- * kept elsewhere without this repo holding a second copy of it.
- *
- * @returns {string} The example data root, holding `forms/` and `subforms/`.
- */
-function exampleDataDir() {
-    return process.env.EXAMPLE_DATA_DIR?.trim() || path.join(repoRoot, "api/data/exampleData");
-}
-
-/**
- * The label an example file is offered under: its stem, without the ordering prefix or the file extension.
- *
- * The testmotor strips both before answering — `01_Maksimumsversjon.xml` on its Azure share arrives as
- * `Maksimumsversjon` — so disk files are stripped the same way rather than leaving one dropdown mixing two
- * conventions. Nothing downstream reads the extension: the name is a label and a selection key, nothing more.
- *
- * @param {string} fileName - The file name as it is on disk, e.g. "01_Maksimumsversjon.xml".
- * @returns {string} The label, e.g. "Maksimumsversjon".
- */
-function exampleFileLabel(fileName) {
-    return fileName.replace(/\.[^.]+$/, "").replace(/^\d+_/, "");
-}
-
-/**
- * Reads a folder of example XML files.
- *
- * Sorted explicitly rather than trusting `readdir`, whose order is not guaranteed, and sorted on the file name
- * before the label is taken from it, because the numeric prefix carrying the order is gone from the label.
- *
- * @async
- * @param {string} folderPath - The folder to read.
- * @returns {Promise<Array<{name: string, contents: string}>>} The files in prefix order. Empty when there is no
- *   such folder, which is the ordinary case for a data type with no examples on disk.
- */
-async function readExampleFilesFromDisk(folderPath) {
-    let entries;
-    try {
-        entries = await fs.readdir(folderPath, { withFileTypes: true });
-    } catch (error) {
-        // A missing folder is expected — it means no examples. Anything else is a real problem worth reporting.
-        if (error.code === "ENOENT") {
-            return [];
-        }
-        throw error;
-    }
-
-    const fileNames = entries
-        .filter((entry) => entry.isFile() && entry.name.endsWith(".xml"))
-        .map((entry) => entry.name)
-        .sort((a, b) => a.localeCompare(b, "nb"));
-
-    return Promise.all(
-        fileNames.map(async (fileName) => ({
-            name: exampleFileLabel(fileName),
-            contents: await fs.readFile(path.join(folderPath, fileName), "utf8")
-        }))
-    );
-}
 
 /**
  * Converts one example file's XML to JSON.
