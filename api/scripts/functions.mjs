@@ -9,6 +9,7 @@ import packageSources from "../data/packageSources.mjs";
 import subforms from "../data/subforms.mjs";
 
 // Utils
+import { fetchTestmotorApps, fetchTestmotorFormXml } from "../utils/testmotorClient.mjs";
 import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
@@ -645,208 +646,283 @@ export async function getApplicationMetadata() {
 }
 
 /**
- * Retrieves the app owner and app name for a given data type.
- *
- * Searches through the `altinnStudioApps` array for an app matching the provided `dataType`.
- * If not found, searches the `subforms` array for a subform matching the `dataType`.
- * Returns an object containing `appOwner` and `appName` if a match is found.
- * Throws an error if no matching app or subform is found.
- *
- * @param {string} dataType - The data type to search for.
- * @returns {{ appOwner: string, appName: string }} The app owner and app name associated with the data type.
- * @throws {Error} If no app or subform is found for the given data type.
+ * @typedef {Object} ExampleFile
+ * @property {string} name - What the file is offered as: its stem, with the ordering prefix and the file extension
+ *   stripped, from both sources alike.
+ * @property {Object} data - The file's XML converted to JSON, with the root element removed.
  */
-function getAppOwnerAndNameFromDataType(dataType) {
-    const app = altinnStudioApps.find((app) => app.dataType === dataType);
-    if (app) {
-        return { appOwner: app.appOwner, appName: app.appName };
-    }
-    const subform = subforms.find((sub) => sub.dataType === dataType);
-    if (subform) {
-        return { appOwner: subform.appOwner, appName: subform.appName };
-    }
-    return { appOwner: null, appName: null };
+
+/**
+ * @typedef {Object} ExampleDataEntry
+ * @property {string|null} appOwner - The app these examples belong to, or null for a subform's shared examples.
+ * @property {string|null} appName - As above. Null means "matches any app declaring this data type".
+ * @property {string} dataType - The Altinn data type the examples are filed under.
+ * @property {string|null} error - Why `files` is empty, when the reason is a failure rather than an absence. The
+ *   dashboard has to tell "there are no examples for this" from "the examples could not be fetched".
+ * @property {ExampleFile[]} files - In source order: the testmotor's own for a main form, prefix order on disk.
+ */
+
+/**
+ * Where the on-disk example data lives. Overridable so a test can point at fixtures, and so the directory can be
+ * kept elsewhere without this repo holding a second copy of it.
+ *
+ * @returns {string} The example data root, holding `forms/` and `subforms/`.
+ */
+function exampleDataDir() {
+    return process.env.EXAMPLE_DATA_DIR?.trim() || path.join(repoRoot, "api/data/exampleData");
 }
 
 /**
- * Retrieves the subforms associated with a given data type from the altinnStudioApps collection.
+ * The label an example file is offered under: its stem, without the ordering prefix or the file extension.
  *
- * @param {string} dataType - The data type to search for in the altinnStudioApps array.
- * @returns {Array} An array of subforms if found; otherwise, an empty array.
+ * The testmotor strips both before answering — `01_Maksimumsversjon.xml` on its Azure share arrives as
+ * `Maksimumsversjon` — so disk files are stripped the same way rather than leaving one dropdown mixing two
+ * conventions. Nothing downstream reads the extension: the name is a label and a selection key, nothing more.
+ *
+ * @param {string} fileName - The file name as it is on disk, e.g. "01_Maksimumsversjon.xml".
+ * @returns {string} The label, e.g. "Maksimumsversjon".
  */
-function getSubformsFromDataType(dataType) {
-    const app = altinnStudioApps.find((app) => app.dataType === dataType);
-    if (app?.subForms) {
-        return app.subForms;
-    }
-    return [];
+function exampleFileLabel(fileName) {
+    return fileName.replace(/\.[^.]+$/, "").replace(/^\d+_/, "");
 }
 
 /**
- * Reads one example XML file, converts it to JSON and adds it to the result array under its data type.
+ * Reads a folder of example XML files.
+ *
+ * Sorted explicitly rather than trusting `readdir`, whose order is not guaranteed, and sorted on the file name
+ * before the label is taken from it, because the numeric prefix carrying the order is gone from the label.
+ *
+ * @async
+ * @param {string} folderPath - The folder to read.
+ * @returns {Promise<Array<{name: string, contents: string}>>} The files in prefix order. Empty when there is no
+ *   such folder, which is the ordinary case for a data type with no examples on disk.
+ */
+async function readExampleFilesFromDisk(folderPath) {
+    let entries;
+    try {
+        entries = await fs.readdir(folderPath, { withFileTypes: true });
+    } catch (error) {
+        // A missing folder is expected — it means no examples. Anything else is a real problem worth reporting.
+        if (error.code === "ENOENT") {
+            return [];
+        }
+        throw error;
+    }
+
+    const fileNames = entries
+        .filter((entry) => entry.isFile() && entry.name.endsWith(".xml"))
+        .map((entry) => entry.name)
+        .sort((a, b) => a.localeCompare(b, "nb"));
+
+    return Promise.all(
+        fileNames.map(async (fileName) => ({
+            name: exampleFileLabel(fileName),
+            contents: await fs.readFile(path.join(folderPath, fileName), "utf8")
+        }))
+    );
+}
+
+/**
+ * Converts one example file's XML to JSON.
  *
  * A failure is recorded and swallowed rather than thrown: one example that no longer validates against its schema
- * should cost that one file, not the rest of its folder and not the folder's subforms.
+ * should cost that one file, not the rest of its app and not its subforms.
+ *
+ * @param {Object} params
+ * @param {string} params.scope - The app the file belongs to, for the log.
+ * @param {string} params.dataType - The data type the file belongs to.
+ * @param {string} params.name - The file's label.
+ * @param {string} params.contents - The XML.
+ * @param {string} params.xmlSchema - The XSD to validate it against.
+ * @returns {ExampleFile|null} Null when the file could not be converted.
+ */
+function convertExampleFile({ scope, dataType, name, contents, xmlSchema }) {
+    try {
+        log.progress(`📄 Processing XML: ${scope} - ${dataType} (${name})`);
+        const data = convertXmlToJson(contents, xmlSchema);
+        log.ok({ scope, category: "Example data", message: `${dataType} (${name})` });
+        return { name, data };
+    } catch (error) {
+        log.error({ scope, category: "Example file skipped", message: `${dataType} (${name})`, detail: error.message });
+        return null;
+    }
+}
+
+/**
+ * One app's main form example files, unconverted, and why there are none when there are none.
+ *
+ * The testmotor is the source for every main form it holds, because it re-stamps the date fields on every request
+ * and a file committed here cannot. Disk is consulted only for an app it does not hold.
+ *
+ * @async
+ * @param {Object} app - The catalogue entry: `appOwner`, `appName` and `dataType`.
+ * @param {Object} sources
+ * @param {Array<{appId: string}>|null} sources.testmotorApps - The apps the testmotor holds, or null when the
+ *   listing could not be read.
+ * @param {string|null} sources.testmotorError - Why the listing could not be read, if it could not.
+ * @returns {Promise<{files: Array<{name: string, contents: string}>, error: string|null}>}
+ */
+async function readMainFormExampleFiles(app, { testmotorApps, testmotorError }) {
+    if (testmotorApps?.some((entry) => entry.appId === app.appName)) {
+        try {
+            return { files: await fetchTestmotorFormXml(app.appName), error: null };
+        } catch (error) {
+            log.error({
+                scope: `${app.appOwner}/${app.appName}`,
+                category: "Testmotor examples not fetched",
+                message: app.dataType,
+                detail: error.message
+            });
+            return { files: [], error: error.message };
+        }
+    }
+
+    // An example folder is named after the data type rather than the app, so it can only be attributed to an app
+    // when exactly one app claims that data type. fa-v3 and fa-v5 both claim FA and hold different data, so a
+    // folder named FA answers for at most one of them and there is no way to tell which.
+    const claimants = altinnStudioApps.filter((entry) => entry.dataType === app.dataType);
+    const files = claimants.length === 1 ? await readExampleFilesFromDisk(path.join(exampleDataDir(), "forms", app.dataType)) : [];
+    if (files.length > 0) {
+        return { files, error: null };
+    }
+
+    // Nothing anywhere. That is a plain absence for an app the testmotor holds no data for, and a failure only if
+    // the testmotor could not be asked — in which case we never learnt whether it holds this app at all.
+    return { files: [], error: testmotorError };
+}
+
+/**
+ * Validates a set of example files against their data type's schema in Altinn Studio and converts them to JSON.
  *
  * @async
  * @param {Object} params
- * @param {string} params.dataType - The data type the file belongs to.
- * @param {string} params.appOwner - The owner of the Altinn Studio application.
- * @param {string} params.appName - The name of the Altinn Studio application.
- * @param {string} params.folderPath - The folder holding the example file.
- * @param {string} params.fileName - The name of the example file.
- * @param {string} params.xmlSchema - The XSD to validate the file against.
- * @param {Array<Object>} params.result - The array to add the converted data to.
- * @returns {Promise<void>} Resolves once the file has been added or its failure recorded.
+ * @param {string} params.appOwner - The owner of the repository holding the schema.
+ * @param {string} params.appName - The repository holding the schema.
+ * @param {string} params.dataType - The data type the files belong to.
+ * @param {Array<{name: string, contents: string}>} params.files - The files to convert, in the order to keep them.
+ * @param {string} [params.label="example"] - What to call these files in the log.
+ * @returns {Promise<{files: ExampleFile[], error: string|null}>} The error is set when the schema itself could not
+ *   be fetched, which costs every file rather than one.
  */
-async function addExampleFile({ dataType, appOwner, appName, folderPath, fileName, xmlSchema, result }) {
+async function convertExampleFiles({ appOwner, appName, dataType, files, label = "example" }) {
+    if (files.length === 0) {
+        return { files: [], error: null };
+    }
+
     const scope = `${appOwner}/${appName}`;
-    try {
-        const content = await fs.readFile(`${folderPath}/${fileName}`, "utf8");
-        log.progress(`📄 Processing XML: ${scope} - ${dataType} (${fileName})`);
-        // Convert before touching `result`, so a failed file never leaves a half-populated entry behind.
-        const data = convertXmlToJson(content, xmlSchema);
-        const existing = result.find((r) => r.dataType === dataType);
-        if (existing) {
-            existing.data[fileName] = data;
-        } else {
-            result.push({ dataType, data: { [fileName]: data } });
-        }
-        log.ok({ scope, category: "Example data", message: `${dataType} (${fileName})` });
-    } catch (error) {
-        log.error({ scope, category: "Example file skipped", message: `${dataType} (${fileName})`, detail: error.message });
-    }
-}
-
-/**
- * Reads example files for a given data type from a specified folder, converts their XML content to JSON using the corresponding XML schema,
- * and adds the results to the provided result array. Also handles subforms by delegating to the handleSubForms function.
- *
- * @async
- * @param {string} dataType - The data type identifier to process.
- * @param {string} folderPath - The path to the folder containing example files.
- * @param {Array<Object>} result - The array to which the processed data will be added.
- * @param {string} subformsExampleDataDir - The directory containing example data for subforms.
- * @returns {Promise<void>} Resolves when all files and subforms have been processed.
- */
-async function readExampleFilesForDataType(dataType, folderPath, result, subformsExampleDataDir) {
-    const files = (await fs.readdir(folderPath, { withFileTypes: true })).filter((dirent) => dirent.isFile() && dirent.name.endsWith(".xml"));
-    const { appOwner, appName } = getAppOwnerAndNameFromDataType(dataType);
-    if (!appOwner || !appName) {
-        log.warn({
-            scope: dataType,
-            category: "Folder skipped — data type not tracked",
-            message: path.relative(repoRoot, folderPath),
-            detail: "No app in altinnStudioApps.mjs or subforms.mjs declares this data type."
-        });
-        return;
-    }
     const xmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType);
-
-    if (xmlSchema) {
-        for (const file of files) {
-            await addExampleFile({ dataType, appOwner, appName, folderPath, fileName: file.name, xmlSchema, result });
-        }
-    } else {
+    if (!xmlSchema) {
         log.error({
-            scope: `${appOwner}/${appName}`,
+            scope,
             category: "Schema not found — example files skipped",
             message: xmlSchemaFilePath(dataType),
-            detail: `${files.length} example file${files.length === 1 ? "" : "s"} could not be validated.`
+            detail: `${files.length} ${label} file${files.length === 1 ? "" : "s"} could not be validated.`
         });
+        return { files: [], error: `${xmlSchemaFilePath(dataType)} could not be read from Altinn Studio, so the examples could not be validated.` };
     }
 
-    // Subforms carry their own schemas, so they are still worth processing even when this data type has none.
-    await handleSubForms(dataType, appOwner, appName, result, subformsExampleDataDir);
+    return {
+        files: files.map((file) => convertExampleFile({ scope, dataType, ...file, xmlSchema })).filter((file) => file !== null),
+        error: null
+    };
 }
 
 /**
- * Processes subforms for a given data type by reading example data files from the specified directory,
- * converting their XML content to JSON, and updating the result array accordingly.
+ * Adds one app's main form examples to the result, as a single entry naming the app.
  *
  * @async
- * @param {string} dataType - The main data type to process subforms for.
- * @param {string} appOwner - The owner of the Altinn Studio application.
- * @param {string} appName - The name of the Altinn Studio application.
- * @param {Array<Object>} result - The array to update with subform data. Each object should have a `dataType` and `data` property.
- * @param {string} subformsExampleDataDir - The directory path containing example data for subforms.
- * @returns {Promise<void>} Resolves when all subforms have been processed and the result array is updated.
+ * @param {Object} app - The catalogue entry.
+ * @param {Object} sources - As for readMainFormExampleFiles.
+ * @param {ExampleDataEntry[]} result - The array to append to.
+ * @returns {Promise<void>}
  */
-async function handleSubForms(dataType, appOwner, appName, result, subformsExampleDataDir) {
-    const subForms = getSubformsFromDataType(dataType);
-    for (const subForm of subForms) {
-        const subFormDataType = subForm.dataType;
-        const subFormFolderPath = `${subformsExampleDataDir}/${subFormDataType}`;
-        const existingSubForm = result.find((r) => r.dataType === subFormDataType);
-        if (existingSubForm) {
+async function addMainFormExamples(app, sources, result) {
+    const { appOwner, appName, dataType } = app;
+    const source = await readMainFormExampleFiles(app, sources);
+    const converted = await convertExampleFiles({ appOwner, appName, dataType, files: source.files });
+    result.push({ appOwner, appName, dataType, error: source.error ?? converted.error, files: converted.files });
+}
+
+/**
+ * Adds the examples for the subforms one app declares.
+ *
+ * Subform entries name no app. The same subform is declared by several parents, its examples are one shared set,
+ * and it is whichever parent got there first whose repository supplies the schema — so recording an app on the
+ * entry would record an arbitrary one. A null app means "matches any app that declares this data type" instead.
+ *
+ * @async
+ * @param {Object} app - The catalogue entry whose `subForms` to process.
+ * @param {ExampleDataEntry[]} result - The array to append to, and to check for subforms already added.
+ * @returns {Promise<void>}
+ */
+async function addSubformExamples(app, result) {
+    for (const subForm of app.subForms ?? []) {
+        const dataType = subForm.dataType;
+        if (result.some((entry) => entry.appName === null && entry.dataType === dataType)) {
             continue;
         }
-        let subFormFiles;
-        try {
-            subFormFiles = (await fs.readdir(subFormFolderPath, { withFileTypes: true })).filter((dirent) => dirent.isFile());
-        } catch (error) {
-            // Missing subform example folder is expected — skip it. Re-throw anything else.
-            if (error.code === "ENOENT") {
-                continue;
-            }
-            throw error;
-        }
-        const subXmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, subFormDataType);
-        if (!subXmlSchema) {
-            log.error({
-                scope: `${appOwner}/${appName}`,
-                category: "Schema not found — example files skipped",
-                message: xmlSchemaFilePath(subFormDataType),
-                detail: `${subFormFiles.length} subform example file${subFormFiles.length === 1 ? "" : "s"} could not be validated.`
-            });
-            continue;
-        }
-        for (const subFormFile of subFormFiles) {
-            await addExampleFile({
-                dataType: subFormDataType,
-                appOwner,
-                appName,
-                folderPath: subFormFolderPath,
-                fileName: subFormFile.name,
-                xmlSchema: subXmlSchema,
-                result
-            });
-        }
+        const files = await readExampleFilesFromDisk(path.join(exampleDataDir(), "subforms", dataType));
+        const converted = await convertExampleFiles({
+            appOwner: app.appOwner,
+            appName: app.appName,
+            dataType,
+            files,
+            label: "subform example"
+        });
+        result.push({ appOwner: null, appName: null, dataType, error: converted.error, files: converted.files });
     }
 }
 
 /**
- * Asynchronously retrieves example JSON data for forms and subforms.
+ * Every example the dashboard can offer: each tracked app's main form, and the subforms those apps declare.
  *
- * Reads directories containing example data for forms and subforms,
- * processes each data type folder, and aggregates the results.
+ * The main forms come from the FtPB testmotor rather than from disk, because it re-stamps the date fields on every
+ * request and a copy committed here goes stale within a fortnight — see `api/utils/testmotorClient.mjs`. The
+ * testmotor is keyed by app id, which is why an entry names the app and not only the data type: fa-v3 and fa-v5
+ * are both filed under FA and hold different files.
+ *
+ * Iterating the catalogue rather than the example folders is what makes that possible. It also means an app with
+ * no examples at all still gets an entry, and that an app's subforms are its own rather than those of whichever
+ * app happened to claim its data type first.
+ *
+ * Nothing here throws. An app whose examples could not be fetched gets an entry carrying the reason, so the
+ * dashboard can say "could not be fetched" where it would otherwise say nothing at all and look like "none".
  *
  * @async
  * @function
- * @returns {Promise<Array>} A promise that resolves to an array containing the aggregated example data.
+ * @returns {Promise<ExampleDataEntry[]>} One entry per tracked app, plus one per subform they declare.
  */
 export async function getJsonExampleData() {
-    const formsExampleDataDir = path.join(repoRoot, "api/data/exampleData/forms");
-    const subformsExampleDataDir = path.join(repoRoot, "api/data/exampleData/subforms");
-    const formsFolders = (await fs.readdir(formsExampleDataDir, { withFileTypes: true })).filter((dirent) => dirent.isDirectory());
+    let testmotorApps = null;
+    let testmotorError = null;
+    try {
+        testmotorApps = await fetchTestmotorApps();
+    } catch (error) {
+        // One report for the run, rather than the same message repeated under all 25 apps. The apps carry it too,
+        // because that is the copy the dashboard can put next to the picker that has nothing in it.
+        testmotorError = error.message;
+        log.error({ scope: "testmotor", category: "Testmotor not reached", detail: error.message });
+    }
 
     const result = [];
 
-    for (const folder of formsFolders) {
-        const dataType = folder.name;
-        const folderPath = `${formsExampleDataDir}/${dataType}`;
+    for (const app of altinnStudioApps) {
+        const scope = `${app.appOwner}/${app.appName}`;
         try {
-            await readExampleFilesForDataType(dataType, folderPath, result, subformsExampleDataDir);
+            await addMainFormExamples(app, { testmotorApps, testmotorError }, result);
         } catch (error) {
-            // Individual example files are handled by addExampleFile, so this is the backstop for what fails for the
-            // folder as a whole — an unreadable directory, or a schema that can't be fetched from Altinn Studio.
-            const { appOwner, appName } = getAppOwnerAndNameFromDataType(dataType);
-            log.error({
-                scope: appOwner && appName ? `${appOwner}/${appName}` : dataType,
-                category: "Example data folder not processed",
-                message: dataType,
-                detail: error.message
-            });
+            // Individual files are handled by convertExampleFile, so this is the backstop for what fails for the
+            // app as a whole — an unreadable directory, or a schema fetch that threw instead of answering null.
+            log.error({ scope, category: "Example data not processed", message: app.dataType, detail: error.message });
+            result.push({ appOwner: app.appOwner, appName: app.appName, dataType: app.dataType, error: error.message, files: [] });
+        }
+
+        try {
+            // Subforms carry their own schemas and their own files, so they are worth processing even when the
+            // app's own main form examples could not be had.
+            await addSubformExamples(app, result);
+        } catch (error) {
+            log.error({ scope, category: "Subform example data not processed", detail: error.message });
         }
     }
 
