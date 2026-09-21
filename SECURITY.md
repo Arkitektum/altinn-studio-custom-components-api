@@ -41,11 +41,16 @@ A few properties are relevant when assessing security:
 - **Not for public deployment.**
   CORS is open and there is no authentication on the endpoints — the API assumes a trusted, local-only context.
   Do not expose it to the public internet.
+- **FtPB testmotor.**
+  The main form example data is fetched from `TESTMOTOR_URL` over open endpoints, with **no token attached** — the
+  `GITEA_TOKEN` above must never be sent there. The XML it answers is parsed and validated against a schema fetched
+  from Altinn Studio, so treat it as remote input like any other.
 - **Untrusted input.**
   The API parses XML example data and remote files.
   Treat fetched/parsed content as untrusted and validate before use.
 - **No personal data.**
-  Bundled example data and logs must use synthetic data only — never real or personal data.
+  Example data and logs must use synthetic data only — never real or personal data. This applies to the files in this
+  repository and to anything added to the testmotor's share.
 
 ## Dependencies
 

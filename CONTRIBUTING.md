@@ -82,8 +82,18 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 - **Tracked apps** are configured in `api/data/altinnStudioApps.mjs` (and subforms in `api/data/subforms.mjs`).
   Add an app there to include it in the statistics.
 - **Version sources** for `latestPackageVersions` are configured in `api/data/packageSources.mjs` (`npm` or `github`).
-- **Example data** is bundled XML under `api/data/exampleData/{forms,subforms}` and converted to JSON by `api/utils/xmlToJsonConverter.mjs`.
+- **Example data** for the main forms is read from the FtPB testmotor at request time, not from this repo — it re-stamps
+  the date fields on every request, and a committed copy goes stale within a fortnight (see
+  [ARCHITECTURE § External data sources](./ARCHITECTURE.md#5-external-data-sources)). To add or change one, change it on
+  the testmotor's Azure file share instead.
+  What is still on disk is `api/data/exampleData/{forms,subforms}`: every subform, and `hoeringettersynuttalelse-v2`,
+  the one main form the testmotor has no data for. Both are converted to JSON by `api/utils/xmlToJsonConverter.mjs`.
+  The directory name is the data type and the numeric prefix orders the files while being stripped from the label, so
+  `01_Maksimumsversjon.xml` reads as `Maksimumsversjon`.
   Use synthetic/example data only — never commit real or personal data.
+- **A reply form's example data** cannot be a file here. `nabovarsel-svar-v5`, `ts-v1` and `varselplanoppstartuttalelse-v3`
+  reference the submission they reply to by instance, so a static file would point at a parent that exists in nobody's
+  installation. They have no example data from either source, and that is why.
 
 ---
 

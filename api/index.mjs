@@ -131,8 +131,9 @@ app.get("/api/applicationMetadata", async (req, res) => {
     }
 });
 
-// Reports what the data endpoints last ran into, so the Statistics dashboard can surface problems instead of leaving
-// them in the terminal. Deliberately not wrapped in withRunLog: it does no work of its own, and polling it would
+// Reports what the data endpoints last ran into. Nothing fetches this yet — the Statistics dashboard does not call it,
+// so a failure reaches a person only through the terminal, or through the `error` that /api/exampleData carries on the
+// entries it could not fill. Deliberately not wrapped in withRunLog: it does no work of its own, and polling it would
 // otherwise print a report line per request.
 app.get("/api/diagnostics", (req, res) => {
     try {
