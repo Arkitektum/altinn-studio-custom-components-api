@@ -1,6 +1,27 @@
 // Dependencies
 import { XMLParser } from "fast-xml-parser";
-import libxml from "libxmljs2";
+import { createRequire } from "node:module";
+
+/**
+ * libxmljs2, loaded the first time XML is actually handled rather than when this module is imported.
+ *
+ * It is a native addon: its binding is compiled for the platform it was installed on, and loading it is the one
+ * thing here that can fail for a reason that has nothing to do with this code. `functions.mjs` imports this module
+ * for the sake of two functions, so at import time that failure used to reach everything importing *it* — including
+ * the fetching and parsing that never goes near XML. Deferring the load keeps that cost, and that failure, with the
+ * code that needs the parser.
+ *
+ * Required rather than imported because it is CommonJS and the load has to be synchronous: the converter is called
+ * from a synchronous map over an app's example files.
+ *
+ * @returns {Object} The libxmljs2 module.
+ */
+const require = createRequire(import.meta.url);
+let libxmlModule;
+function libxml() {
+    libxmlModule ??= require("libxmljs2");
+    return libxmlModule;
+}
 
 /**
  * Extracts the dot-separated paths of all elements in an XSD document that are defined as arrays.
@@ -51,7 +72,7 @@ function extractArrayPaths(xsdDoc) {
  * @throws {Error} If the XSD itself cannot be parsed.
  */
 export function compileXmlSchema(xsdContent) {
-    const document = libxml.parseXml(xsdContent);
+    const document = libxml().parseXml(xsdContent);
     return { document, arrayPaths: [...extractArrayPaths(document)] };
 }
 
@@ -65,7 +86,7 @@ export function compileXmlSchema(xsdContent) {
  * @throws {Error} If the XML does not conform to the XSD schema. The message lists one validation error per line.
  */
 export function convertXmlToJson(xmlContent, schema) {
-    const xmlDoc = libxml.parseXml(xmlContent);
+    const xmlDoc = libxml().parseXml(xmlContent);
 
     // Validate XML. This converter has no idea which app or file it was handed, so it stays silent and reports through
     // the thrown error — the caller knows the context and records it (see api/utils/logger.mjs).

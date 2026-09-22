@@ -219,5 +219,7 @@ network; `functions.test.mjs` stubs global `fetch` — for both Altinn Studio an
 Two GitHub Actions workflows cover `main`: `ci.yml` runs `yarn lint` and `yarn test` on every push and pull request,
 and `eslint.yml` uploads ESLint results to the repository's security tab on the same events plus a weekly schedule.
 
-Note that `libxmljs2` is a native module, so its binding is built for the platform that installed it. A `node_modules`
-tree copied between platforms fails to load it, which takes down anything importing `functions.mjs`.
+Note that `libxmljs2` is a native module, so its binding is built for the platform that installed it, and a
+`node_modules` tree copied between platforms fails to load it. It is loaded on first use rather than at import (see
+`api/utils/xmlToJsonConverter.mjs`), so a tree like that still starts the server and still runs everything that does
+not convert XML — what fails is the example data conversion, and the tests covering it.
