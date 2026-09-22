@@ -37,6 +37,16 @@ const parsedConcurrency = Number.parseInt(process.env.ALTINN_STUDIO_CONCURRENCY,
 const altinnStudioConcurrency = Number.isInteger(parsedConcurrency) && parsedConcurrency > 0 ? parsedConcurrency : 16;
 const limitAltinnStudioRequest = createConcurrencyLimiter(altinnStudioConcurrency);
 
+// Example data is assembled per app, and an app's work is nearly all waiting: one request to the testmotor, one
+// schema fetch per data type. Taking the catalogue one app at a time meant every one of those round trips happened
+// after the one before it. Running the apps together collapses that into a few waves instead.
+//
+// Bounded rather than unbounded because one testmotor answer carries every example file for an app — the largest
+// runs to several megabytes — and there is nothing to gain from holding twenty-six of those in memory at once.
+// Altinn Studio requests stay inside their own budget above whatever this is set to.
+const EXAMPLE_DATA_APP_CONCURRENCY = 8;
+const limitExampleDataApp = createConcurrencyLimiter(EXAMPLE_DATA_APP_CONCURRENCY);
+
 /**
  * Fetches the latest version of a package from the npm registry.
  *
@@ -769,39 +779,44 @@ async function convertExampleFiles({ appOwner, appName, dataType, files, label =
 }
 
 /**
- * Adds one app's main form examples to the result, as a single entry naming the app.
+ * One app's main form examples, as a single entry naming the app.
+ *
+ * Nothing thrown escapes: individual files are handled by convertExampleFile, so this catches what fails for the app
+ * as a whole — an unreadable directory, or a schema fetch that threw instead of answering null — and turns it into an
+ * entry carrying the reason.
  *
  * @async
  * @param {Object} app - The catalogue entry.
  * @param {Object} sources - As for readMainFormExampleFiles.
- * @param {ExampleDataEntry[]} result - The array to append to.
- * @returns {Promise<void>}
+ * @returns {Promise<ExampleDataEntry>}
  */
-async function addMainFormExamples(app, sources, result) {
+async function mainFormExampleEntry(app, sources) {
     const { appOwner, appName, dataType } = app;
-    const source = await readMainFormExampleFiles(app, sources);
-    const converted = await convertExampleFiles({ appOwner, appName, dataType, files: source.files });
-    result.push({ appOwner, appName, dataType, error: source.error ?? converted.error, files: converted.files });
+    try {
+        const source = await readMainFormExampleFiles(app, sources);
+        const converted = await convertExampleFiles({ appOwner, appName, dataType, files: source.files });
+        return { appOwner, appName, dataType, error: source.error ?? converted.error, files: converted.files };
+    } catch (error) {
+        log.error({ scope: `${appOwner}/${appName}`, category: "Example data not processed", message: dataType, detail: error.message });
+        return { appOwner, appName, dataType, error: error.message, files: [] };
+    }
 }
 
 /**
- * Adds the examples for the subforms one app declares.
+ * One subform's examples, filed under no app.
  *
  * Subform entries name no app. The same subform is declared by several parents, its examples are one shared set,
  * and it is whichever parent got there first whose repository supplies the schema — so recording an app on the
  * entry would record an arbitrary one. A null app means "matches any app that declares this data type" instead.
  *
  * @async
- * @param {Object} app - The catalogue entry whose `subForms` to process.
- * @param {ExampleDataEntry[]} result - The array to append to, and to check for subforms already added.
- * @returns {Promise<void>}
+ * @param {Object} app - The catalogue entry this subform was assigned to, which supplies the schema.
+ * @param {string} dataType - The subform's data type.
+ * @returns {Promise<ExampleDataEntry|null>} Null when the subform could not be processed at all, which is reported
+ *   and costs that one subform rather than the app it was reached through.
  */
-async function addSubformExamples(app, result) {
-    for (const subForm of app.subForms ?? []) {
-        const dataType = subForm.dataType;
-        if (result.some((entry) => entry.appName === null && entry.dataType === dataType)) {
-            continue;
-        }
+async function subformExampleEntry(app, dataType) {
+    try {
         const files = await readExampleFilesFromDisk(path.join(exampleDataDir(), "subforms", dataType));
         const converted = await convertExampleFiles({
             appOwner: app.appOwner,
@@ -810,8 +825,41 @@ async function addSubformExamples(app, result) {
             files,
             label: "subform example"
         });
-        result.push({ appOwner: null, appName: null, dataType, error: converted.error, files: converted.files });
+        return { appOwner: null, appName: null, dataType, error: converted.error, files: converted.files };
+    } catch (error) {
+        log.error({
+            scope: `${app.appOwner}/${app.appName}`,
+            category: "Subform example data not processed",
+            message: dataType,
+            detail: error.message
+        });
+        return null;
     }
+}
+
+/**
+ * Which subforms each app is responsible for fetching, so that a subform declared by several apps is fetched once.
+ *
+ * Decided up front rather than by checking what has already been collected, because the apps no longer run one after
+ * another and "has anyone done this yet" has no answer while they are all in flight. Walking the catalogue in order
+ * gives the subform to the first app that declares it — the same one that reached it first when this was a loop.
+ *
+ * @param {Array<Object>} apps - The catalogue, in order.
+ * @returns {string[][]} One array of data types per app, positionally.
+ */
+function subformDataTypesPerApp(apps) {
+    const assigned = new Set();
+    return apps.map((app) =>
+        (app.subForms ?? [])
+            .map((subForm) => subForm.dataType)
+            .filter((dataType) => {
+                if (assigned.has(dataType)) {
+                    return false;
+                }
+                assigned.add(dataType);
+                return true;
+            })
+    );
 }
 
 /**
@@ -845,27 +893,23 @@ export async function getJsonExampleData() {
         log.error({ scope: "testmotor", category: "Testmotor not reached", detail: error.message });
     }
 
-    const result = [];
+    const sources = { testmotorApps, testmotorError };
+    const subformDataTypes = subformDataTypesPerApp(altinnStudioApps);
 
-    for (const app of altinnStudioApps) {
-        const scope = `${app.appOwner}/${app.appName}`;
-        try {
-            await addMainFormExamples(app, { testmotorApps, testmotorError }, result);
-        } catch (error) {
-            // Individual files are handled by convertExampleFile, so this is the backstop for what fails for the
-            // app as a whole — an unreadable directory, or a schema fetch that threw instead of answering null.
-            log.error({ scope, category: "Example data not processed", message: app.dataType, detail: error.message });
-            result.push({ appOwner: app.appOwner, appName: app.appName, dataType: app.dataType, error: error.message, files: [] });
-        }
+    // Each app's entries are collected together — its main form alongside the subforms assigned to it, since subforms
+    // carry their own schemas and their own files and are worth having even when the main form examples could not be
+    // had — and the apps are flattened in catalogue order afterwards. Running them together therefore changes how long
+    // this takes and nothing about what comes out of it.
+    const entriesPerApp = await Promise.all(
+        altinnStudioApps.map((app, index) =>
+            limitExampleDataApp(() =>
+                Promise.all([
+                    mainFormExampleEntry(app, sources),
+                    ...subformDataTypes[index].map((dataType) => subformExampleEntry(app, dataType))
+                ])
+            )
+        )
+    );
 
-        try {
-            // Subforms carry their own schemas and their own files, so they are worth processing even when the
-            // app's own main form examples could not be had.
-            await addSubformExamples(app, result);
-        } catch (error) {
-            log.error({ scope, category: "Subform example data not processed", detail: error.message });
-        }
-    }
-
-    return result;
+    return entriesPerApp.flat().filter((entry) => entry !== null);
 }
