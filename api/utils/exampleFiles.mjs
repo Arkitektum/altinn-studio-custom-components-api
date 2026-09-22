@@ -49,6 +49,9 @@ export function exampleFileLabel(fileName) {
  * Sorted explicitly rather than trusting `readdir`, whose order is not guaranteed, and sorted on the file name
  * before the label is taken from it, because the numeric prefix carrying the order is gone from the label.
  *
+ * Numerically, so that the prefix is read as the number it is: the share's own files are zero-padded, for which it
+ * makes no difference, but an unpadded `10_` would otherwise sort ahead of `2_` on its first digit.
+ *
  * @async
  * @param {string} folderPath - The folder to read.
  * @returns {Promise<Array<{name: string, contents: string}>>} The files in prefix order. Empty when there is no
@@ -69,7 +72,7 @@ export async function readExampleFilesFromDisk(folderPath) {
     const fileNames = entries
         .filter((entry) => entry.isFile() && entry.name.endsWith(".xml"))
         .map((entry) => entry.name)
-        .sort((a, b) => a.localeCompare(b, "nb"));
+        .sort((a, b) => a.localeCompare(b, "nb", { numeric: true }));
 
     return Promise.all(
         fileNames.map(async (fileName) => ({
