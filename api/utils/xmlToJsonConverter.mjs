@@ -30,32 +30,53 @@ function extractArrayPaths(xsdDoc) {
 }
 
 /**
- * Converts XML content to JSON, validating against a provided XSD schema.
- * Extracts array paths from the XSD to ensure correct array handling in the resulting JSON.
+ * @typedef {Object} CompiledXmlSchema
+ * @property {Object} document - The parsed XSD, reused for every file validated against it.
+ * @property {string[]} arrayPaths - Dot-separated paths of the elements the schema allows more than one of.
+ */
+
+/**
+ * Parses an XSD once, so the files validated against it don't each pay for it.
+ *
+ * A data type's examples all share one schema, and parsing it is the expensive half of the work: an app with eight
+ * examples used to parse the same XSD eight times and walk it eight times looking for `maxOccurs`. Separating the
+ * schema from the file means that happens once per data type instead of once per file.
+ *
+ * The parsed document is reused across validations, which is safe — validating reads the schema, it does not consume
+ * it. It holds native memory for as long as it is referenced, so callers should let it go once their files are done
+ * rather than keeping it around.
+ *
+ * @param {string} xsdContent - The XSD schema content as a string.
+ * @returns {CompiledXmlSchema} The schema, ready to validate against.
+ * @throws {Error} If the XSD itself cannot be parsed.
+ */
+export function compileXmlSchema(xsdContent) {
+    const document = libxml.parseXml(xsdContent);
+    return { document, arrayPaths: [...extractArrayPaths(document)] };
+}
+
+/**
+ * Converts XML content to JSON, validating against an already-parsed XSD schema.
  *
  * @param {string} xmlContent - The XML content as a string.
- * @param {string} xsdContent - The XSD schema content as a string.
+ * @param {CompiledXmlSchema} schema - The schema to validate against, from `compileXmlSchema`.
  * @returns {Object} The JSON representation of the XML, with the root element removed.
  *
  * @throws {Error} If the XML does not conform to the XSD schema. The message lists one validation error per line.
  */
-export function convertXmlToJson(xmlContent, xsdContent) {
+export function convertXmlToJson(xmlContent, schema) {
     const xmlDoc = libxml.parseXml(xmlContent);
-    const xsdDoc = libxml.parseXml(xsdContent);
 
     // Validate XML. This converter has no idea which app or file it was handed, so it stays silent and reports through
     // the thrown error — the caller knows the context and records it (see api/utils/logger.mjs).
-    if (!xmlDoc.validate(xsdDoc)) {
+    if (!xmlDoc.validate(schema.document)) {
         // One error per line: the logger indents multi-line details under the file they belong to.
         const validationMessages = xmlDoc.validationErrors.map((e) => e.message.trim()).join("\n");
         // Throw instead of process.exit so a single invalid example doesn't take down the whole dev server.
         throw new Error(`XML does not conform to XSD:\n${validationMessages}`);
     }
 
-    const arrayPaths = extractArrayPaths(xsdDoc);
-
-    // XML → JSON parser
-    const arrayPathList = [...arrayPaths];
+    const arrayPathList = schema.arrayPaths;
 
     const parser = new XMLParser({
         ignoreAttributes: true,

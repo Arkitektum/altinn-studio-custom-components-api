@@ -382,6 +382,22 @@ test("gives every tracked app an entry of its own", async () => {
     assert.equal(mainFormEntries.length, altinnStudioApps.length);
 });
 
+test("reports the schema when it is the schema that could not be parsed", async () => {
+    // The schema is parsed once for the whole set, so a schema that is not a schema fails once. Blaming the files
+    // individually would point at the wrong thing: they are fine, and there is nothing to validate them against.
+    stubExampleSources({
+        apps: [{ appId: "an-v2", mainFormId: "AN" }],
+        xmlByApp: { "an-v2": [{ name: "Maksimumsversjon", contents: xml("maks") }] },
+        xsd: "this is not a schema"
+    });
+
+    const result = await getJsonExampleData();
+    const entry = entryForApp(result, "an-v2");
+
+    assert.deepEqual(entry.files, []);
+    assert.match(entry.error, /App\/models\/AN\.xsd could not be parsed as a schema/);
+});
+
 test("carries the reason on the app when a schema request fails outright", async () => {
     // The backstop: a 404 resolves to null and is reported as a missing schema, but a 500 throws out of the fetch
     // helper. That has to become this app's error rather than escaping into the run.

@@ -9,9 +9,9 @@ import packageSources from "../data/packageSources.mjs";
 import subforms from "../data/subforms.mjs";
 
 // Utils
+import { compileXmlSchema, convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { exampleDataDir, readExampleFilesFromDisk } from "../utils/exampleFiles.mjs";
 import { fetchTestmotorApps, fetchTestmotorFormXml } from "../utils/testmotorClient.mjs";
-import { convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
 import { log } from "../utils/logger.mjs";
@@ -684,13 +684,13 @@ export async function getApplicationMetadata() {
  * @param {string} params.dataType - The data type the file belongs to.
  * @param {string} params.name - The file's label.
  * @param {string} params.contents - The XML.
- * @param {string} params.xmlSchema - The XSD to validate it against.
+ * @param {import("../utils/xmlToJsonConverter.mjs").CompiledXmlSchema} params.schema - The schema to validate against.
  * @returns {ExampleFile|null} Null when the file could not be converted.
  */
-function convertExampleFile({ scope, dataType, name, contents, xmlSchema }) {
+function convertExampleFile({ scope, dataType, name, contents, schema }) {
     try {
         log.progress(`📄 Processing XML: ${scope} - ${dataType} (${name})`);
-        const data = convertXmlToJson(contents, xmlSchema);
+        const data = convertXmlToJson(contents, schema);
         log.ok({ scope, category: "Example data", message: `${dataType} (${name})` });
         return { name, data };
     } catch (error) {
@@ -753,7 +753,7 @@ async function readMainFormExampleFiles(app, { testmotorApps, testmotorError }) 
  * @param {Array<{name: string, contents: string}>} params.files - The files to convert, in the order to keep them.
  * @param {string} [params.label="example"] - What to call these files in the log.
  * @returns {Promise<{files: ExampleFile[], error: string|null}>} The error is set when the schema itself could not
- *   be fetched, which costs every file rather than one.
+ *   be fetched or parsed, which costs every file rather than one.
  */
 async function convertExampleFiles({ appOwner, appName, dataType, files, label = "example" }) {
     if (files.length === 0) {
@@ -761,19 +761,33 @@ async function convertExampleFiles({ appOwner, appName, dataType, files, label =
     }
 
     const scope = `${appOwner}/${appName}`;
+    const skipped = `${files.length} ${label} file${files.length === 1 ? "" : "s"} could not be validated.`;
     const xmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType);
     if (!xmlSchema) {
         log.error({
             scope,
             category: "Schema not found — example files skipped",
             message: xmlSchemaFilePath(dataType),
-            detail: `${files.length} ${label} file${files.length === 1 ? "" : "s"} could not be validated.`
+            detail: skipped
         });
         return { files: [], error: `${xmlSchemaFilePath(dataType)} could not be read from Altinn Studio, so the examples could not be validated.` };
     }
 
+    // Parsed once for the whole set rather than once per file. A schema that cannot be parsed is reported like one
+    // that could not be fetched: the files are fine, and saying so once beats blaming each of them in turn.
+    let schema;
+    try {
+        schema = compileXmlSchema(xmlSchema);
+    } catch (error) {
+        log.error({ scope, category: "Schema unreadable — example files skipped", message: xmlSchemaFilePath(dataType), detail: skipped });
+        return {
+            files: [],
+            error: `${xmlSchemaFilePath(dataType)} could not be parsed as a schema (${error.message}), so the examples could not be validated.`
+        };
+    }
+
     return {
-        files: files.map((file) => convertExampleFile({ scope, dataType, ...file, xmlSchema })).filter((file) => file !== null),
+        files: files.map((file) => convertExampleFile({ scope, dataType, ...file, schema })).filter((file) => file !== null),
         error: null
     };
 }
