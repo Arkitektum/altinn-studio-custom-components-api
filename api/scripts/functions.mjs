@@ -384,6 +384,25 @@ function mergeResourceFiles(...files) {
 }
 
 /**
+ * The supported language a request asked for, or null for "every supported language".
+ *
+ * Exported so the endpoint can reduce what arrives in the query string to one of three answers *before* it reaches
+ * the cache. The cached getter is keyed on its arguments, so an un-narrowed value would give `?language=xx` and
+ * `?language=yy` a cache entry each, despite both meaning the same thing and doing the same work — a full fan-out
+ * to Altinn Studio per distinct spelling, and an entry per spelling in a map that only evicts on failure.
+ *
+ * Anything that is not one of the supported languages means "all of them", which is what an absent parameter means.
+ * That covers the array or object a query string can also yield (`?language[]=nb`): the comparison is by identity,
+ * so neither is ever equal to a language and both fall through to null.
+ *
+ * @param {unknown} value - Whatever the caller asked for.
+ * @returns {string|null} The language to fetch, or null to fetch all of them.
+ */
+export function supportedResourceLanguage(value) {
+    return resourceValueLanguages.includes(value) ? value : null;
+}
+
+/**
  * Fetches resource values for all Altinn Studio apps for a given language.
  *
  * Iterates over the list of Altinn Studio apps, fetches the resource file for each app in the specified language,
@@ -397,7 +416,8 @@ function mergeResourceFiles(...files) {
  *   A promise that resolves to an array of resource value objects for each app.
  */
 export async function getAppResourceValues(language) {
-    const languages = language && resourceValueLanguages.includes(language) ? [language] : resourceValueLanguages;
+    const requested = supportedResourceLanguage(language);
+    const languages = requested ? [requested] : resourceValueLanguages;
     const appResourcePromises = altinnStudioApps.map(async ({ appOwner, appName }) => {
         try {
             const resourceFiles = await Promise.all(

@@ -12,7 +12,8 @@ import {
     getDisplayLayouts,
     getJsonExampleData,
     getLatestPackageVersions,
-    getPackageVersions
+    getPackageVersions,
+    supportedResourceLanguage
 } from "./scripts/functions.mjs";
 import { getDiagnostics, withRunLog } from "./utils/logger.mjs";
 import { createCachedFunction } from "./utils/cache.mjs";
@@ -83,7 +84,10 @@ app.get("/api/latestPackageVersions", async (req, res) => {
 
 app.get("/api/appResources", async (req, res) => {
     try {
-        const appResources = await withRunLog("App resources", () => cachedGetAppResourceValues(req.query.language));
+        // Narrowed before it is cached, not after: the cache is keyed on the argument, so handing it the query value
+        // as it arrived would give every spelling of an unsupported language a fan-out and an entry of its own.
+        const language = supportedResourceLanguage(req.query.language);
+        const appResources = await withRunLog("App resources", () => cachedGetAppResourceValues(language));
         res.json(appResources);
     } catch (error) {
         console.error("Error fetching app resource values:", error);

@@ -4,9 +4,10 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { getAppResourceValues, getJsonExampleData } from "./functions.mjs";
+import { getAppResourceValues, getJsonExampleData, supportedResourceLanguage } from "./functions.mjs";
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
 import { clearTestmotorCache } from "../utils/testmotorClient.mjs";
+import { createCachedFunction } from "../utils/cache.mjs";
 
 const originalFetch = globalThis.fetch;
 const originalToken = process.env.GITEA_TOKEN;
@@ -108,6 +109,44 @@ test("restricts the fetch to a single supported language", async () => {
 
     assert.ok(requested.every((url) => url.includes("resource.nb.json")));
     assert.deepEqual(result[0].resourceValues, [{ id: "a", values: { nb: "bokmål" } }]);
+});
+
+test("keeps the supported languages and turns everything else into 'all of them'", () => {
+    assert.equal(supportedResourceLanguage("nb"), "nb");
+    assert.equal(supportedResourceLanguage("nn"), "nn");
+
+    // Anything else means the same as asking for nothing, so it has to reduce to the same value.
+    assert.equal(supportedResourceLanguage("en"), null);
+    assert.equal(supportedResourceLanguage(""), null);
+    assert.equal(supportedResourceLanguage(undefined), null);
+    assert.equal(supportedResourceLanguage("NB"), null);
+    assert.equal(supportedResourceLanguage(" nb "), null);
+});
+
+test("narrows a query string that is not a string at all", () => {
+    // Express parses ?language[]=nb into an array and ?language[a]=b into an object. Neither is a language, and
+    // neither may reach a cache key as it stands.
+    assert.equal(supportedResourceLanguage(["nb"]), null);
+    assert.equal(supportedResourceLanguage({ toString: () => "nb" }), null);
+});
+
+test("gives every request that means 'all languages' the same cache entry", async () => {
+    // The endpoint caches on the argument, so narrowing has to happen before the call rather than inside it:
+    // otherwise each distinct spelling is a miss, and each miss is a full fan-out to Altinn Studio.
+    let calls = 0;
+    const cached = createCachedFunction(async () => {
+        calls += 1;
+        return "resources";
+    });
+
+    for (const asked of ["en", "de", "", undefined, ["nb"], { a: 1 }]) {
+        await cached(supportedResourceLanguage(asked));
+    }
+    await cached(supportedResourceLanguage("nb"));
+    await cached(supportedResourceLanguage("nb"));
+
+    // One for "all of them", one for nb.
+    assert.equal(calls, 2);
 });
 
 /**
