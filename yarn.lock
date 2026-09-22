@@ -336,8 +336,8 @@ __metadata:
     "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.8"
     "@eslint/js": "npm:^10.0.1"
     cors: "npm:^2.8.6"
-    dotenv: "npm:^18.0.0"
-    eslint: "npm:^10.10.0"
+    dotenv: "npm:^18.0.2"
+    eslint: "npm:^10.11.0"
     express: "npm:^5.2.1"
     fast-xml-parser: "npm:^5.11.1"
     globals: "npm:^17.12.0"
@@ -677,12 +677,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^18.0.0":
-  version: 18.0.0
-  resolution: "dotenv@npm:18.0.0"
+"dotenv@npm:^18.0.2":
+  version: 18.0.2
+  resolution: "dotenv@npm:18.0.2"
   bin:
     dotenv: dist/index.cjs
-  checksum: 10c0/f8978a2d0a45c66bee47e9c873f0003856f4604d8c20bee600841ffd932d5d8d8f1d93f36cce1ae3fa03d883b05a93b80e0f024af1a92e1128118d860f972e72
+  checksum: 10c0/c16e179205096a7028eea5fba2062dbd25e88d93a0beb66d219507d4585f63ec3f02fda755eee5dca790b7424391a39332830b19983003f0d8d449fbc6845424
   languageName: node
   linkType: hard
 
@@ -827,9 +827,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^10.10.0":
-  version: 10.10.0
-  resolution: "eslint@npm:10.10.0"
+"eslint@npm:^10.11.0":
+  version: 10.11.0
+  resolution: "eslint@npm:10.11.0"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.8.0"
     "@eslint-community/regexpp": "npm:^4.12.2"
@@ -868,7 +868,7 @@ __metadata:
       optional: true
   bin:
     eslint: bin/eslint.js
-  checksum: 10c0/ba583145305f088585f91c5dab6825492ec657614558e4610cffc94174cf800f456e39ec3cafd3eed73e04bd9a05794067ae33b553f1323e3e7c1157242409d2
+  checksum: 10c0/c767f45f21d1921b41d70e30b1c8fa7ec4e65c0f43a8d80cc4990ca3d923127fa7b9b3416b8f5be6e877d9286f97d3c51a04ed341bc6aa73c0dba0f463e1f861
   languageName: node
   linkType: hard
 
@@ -2423,9 +2423,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^8.4.1":
-  version: 8.10.2
-  resolution: "undici@npm:8.10.2"
-  checksum: 10c0/66d7fc69149207cab570d6abbc9e965b6afe1ae889a7d46945b431165c973d6a56f3dd8b70a856e7ae1e550b6366a1cde6f06e68640587f0dadca38de72995ee
+  version: 8.11.0
+  resolution: "undici@npm:8.11.0"
+  checksum: 10c0/a6a0d8da384d88dc9780fdb03f099d17fc06d1085854214c4e8ab5c69c4731778c5207fa62b54170327afa21e0d412665bd4e40683122bcbcbf9075801c75cb3
   languageName: node
   linkType: hard
 
