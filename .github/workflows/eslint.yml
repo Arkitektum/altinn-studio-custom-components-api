@@ -43,10 +43,6 @@ jobs:
           done
           exit 1
 
-      # Added with --no-save so it cannot touch yarn.lock: Yarn makes installs immutable when CI is set, and a lockfile change would fail the run.
-      - name: Install the SARIF formatter
-        run: npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
-
       # ESLint exits 1 when it found problems, which is a successful scan and has to reach the upload below, and 2 when
       # it could not run at all: a config it cannot load, a formatter it cannot resolve. Only the second is a failure
       # of this workflow, and it says so with whatever ESLint printed rather than swallowing it, which is how this
