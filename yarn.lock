@@ -428,7 +428,6 @@ __metadata:
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
     "@arkitektum/altinn-studio-custom-components": "npm:^16.8.1"
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.8"
     "@arkitektum/ftpb-testmotor-client": "npm:^1.0.2"
     "@eslint/js": "npm:^10.0.1"
     "@microsoft/eslint-formatter-sarif": "npm:^3.1.0"
