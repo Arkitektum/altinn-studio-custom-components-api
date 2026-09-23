@@ -2,11 +2,11 @@ name: ESLint
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   schedule:
-    - cron: '40 8 * * 3'
+    - cron: "40 8 * * 3"
 
 jobs:
   eslint:
@@ -18,60 +18,54 @@ jobs:
       actions: read
 
     steps:
-      # ------------------------------
-      # 1. Checkout repository
-      # ------------------------------
       - name: Checkout code
         uses: actions/checkout@v6
 
-      # ------------------------------
-      # 2. Setup Node.js (for caching)
-      # ------------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: "npm"
 
-      # ------------------------------
-      # 3. Install the SARIF formatter (ESLint itself comes from package.json)
-      # ------------------------------
-      # Only the formatter is pinned here. ESLint is left to resolve from package.json so the scan uses the same
-      # version as `yarn lint`, and stays in lockstep with @eslint/js — pinning it separately meant this workflow
-      # silently scanned with 10.0.3 while the repositories had moved to ^10.8.1.
-      - name: Install ESLint and SARIF formatter
+      - name: Enable Corepack and activate Yarn 4
         run: |
-          npm install @microsoft/eslint-formatter-sarif@3.1.0
+          corepack enable
+          yarn --version
 
-      # ------------------------------
-      # 4. Run ESLint (Flat Config)
-      # ------------------------------
+      # The project has to be installed before the scan, not just the formatter. eslint.config.mjs starts with an import from "eslint/config", which resolves out of this repository's node_modules, so without an install the config cannot load, no SARIF file is written, and the steps below quietly upload nothing. Installing also means the scan uses the same eslint as `yarn lint` rather than whatever npx would fetch.
+      #
+      # A registry timeout can crash Yarn outright instead of failing one fetch, so retry the whole install rather than trusting Yarn's own retries to recover.
+      - name: Install dependencies
+        run: |
+          for attempt in 1 2 3; do
+              yarn install --immutable && exit 0
+              echo "::warning::yarn install failed (attempt $attempt/3), retrying in 15s"
+              sleep 15
+          done
+          exit 1
+
+      # Added with --no-save so it cannot touch yarn.lock: Yarn makes installs immutable when CI is set, and a lockfile change would fail the run.
+      - name: Install the SARIF formatter
+        run: npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
+
       - name: Run ESLint
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: |
-          npx eslint . \
+          yarn eslint . \
             --config eslint.config.mjs \
-            --ext .js,.jsx,.ts,.tsx \
             --format @microsoft/eslint-formatter-sarif \
             --output-file eslint-results.sarif || echo "ESLint completed with errors."
         continue-on-error: true
 
-      # ------------------------------
-      # 5. Check if SARIF exists
-      # ------------------------------
-      - name: Check if SARIF exists
+      # A missing SARIF file means the scan itself failed rather than that the code is clean, so it fails the job instead of passing quietly. That is the state this workflow sat in while it was scanning nothing.
+      - name: Check that a SARIF file was produced
         run: |
           if [ ! -f eslint-results.sarif ]; then
-            echo "::warning::ESLint produced no SARIF file, so nothing was uploaded. Check the Run ESLint step."
-            exit 0
+            echo "::error::ESLint produced no SARIF file, so there is nothing to upload. Check the Run ESLint step."
+            exit 1
           fi
 
-      # ------------------------------
-      # 6. Upload SARIF to GitHub Security tab
-      # ------------------------------
       - name: Upload analysis results to GitHub
-        if: ${{ hashFiles('eslint-results.sarif') != '' }}
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: eslint-results.sarif
