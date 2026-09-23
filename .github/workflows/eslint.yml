@@ -47,15 +47,24 @@ jobs:
       - name: Install the SARIF formatter
         run: npm install --no-save @microsoft/eslint-formatter-sarif@3.1.0
 
+      # ESLint exits 1 when it found problems, which is a successful scan and has to reach the upload below, and 2 when
+      # it could not run at all: a config it cannot load, a formatter it cannot resolve. Only the second is a failure
+      # of this workflow, and it says so with whatever ESLint printed rather than swallowing it, which is how this
+      # step came to be scanning nothing without anyone noticing.
       - name: Run ESLint
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: |
-          yarn eslint . \
+          status=0
+          npx --no-install eslint . \
             --config eslint.config.mjs \
             --format @microsoft/eslint-formatter-sarif \
-            --output-file eslint-results.sarif || echo "ESLint completed with errors."
-        continue-on-error: true
+            --output-file eslint-results.sarif || status=$?
+          echo "eslint exited with $status"
+          if [ "$status" -gt 1 ]; then
+            echo "::error::ESLint could not run, so nothing was scanned. See the output above."
+            exit "$status"
+          fi
 
       # A missing SARIF file means the scan itself failed rather than that the code is clean, so it fails the job instead of passing quietly. That is the state this workflow sat in while it was scanning nothing.
       - name: Check that a SARIF file was produced
