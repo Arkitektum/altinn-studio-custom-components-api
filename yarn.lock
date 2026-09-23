@@ -29,6 +29,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@arkitektum/ftpb-testmotor-client@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.0.2"
+  checksum: 10c0/babd780e928feb88c42169f71ca064825b8801ba7494643932fe04d7ecce4ded1eea8c894061372c2613e4c359aa5fd7466dd0d9d851b04db36ae2e7c882d2f8
+  languageName: node
+  linkType: hard
+
 "@cacheable/memory@npm:^2.2.0":
   version: 2.2.0
   resolution: "@cacheable/memory@npm:2.2.0"
@@ -334,6 +341,7 @@ __metadata:
   dependencies:
     "@arkitektum/altinn-studio-custom-components": "npm:^16.8.1"
     "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.8"
+    "@arkitektum/ftpb-testmotor-client": "npm:^1.0.2"
     "@eslint/js": "npm:^10.0.1"
     cors: "npm:^2.8.6"
     dotenv: "npm:^18.0.3"
