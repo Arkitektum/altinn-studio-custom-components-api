@@ -336,7 +336,7 @@ __metadata:
     "@arkitektum/altinn-studio-custom-components-utils": "npm:^1.5.8"
     "@eslint/js": "npm:^10.0.1"
     cors: "npm:^2.8.6"
-    dotenv: "npm:^18.0.2"
+    dotenv: "npm:^18.0.3"
     eslint: "npm:^10.11.0"
     express: "npm:^5.2.1"
     fast-xml-parser: "npm:^5.11.1"
@@ -677,12 +677,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^18.0.2":
-  version: 18.0.2
-  resolution: "dotenv@npm:18.0.2"
+"dotenv@npm:^18.0.3":
+  version: 18.0.3
+  resolution: "dotenv@npm:18.0.3"
   bin:
     dotenv: dist/index.cjs
-  checksum: 10c0/c16e179205096a7028eea5fba2062dbd25e88d93a0beb66d219507d4585f63ec3f02fda755eee5dca790b7424391a39332830b19983003f0d8d449fbc6845424
+  checksum: 10c0/0132d3dba2022808c31d0c8191cd8567351c8a1b932f751237cfe502563b9eaab309754bd66e5965f2ccee887c3527f883e29016cb4d691df8519e7fc3d452fd
   languageName: node
   linkType: hard
 
