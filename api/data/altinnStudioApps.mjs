@@ -1,275 +1,30 @@
-const altinnStudioApps = [
-    {
-        appOwner: "dat",
-        appName: "byggesak-samtykke-v3",
-        dataType: "ArbeidstilsynetSamtykkeSoknad"
-    },
-    {
-        appOwner: "dibk",
-        appName: "an-v2",
-        dataType: "AN"
-    },
-    {
-        appOwner: "dibk",
-        appName: "disp-v1",
-        dataType: "DS",
-        subForms: [
-            {
-                appName: "dispensasjonssoeknad-v1",
-                dataType: "DispensasjonssoeknadDataV1"
-            },
-            {
-                appName: "gjenpart-nabovarsel-v3",
-                dataType: "GjenpartNabovarselDataV3"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "es-v2",
-        dataType: "ES",
-        subForms: [
-            {
-                appName: "dispensasjonssoeknad-v1",
-                dataType: "DispensasjonssoeknadDataV1"
-            },
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            },
-            {
-                appName: "gjenpart-nabovarsel-v3",
-                dataType: "GjenpartNabovarselDataV3"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "et-v4",
-        dataType: "ET",
-        subForms: [
-            {
-                appName: "dispensasjonssoeknad-v1",
-                dataType: "DispensasjonssoeknadDataV1"
-            },
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            },
-            {
-                appName: "gjenpart-nabovarsel-v3",
-                dataType: "GjenpartNabovarselDataV3"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "fa-v3",
-        dataType: "FA",
-        subForms: [
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "fa-v5",
-        dataType: "FA",
-        subForms: [
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "fts-v1",
-        dataType: "FTS",
-        subForms: [
-            {
-                appName: "dispensasjonssoeknad-v1",
-                dataType: "DispensasjonssoeknadDataV1"
-            },
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "hoeringettersyn-v2",
-        dataType: "HoeringOgOffentligEttersyn",
-        subForms: []
-    },
-    {
-        appOwner: "dibk",
-        appName: "hoeringettersynuttalelse-v2",
-        dataType: "HoeringOgOffentligEttersynUttalelse",
-        layoutFiles: [
-            { name: "Uttalelse", path: "App/ui/form/layouts/Uttalelse.json" },
-            { name: "UttalelsePdf", path: "App/ui/form/layouts/UttalelsePdf.json" }
-        ],
-        subForms: []
-    },
-    {
-        appOwner: "dibk",
-        appName: "ig-v3",
-        dataType: "IG",
-        subForms: [
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "ig-v5",
-        dataType: "IG",
-        subForms: [
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "innsending-planforslag",
-        dataType: "OversendelseReguleringsplanforslag",
-        layoutFiles: [{ name: "DisplayLayout", path: "App/ui/hovedskjema/layouts/DisplayLayout.json" }]
-    },
-    {
-        appOwner: "dibk",
-        appName: "ko-v2",
-        dataType: "KO"
-    },
-    {
-        appOwner: "dibk",
-        appName: "mb-v3",
-        dataType: "MB",
-        subForms: [
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "mb-v5",
-        dataType: "MB",
-        subForms: [
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "nabovarsel-svar-v5",
-        dataType: "NVS",
-        layoutFiles: [{ name: "SvarSkjemaPdf", path: "App/ui/svarskjema/layouts/SvarSkjemaPdf.json" }]
-    },
-    {
-        appOwner: "dibk",
-        appName: "nabovarsel-v5",
-        dataType: "NV",
-        subForms: [
-            {
-                appName: "dispensasjonsvarsel-v1",
-                dataType: "DispensasjonsvarselDataV1"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "rs-v4",
-        dataType: "RS",
-        subForms: [
-            {
-                appName: "dispensasjonssoeknad-v1",
-                dataType: "DispensasjonssoeknadDataV1"
-            },
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            },
-            {
-                appName: "gjenpart-nabovarsel-v3",
-                dataType: "GjenpartNabovarselDataV3"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "sa-v2",
-        dataType: "SA"
-    },
-    {
-        appOwner: "dibk",
-        appName: "su-v2",
-        dataType: "SU",
-        subForms: [
-            {
-                appName: "dispensasjonssoeknad-v1",
-                dataType: "DispensasjonssoeknadDataV1"
-            },
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            },
-            {
-                appName: "gjenpart-nabovarsel-v3",
-                dataType: "GjenpartNabovarselDataV3"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "ta-v4",
-        dataType: "TA",
-        subForms: [
-            {
-                appName: "dispensasjonssoeknad-v1",
-                dataType: "DispensasjonssoeknadDataV1"
-            },
-            {
-                appName: "gjennomfoeringsplan-v7",
-                dataType: "GjennomfoeringsplanDataV7"
-            },
-            {
-                appName: "gjenpart-nabovarsel-v3",
-                dataType: "GjenpartNabovarselDataV3"
-            }
-        ]
-    },
-    {
-        appOwner: "dibk",
-        appName: "ts-v1",
-        dataType: "TS"
-    },
-    {
-        appOwner: "dibk",
-        appName: "varselplanoppstart-v3",
-        dataType: "Planvarsel"
-    },
-    {
-        appOwner: "dibk",
-        appName: "varselplanoppstart-v4",
-        dataType: "Planvarsel"
-    },
-    {
-        appOwner: "dibk",
-        appName: "varselplanoppstartuttalelse-v3",
-        dataType: "Planuttalelse",
-        layoutFiles: [{ name: "UttalelseSkjemaPdf", path: "App/ui/Planuttalelse/layouts/UttalelseSkjemaPdf.json" }]
-    }
-];
+// Dependencies
+import { appCatalogue } from "@arkitektum/ftpb-app-catalogue";
+
+/**
+ * The Altinn Studio apps this API serves, spelled the way this repository spells them.
+ *
+ * The list itself lives in `@arkitektum/ftpb-app-catalogue`, because `altinn-studio-api-tools` needs the same one
+ * and the two repositories held their own copies until 2026-09-24, by which point the copies had drifted apart.
+ * Add an app there, not here.
+ *
+ * The shared catalogue names an app's organisation `org` and the app `app`; this repository has always called them
+ * `appOwner` and `appName`, and enough of it reads those names that renaming them here would be a larger change
+ * than sharing the list. So the list is projected on the way in.
+ *
+ * @typedef {{appName: string, dataType: string}} SubFormEntry
+ * @typedef {{name: string, path: string}} LayoutFileEntry
+ * @type {Array<{appOwner: string, appName: string, dataType: string, subForms?: SubFormEntry[], layoutFiles?: LayoutFileEntry[]}>}
+ */
+const altinnStudioApps = appCatalogue.map((app) => ({
+    appOwner: app.org,
+    appName: app.app,
+    dataType: app.dataType,
+    // Left out when an app has none, which is what 24 of the 26 entries did before this list was shared. The other
+    // two carried an empty array, so `getDisplayLayouts` answered "subForms": [] for those two and omitted the key
+    // for the rest. Following the majority makes all 26 answer the same way.
+    ...(app.subForms.length > 0 ? { subForms: app.subForms.map((subForm) => ({ appName: subForm.app, dataType: subForm.dataType })) } : {}),
+    ...(app.layoutFiles ? { layoutFiles: app.layoutFiles } : {})
+}));
 
 export default altinnStudioApps;
