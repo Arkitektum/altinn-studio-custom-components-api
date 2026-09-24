@@ -30,7 +30,13 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
    yarn install
    ```
 
-   Installing pulls in `@arkitektum/altinn-studio-custom-components`, which the API reads default text resources from at runtime.
+   Installing pulls in three Arkitektum packages:
+
+   - `@arkitektum/altinn-studio-custom-components`, whose `dist/resources.json` the API reads the default text resources from at runtime. It is read as a file, not imported.
+   - `@arkitektum/ftpb-testmotor-client`, which fetches the main form examples.
+   - `@arkitektum/ftpb-app-catalogue`, which is the list of apps this API tracks.
+
+   The last two are shared with `altinn-studio-api-tools`. Change either of them in its own repository and publish; both consumers are thin wrappers.
 
 2. **Create your `.env`**
 
@@ -80,7 +86,7 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
   `console.*`, so the events end up in the request's summary report (see
   [ARCHITECTURE § Logging](./ARCHITECTURE.md#6-logging)). Wrap a new fan-out route in `withRunLog("<name>", …)`.
   Run with `LOG_VERBOSE=1` to see every event as it happens while debugging.
-- **Tracked apps** are configured in `api/data/altinnStudioApps.mjs` (and subforms in `api/data/subforms.mjs`).
+- **Tracked apps** come from `@arkitektum/ftpb-app-catalogue`; add one there and bump the dependency. `api/data/altinnStudioApps.mjs` only renames the fields for this repository. Subform layouts stay here, in `api/data/subforms.mjs`.
   Add an app there to include it in the statistics.
 - **Version sources** for `latestPackageVersions` are configured in `api/data/packageSources.mjs` (`npm` or `github`).
 - **Example data** for the main forms is read from the FtPB testmotor at request time, not from this repo — it re-stamps

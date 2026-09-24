@@ -25,8 +25,14 @@ It is not published to npm and is not deployed — each developer runs it locall
                                         │
                   ┌─────────────┬───────┴────────┬──────────────────────┐
                   ▼             ▼                ▼                      ▼
-          Altinn Studio   npm registry     FtPB testmotor        local example data
-          (Gitea repos)   / GitHub         (main form data)      (subforms + the rest)
+          Altinn Studio   npm registry     FtPB testmotor        local files
+          (Gitea repos)   / GitHub         (main form data)      (subforms, and the
+                                                                  components package's
+                                                                  default text resources)
+
+  Shared with altinn-studio-api-tools, which is otherwise unrelated to this repository:
+     @arkitektum/ftpb-testmotor-client   reaching the testmotor
+     @arkitektum/ftpb-app-catalogue      which apps exist and what their data types are
 ```
 
 - The **Statistics** dashboard is the only consumer.
@@ -36,7 +42,7 @@ It is not published to npm and is not deployed — each developer runs it locall
 
 ## 3. Endpoints
 
-All routes are `GET` under `/api` and return JSON (`api/index.mjs`):
+All routes are `GET` under `/api` and return JSON. They are registered in `api/app.mjs`, which builds the app and holds the caches; `api/index.mjs` only starts it listening.
 
 | Route | Purpose |
 | ----- | ------- |
@@ -65,7 +71,9 @@ defaults to 60s and is configurable via `CACHE_TTL_MS` (`0` disables caching).
 
 ```text
 api/
-├── index.mjs                        # Express app: route definitions + server bootstrap
+├── app.mjs                          # Builds the Express app: caches, CORS, route definitions
+├── index.mjs                        # Reads the environment and starts the app listening
+├── endpoints.test.mjs               # Boots the app on a free port and exercises the routes
 ├── smoke.test.mjs                   # Boots the server and checks it accepts connections
 ├── scripts/
 │   ├── catalogueDrift.mjs           # `yarn drift`: where the catalogue and the testmotor disagree
@@ -78,11 +86,11 @@ api/
 │   ├── exampleFiles.mjs             # Reading the example XML still kept on disk
 │   ├── logger.mjs                   # Run-scoped logging: one aggregated report per request
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
-│   ├── testmotorClient.mjs          # The FtPB testmotor, which holds the main form examples
+│   ├── testmotorClient.mjs          # Thin wrapper over @arkitektum/ftpb-testmotor-client
 │   ├── xmlToJsonConverter.mjs       # Converts example form XML into JSON
 │   └── *.test.mjs
 └── data/
-    ├── altinnStudioApps.mjs         # The tracked apps (appOwner / appName / dataType / subForms)
+    ├── altinnStudioApps.mjs         # @arkitektum/ftpb-app-catalogue, spelled appOwner / appName
     ├── subforms.mjs                 # Subform definitions + their layouts
     ├── subforms/                    # One module per subform, re-exported by subforms.mjs
     ├── packageSources.mjs           # Which packages to look up latest versions for (npm / GitHub)
@@ -123,7 +131,7 @@ api/
 
   If it cannot be reached there is **no fallback to disk**; the affected entries carry the reason instead, so the dashboard can tell "no examples" from "could not fetch the examples".
 
-  The catalogue in `altinnStudioApps.mjs` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land.
+  The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land.
 - **Local files.**
   Default text resources are read from the installed package at `node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json`. Example data the testmotor does not serve — every subform, and `hoeringettersynuttalelse-v2`, the one main form it has no data for — is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml` and `subforms/{dataType}/*.xml`.
 

@@ -67,7 +67,7 @@ All routes are `GET` under `/api` and return JSON:
 | `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
 | `/api/diagnostics` | What the endpoints above last ran into: counts per app plus the grouped warnings and errors. |
 
-Tracked apps are configured in `api/data/altinnStudioApps.mjs` (and subforms in `api/data/subforms.mjs`).
+Which apps are tracked comes from `@arkitektum/ftpb-app-catalogue`, a package shared with `altinn-studio-api-tools`. `api/data/altinnStudioApps.mjs` only renames its fields to the `appOwner`/`appName` this repository uses, so **an app is added to the package, not here**. Subform layouts are still local, in `api/data/subforms.mjs`.
 
 ---
 
@@ -76,5 +76,7 @@ Tracked apps are configured in `api/data/altinnStudioApps.mjs` (and subforms in 
 - [Architecture overview](./ARCHITECTURE.md)
 - [Contributing guide](./CONTRIBUTING.md)
 - [Security policy](./SECURITY.md)
-- [Custom components](https://github.com/Arkitektum/altinn-studio-custom-components)
+- [Custom components](https://github.com/Arkitektum/altinn-studio-custom-components) — the dashboard this API backs lives there
 - [Component documentation & gallery](https://arkitektum.github.io/altinn-studio-custom-components-docs/)
+- [FtPB testmotor client](https://github.com/Arkitektum/ftpb-testmotor-client) — shared with the API tools
+- [FtPB app catalogue](https://github.com/Arkitektum/ftpb-app-catalogue) — shared with the API tools; add a tracked app there
