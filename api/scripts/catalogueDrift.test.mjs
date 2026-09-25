@@ -140,6 +140,51 @@ test("copes with a testmotor that answered nothing", () => {
     assert.ok(drift.coverage.every((entry) => entry.source !== "testmotor"));
 });
 
+test("names a declared subform that no layout is held for", () => {
+    // The fixture catalogue declares GjennomfoeringsplanDataV7 and the fixture subform list serves it, so nothing
+    // is reported until a second subform is declared without being served.
+    assert.deepEqual(compare().subformsWithoutLayout, []);
+
+    const withUnserved = compare({
+        catalogue: [
+            ...catalogue,
+            {
+                appOwner: "dibk",
+                appName: "disp-v1",
+                dataType: "DS",
+                subForms: [{ appName: "dispensasjonssoeknad-v1", dataType: "DispensasjonssoeknadDataV1" }]
+            }
+        ]
+    });
+
+    assert.deepEqual(withUnserved.subformsWithoutLayout, [{ appName: "dispensasjonssoeknad-v1", dataType: "DispensasjonssoeknadDataV1" }]);
+});
+
+test("names a subform declared by several apps only once", () => {
+    const declaredTwice = { appName: "dispensasjonssoeknad-v1", dataType: "DispensasjonssoeknadDataV1" };
+    const drift = compare({
+        catalogue: [
+            ...catalogue,
+            { appOwner: "dibk", appName: "disp-v1", dataType: "DS", subForms: [declaredTwice] },
+            { appOwner: "dibk", appName: "disp-v2", dataType: "DS", subForms: [declaredTwice] }
+        ]
+    });
+
+    assert.deepEqual(drift.subformsWithoutLayout, [declaredTwice]);
+});
+
+test("reports nothing missing for the real catalogue, since subforms.mjs is built from it", () => {
+    const drift = compareCatalogueWithTestmotor({
+        catalogue: altinnStudioApps,
+        subformList: subforms,
+        testmotorApps: [],
+        formDataTypesOnDisk: new Set(),
+        subformDataTypesOnDisk: new Set()
+    });
+
+    assert.deepEqual(drift.subformsWithoutLayout, []);
+});
+
 test("runs over the real catalogue without losing or duplicating an app", () => {
     // Fixtures cannot go wrong the way the real catalogue does — three of its data types are claimed twice.
     const drift = compareCatalogueWithTestmotor({
