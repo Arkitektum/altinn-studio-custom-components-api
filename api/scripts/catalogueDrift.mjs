@@ -16,13 +16,15 @@ import { hasExampleFilesOnDisk } from "../utils/exampleFiles.mjs";
  * apps the dashboard shows; the testmotor keeps its own list and decides which apps have example data. Nothing
  * reconciles them, so they drift, and the drift is invisible until someone opens an app and finds an empty picker.
  *
- * Three findings come out of it:
+ * Four findings come out of it:
  *
  * - **Apps the testmotor holds that the catalogue does not name.** Usually a new app version worth tracking.
  * - **Apps with no example data from either source.** The one worth having: an app you cannot see rendered with
  *   real content, because there is nothing to render it with.
  * - **Apps the two file under different data types.** The one that would actually break something, since the
  *   catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land.
+ * - **Subforms the catalogue declares that this repository holds no layout for.** `subforms.mjs` serves only the
+ *   subforms it has a layout for, so one added to the catalogue alone is quietly absent rather than broken.
  *
  * This is a report, not a gate: it exits 0 whatever it finds. Drift is normal and is usually resolved by editing
  * the catalogue, which is a judgement call rather than something to fail a build over.
@@ -49,7 +51,8 @@ import { hasExampleFilesOnDisk } from "../utils/exampleFiles.mjs";
  *   unknownToCatalogue: Array<{appId: string, mainFormId: string}>,
  *   disagreements: Array<{appOwner: string, appName: string, catalogue: string, testmotor: string}>,
  *   coverage: CoverageEntry[],
- *   subformCoverage: Array<{appName: string, dataType: string, source: "disk"|"none"}>
+ *   subformCoverage: Array<{appName: string, dataType: string, source: "disk"|"none"}>,
+ *   subformsWithoutLayout: Array<{appName: string, dataType: string}>
  * }}
  */
 export function compareCatalogueWithTestmotor({ catalogue, subformList, testmotorApps, formDataTypesOnDisk, subformDataTypesOnDisk }) {
@@ -91,7 +94,22 @@ export function compareCatalogueWithTestmotor({ catalogue, subformList, testmoto
             source: subformDataTypesOnDisk.has(subForm.dataType) ? "disk" : "none"
         }));
 
-    return { unknownToCatalogue, disagreements, coverage, subformCoverage };
+    // Declared in the catalogue but not served, which happens when a subform is added there without a layout being
+    // added here. It goes missing quietly rather than breaking, since subforms.mjs leaves out what it cannot serve.
+    const servedDataTypes = new Set(subformList.map((subForm) => subForm.dataType));
+    const subformsWithoutLayout = [];
+    const seenWithoutLayout = new Set();
+    for (const app of catalogue) {
+        for (const subForm of app.subForms ?? []) {
+            if (servedDataTypes.has(subForm.dataType) || seenWithoutLayout.has(subForm.dataType)) {
+                continue;
+            }
+            seenWithoutLayout.add(subForm.dataType);
+            subformsWithoutLayout.push({ appName: subForm.appName, dataType: subForm.dataType });
+        }
+    }
+
+    return { unknownToCatalogue, disagreements, coverage, subformCoverage, subformsWithoutLayout };
 }
 
 /**
@@ -168,6 +186,11 @@ export async function reportCatalogueDrift() {
     printSection(
         "Declared subforms with no example file",
         drift.subformCoverage.filter((entry) => entry.source === "none").map((entry) => `${entry.appName}  (${entry.dataType})`)
+    );
+
+    printSection(
+        "Subforms the catalogue declares that this repository holds no layout for",
+        drift.subformsWithoutLayout.map((entry) => `${entry.appName}  (${entry.dataType})`)
     );
 
     const fromTestmotor = drift.coverage.filter((entry) => entry.source === "testmotor").length;
