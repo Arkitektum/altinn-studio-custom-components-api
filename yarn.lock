@@ -440,7 +440,7 @@ __metadata:
     "@eslint/js": "npm:^10.0.1"
     "@microsoft/eslint-formatter-sarif": "npm:^3.1.0"
     cors: "npm:^2.8.6"
-    dotenv: "npm:^18.0.3"
+    dotenv: "npm:^18.0.4"
     eslint: "npm:^10.11.0"
     express: "npm:^5.2.1"
     fast-xml-parser: "npm:^5.11.1"
@@ -457,9 +457,9 @@ __metadata:
   linkType: hard
 
 "ansi-regex@npm:^6.2.2":
-  version: 6.3.0
-  resolution: "ansi-regex@npm:6.3.0"
-  checksum: 10c0/bc047786d0531f1f22d1e22e9863e8554488a399f1ee5270b753efa6de938a788d27456f2b256770f11fdd8b1e847483bc1b55ddc2b3ffe82ec45c875292c651
+  version: 6.4.0
+  resolution: "ansi-regex@npm:6.4.0"
+  checksum: 10c0/e42f68ffa21aac4c4de27aad601bb5ea415b5a07b127681ef44728195f22231b77bc39230ce0c976420d84650b7bf5a5b60eb4e7500c1f74e9a3f3cd4a68f3f6
   languageName: node
   linkType: hard
 
@@ -831,12 +831,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^18.0.3":
-  version: 18.0.3
-  resolution: "dotenv@npm:18.0.3"
+"dotenv@npm:^18.0.4":
+  version: 18.0.4
+  resolution: "dotenv@npm:18.0.4"
   bin:
     dotenv: dist/index.cjs
-  checksum: 10c0/0132d3dba2022808c31d0c8191cd8567351c8a1b932f751237cfe502563b9eaab309754bd66e5965f2ccee887c3527f883e29016cb4d691df8519e7fc3d452fd
+  checksum: 10c0/33be95df15269c0f1106da53b97bf8dd2ad17cec34aaa9e05ea1e97135195d50a9fbf0cdcac27a736b1dcd20575b2bfdea2287a5c86bf950430eb45de7ec4eda
   languageName: node
   linkType: hard
 
@@ -1779,9 +1779,11 @@ __metadata:
   linkType: hard
 
 "jschardet@npm:latest":
-  version: 3.1.4
-  resolution: "jschardet@npm:3.1.4"
-  checksum: 10c0/d72c724ff60bc185d3962617ffda6849c6d632a935820841078c656a5247d73617a5df3b233e1fb1064de8683f7dae1b422b68186d1d6db22117b59edb5433dc
+  version: 4.0.0
+  resolution: "jschardet@npm:4.0.0"
+  bin:
+    jschardet: build/cli.js
+  checksum: 10c0/f4345432cc4c5a7bf0a1b3874299d6815380d5ab175ec9c2ff5b9e6435ec2e8bc1ebc1173722b8eb27505d31aed7f5c05470b8a178d651e422a37b69fceee1fc
   languageName: node
   linkType: hard
 

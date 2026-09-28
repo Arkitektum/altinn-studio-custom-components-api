@@ -21,7 +21,7 @@
         "@arkitektum/ftpb-app-catalogue": "^1.0.0",
         "@arkitektum/ftpb-testmotor-client": "^1.0.3",
         "cors": "^2.8.6",
-        "dotenv": "^18.0.3",
+        "dotenv": "^18.0.4",
         "express": "^5.2.1",
         "fast-xml-parser": "^5.11.1",
         "libxmljs2": "^0.37.0"
