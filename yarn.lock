@@ -36,7 +36,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@arkitektum/ftpb-testmotor-client@npm:^1.0.2":
+"@arkitektum/ftpb-testmotor-client@npm:^1.0.3":
   version: 1.0.3
   resolution: "@arkitektum/ftpb-testmotor-client@npm:1.0.3"
   checksum: 10c0/af346c59a4f84b45d33f3f9826edac0d1c7c9a89bb5d0eb86b481b31d7cd15de2a7aa2625fb86a3e3cc6d252c730ebb35861655b584313c4035effb4853fef08
@@ -436,7 +436,7 @@ __metadata:
   dependencies:
     "@arkitektum/altinn-studio-custom-components": "npm:^16.8.1"
     "@arkitektum/ftpb-app-catalogue": "npm:^1.0.0"
-    "@arkitektum/ftpb-testmotor-client": "npm:^1.0.2"
+    "@arkitektum/ftpb-testmotor-client": "npm:^1.0.3"
     "@eslint/js": "npm:^10.0.1"
     "@microsoft/eslint-formatter-sarif": "npm:^3.1.0"
     cors: "npm:^2.8.6"
