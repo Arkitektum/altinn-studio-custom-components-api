@@ -5,20 +5,20 @@ __metadata:
   version: 10
   cacheKey: 10c0
 
-"@arkitektum/altinn-studio-custom-components-utils@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:2.0.1"
-  checksum: 10c0/4d2d5f358f4c66ac12b29c45be3cba1a1b91cb47c5e7b76e03bf6375954404dccefae11a035e5012d04edb4f6a5f152ebce644cb401687448d9811605d951246
+"@arkitektum/altinn-studio-custom-components-utils@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:2.0.2"
+  checksum: 10c0/eaf3fd99bc9867df32e8a810030f78f2658f80b0f83f9685d786c202e9653560e102560d9b699bf870a90201f97b809268a8223ac34264f7ebdc2ee53631c7c6
   languageName: node
   linkType: hard
 
-"@arkitektum/altinn-studio-custom-components@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "@arkitektum/altinn-studio-custom-components@npm:17.0.0"
+"@arkitektum/altinn-studio-custom-components@npm:^17.1.0":
+  version: 17.1.0
+  resolution: "@arkitektum/altinn-studio-custom-components@npm:17.1.0"
   dependencies:
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^2.0.1"
+    "@arkitektum/altinn-studio-custom-components-utils": "npm:^2.0.2"
     "@arkitektum/client-logger": "npm:^1.2.2"
-  checksum: 10c0/8a91e4b6041df03028de30a5ae9c4787df60cc00974e08d3146ce20c07eb25d17d0bf010d26ab06df1ffe053fc52562fb72f82d4c3826de47b097d655c755953
+  checksum: 10c0/a0f70b7d0f2fee408c4925288897e58c3e48d9c02f9d0899803e59f9829e60302570e656ce7536d8f0856670507725ff776eb430a8e15ce63df3cd506e969b33
   languageName: node
   linkType: hard
 
@@ -29,17 +29,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@arkitektum/ftpb-app-catalogue@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@arkitektum/ftpb-app-catalogue@npm:1.0.0"
-  checksum: 10c0/5987c75bf4009688bcde7349d1004a71a8ef40d13b31921273ef594cc427e8a7d517be214db377b11d21dceefbce1e33cadb9f034c17ca92a0135c921d9cef7c
+"@arkitektum/ftpb-app-catalogue@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@arkitektum/ftpb-app-catalogue@npm:1.0.1"
+  checksum: 10c0/4984c78a9a3200e0452ad2ba14bbb52c9b0d1d666ecf68a7a2e960474f1a868f66c7ec52da2d4a455493f13c83c6f6d945d3847ab79edcf4cefed53e5ee19032
   languageName: node
   linkType: hard
 
-"@arkitektum/ftpb-testmotor-client@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.0.3"
-  checksum: 10c0/af346c59a4f84b45d33f3f9826edac0d1c7c9a89bb5d0eb86b481b31d7cd15de2a7aa2625fb86a3e3cc6d252c730ebb35861655b584313c4035effb4853fef08
+"@arkitektum/ftpb-testmotor-client@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.0.4"
+  checksum: 10c0/4047889c6fd569827f1d9bd54538b52595b45cad97186e2a21b2aeaebe8965c3731cdab9e454e3977bb178017db6c581c178764357480dfe7db8f61bbe83d046
   languageName: node
   linkType: hard
 
@@ -278,10 +278,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nodable/entities@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@nodable/entities@npm:3.0.0"
-  checksum: 10c0/5e57422ce08d9f83a7ad09d8f90953e2e63b3274c3f941bf7ddf64f290473e70d47acbd6c8b9e60169c2a8c5c2424c4131bdd99b937792413f55a4a146f76658
+"@nodable/entities@npm:^3.0.1":
+  version: 3.1.0
+  resolution: "@nodable/entities@npm:3.1.0"
+  checksum: 10c0/a1a2a081949a72da17846dc44962dc95a2bf5268867407fc4f6b686acda4dc5e9fd85f0398999969309b9f7fe0fbe85947a91c1ddac47eba8f9b58224c36f6fb
   languageName: node
   linkType: hard
 
@@ -434,17 +434,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
-    "@arkitektum/altinn-studio-custom-components": "npm:^17.0.0"
-    "@arkitektum/ftpb-app-catalogue": "npm:^1.0.0"
-    "@arkitektum/ftpb-testmotor-client": "npm:^1.0.3"
+    "@arkitektum/altinn-studio-custom-components": "npm:^17.1.0"
+    "@arkitektum/ftpb-app-catalogue": "npm:^1.0.1"
+    "@arkitektum/ftpb-testmotor-client": "npm:^1.0.4"
     "@eslint/js": "npm:^10.0.1"
     "@microsoft/eslint-formatter-sarif": "npm:^3.1.0"
     cors: "npm:^2.8.6"
-    dotenv: "npm:^18.0.4"
+    dotenv: "npm:^18.0.5"
     eslint: "npm:^10.11.0"
     express: "npm:^5.2.1"
-    fast-xml-parser: "npm:^5.11.1"
-    globals: "npm:^17.12.0"
+    fast-xml-parser: "npm:^5.11.2"
+    globals: "npm:^17.13.0"
     libxmljs2: "npm:^0.37.0"
   languageName: unknown
   linkType: soft
@@ -831,12 +831,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^18.0.4":
-  version: 18.0.4
-  resolution: "dotenv@npm:18.0.4"
+"dotenv@npm:^18.0.5":
+  version: 18.0.5
+  resolution: "dotenv@npm:18.0.5"
   bin:
     dotenv: dist/index.cjs
-  checksum: 10c0/33be95df15269c0f1106da53b97bf8dd2ad17cec34aaa9e05ea1e97135195d50a9fbf0cdcac27a736b1dcd20575b2bfdea2287a5c86bf950430eb45de7ec4eda
+  checksum: 10c0/fade137f063f3d3483459b71c6ed0f98f18189fa52b14c9f192e57df6b76719340aa6d9a1d194e4fa0e025deb5af9d545efcc3a28f09230af815518f0b9c0785
   languageName: node
   linkType: hard
 
@@ -1226,11 +1226,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^5.11.1":
-  version: 5.11.1
-  resolution: "fast-xml-parser@npm:5.11.1"
+"fast-xml-parser@npm:^5.11.2":
+  version: 5.11.2
+  resolution: "fast-xml-parser@npm:5.11.2"
   dependencies:
-    "@nodable/entities": "npm:^3.0.0"
+    "@nodable/entities": "npm:^3.0.1"
     fast-xml-builder: "npm:^1.2.0"
     is-unsafe: "npm:^2.0.0"
     path-expression-matcher: "npm:^1.6.2"
@@ -1238,7 +1238,7 @@ __metadata:
     xml-naming: "npm:^0.3.0"
   bin:
     fxparser: src/cli/cli.js
-  checksum: 10c0/04a1cf600130c4fc146e9f5bcb0a0e88354c5b9725debfa849f9028afd90b77a3e4c9339a3a7f5d22d749b74ac78567428eb1385679319fabf4d6f03065248d6
+  checksum: 10c0/8e8f947b150c0ecc97fb2a7298faa3e9d3e6720a7773446f17bbadf6f6ef4aff5c3e6ef9b6df81dc9b0abe9480bbcbe13b2ce4b1a27098de31e9190681116312
   languageName: node
   linkType: hard
 
@@ -1488,10 +1488,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^17.12.0":
-  version: 17.12.0
-  resolution: "globals@npm:17.12.0"
-  checksum: 10c0/8325cf8818c848871d17c32974c2c74e9c5f09c1b0e04421886f64f21e77c3e95f3ba25586743895a73acd860ada151132481d87d44a1f12993ae7758a694d03
+"globals@npm:^17.13.0":
+  version: 17.13.0
+  resolution: "globals@npm:17.13.0"
+  checksum: 10c0/8371d9e4e5581640141b5cce70a098edd765d2e3ab063b14998e590698071e0afb4a4a6739ccfbdcbdeb2565c5553697ba07d95703c51039912cf341a7dba7a7
   languageName: node
   linkType: hard
 

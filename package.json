@@ -14,16 +14,16 @@
         "@eslint/js": "^10.0.1",
         "@microsoft/eslint-formatter-sarif": "^3.1.0",
         "eslint": "^10.11.0",
-        "globals": "^17.12.0"
+        "globals": "^17.13.0"
     },
     "dependencies": {
-        "@arkitektum/altinn-studio-custom-components": "^17.0.0",
-        "@arkitektum/ftpb-app-catalogue": "^1.0.0",
-        "@arkitektum/ftpb-testmotor-client": "^1.0.3",
+        "@arkitektum/altinn-studio-custom-components": "^17.1.0",
+        "@arkitektum/ftpb-app-catalogue": "^1.0.1",
+        "@arkitektum/ftpb-testmotor-client": "^1.0.4",
         "cors": "^2.8.6",
-        "dotenv": "^18.0.4",
+        "dotenv": "^18.0.5",
         "express": "^5.2.1",
-        "fast-xml-parser": "^5.11.1",
+        "fast-xml-parser": "^5.11.2",
         "libxmljs2": "^0.37.0"
     }
 }
