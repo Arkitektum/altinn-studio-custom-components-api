@@ -12,13 +12,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@arkitektum/altinn-studio-custom-components@npm:^17.1.0":
-  version: 17.1.0
-  resolution: "@arkitektum/altinn-studio-custom-components@npm:17.1.0"
+"@arkitektum/altinn-studio-custom-components@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "@arkitektum/altinn-studio-custom-components@npm:17.2.0"
   dependencies:
     "@arkitektum/altinn-studio-custom-components-utils": "npm:^2.0.2"
     "@arkitektum/client-logger": "npm:^1.2.2"
-  checksum: 10c0/a0f70b7d0f2fee408c4925288897e58c3e48d9c02f9d0899803e59f9829e60302570e656ce7536d8f0856670507725ff776eb430a8e15ce63df3cd506e969b33
+  checksum: 10c0/63b3b9c5040ad0c74778f4f3d3776957cd54f1f901e08db2bf06435ea587d560618e53d5fde340a90cff696cf27d6f4d4205cb75f1ae775e8d96abc17558c2a2
   languageName: node
   linkType: hard
 
@@ -434,7 +434,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
-    "@arkitektum/altinn-studio-custom-components": "npm:^17.1.0"
+    "@arkitektum/altinn-studio-custom-components": "npm:^17.2.0"
     "@arkitektum/ftpb-app-catalogue": "npm:^1.0.1"
     "@arkitektum/ftpb-testmotor-client": "npm:^1.0.4"
     "@eslint/js": "npm:^10.0.1"

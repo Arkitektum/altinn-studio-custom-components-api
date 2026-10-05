@@ -17,7 +17,7 @@
         "globals": "^17.13.0"
     },
     "dependencies": {
-        "@arkitektum/altinn-studio-custom-components": "^17.1.0",
+        "@arkitektum/altinn-studio-custom-components": "^17.2.0",
         "@arkitektum/ftpb-app-catalogue": "^1.0.1",
         "@arkitektum/ftpb-testmotor-client": "^1.0.4",
         "cors": "^2.8.6",
