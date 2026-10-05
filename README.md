@@ -63,7 +63,7 @@ All routes are `GET` under `/api` and return JSON:
 | `/api/appResources` | App-level text-resource values (accepts a `language` query param). |
 | `/api/resources` | The package's default text resources. |
 | `/api/altinnStudioForms` | The configured list of tracked Altinn apps / forms. |
-| `/api/exampleData` | Example form + subform data, converted from XML to JSON. Main forms come from the FtPB testmotor; subforms come from disk. |
+| `/api/exampleData` | Example form + subform data, converted from XML to JSON. Main forms and subforms come from the FtPB testmotor, and the one main form it holds no data for comes from disk. |
 | `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
 | `/api/diagnostics` | What the endpoints above last ran into: counts per app plus the grouped warnings and errors. |
 

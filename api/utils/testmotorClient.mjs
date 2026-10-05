@@ -2,11 +2,11 @@
 import { createTestmotorClient } from "@arkitektum/ftpb-testmotor-client";
 
 /**
- * The FtPB testmotor, which is where the main form example data comes from.
+ * The FtPB testmotor, which is where the main form and subform example data comes from.
  *
- * The client itself lives in `@arkitektum/ftpb-testmotor-client`, shared with altinn-studio-api-tools, which reads the same two endpoints and used to carry its own copy of this. See that package for what it does and refuses to do: which entries it drops, why the files are not sorted, and how long an answer is reused.
+ * The client itself lives in `@arkitektum/ftpb-testmotor-client`, shared with altinn-studio-api-tools, which reads the same endpoints and used to carry its own copy of this. See that package for what it does and refuses to do: which entries it drops, why the files are not sorted, and how long an answer is reused.
  *
- * What is left here is the part that is this repository's own: where the testmotor lives, and the three functions the rest of the code already calls.
+ * What is left here is the part that is this repository's own: where the testmotor lives, and the four functions the rest of the code calls.
  */
 
 /** Where the testmotor lives when nothing says otherwise. Overridable so a test, or a local instance, can be pointed at instead. */
@@ -41,4 +41,18 @@ export function fetchTestmotorApps() {
  */
 export function fetchTestmotorFormXml(appId) {
     return client.fetchFormXml(appId);
+}
+
+/**
+ * One subform's predefined example files as one app holds them, in the order the testmotor lists them.
+ *
+ * The app matters and not only the data type: the testmotor files subform examples per app, and DispensasjonssoeknadDataV1 holds different files under disp-v1 and fts-v1.
+ *
+ * @param {string} appId - The app that declares the subform, e.g. "disp-v1".
+ * @param {string} dataType - The subform's data type, e.g. "DispensasjonssoeknadDataV1".
+ * @returns {Promise<Array<{name: string, contents: string}>>} The example files, named without the `.xml`. Empty when the app holds none for this data type.
+ * @throws {Error} If the testmotor could not be reached, or a file could not be downloaded. The message names the file.
+ */
+export function fetchTestmotorSubformXml(appId, dataType) {
+    return client.fetchSubformXml(appId, dataType);
 }

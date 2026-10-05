@@ -89,14 +89,8 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 - **Tracked apps** come from `@arkitektum/ftpb-app-catalogue`; add one there and bump the dependency. `api/data/altinnStudioApps.mjs` only renames the fields for this repository. Subform layouts stay here, in `api/data/subforms.mjs`.
   Add an app there to include it in the statistics.
 - **Version sources** for `latestPackageVersions` are configured in `api/data/packageSources.mjs` (`npm` or `github`).
-- **Example data** for the main forms is read from the FtPB testmotor at request time, not from this repo — it re-stamps
-  the date fields on every request, and a committed copy goes stale within a fortnight (see
-  [ARCHITECTURE § External data sources](./ARCHITECTURE.md#5-external-data-sources)). To add or change one, change it on
-  the testmotor's Azure file share instead.
-  What is still on disk is `api/data/exampleData/{forms,subforms}`: every subform, and `hoeringettersynuttalelse-v2`,
-  the one main form the testmotor has no data for. Both are converted to JSON by `api/utils/xmlToJsonConverter.mjs`.
-  The directory name is the data type and the numeric prefix orders the files while being stripped from the label, so
-  `01_Maksimumsversjon.xml` reads as `Maksimumsversjon`.
+- **Example data** for the main forms and the subforms is read from the FtPB testmotor at request time, not from this repo. For main forms that is because it re-stamps the date fields on every request, and a committed copy goes stale within a fortnight. For subforms it is because the testmotor files them per app, and the same subform can hold different files under different apps (see [ARCHITECTURE § External data sources](./ARCHITECTURE.md#5-external-data-sources)). To add or change one, change it on the testmotor's Azure file share instead.
+  What is still on disk is `api/data/exampleData/forms`: `hoeringettersynuttalelse-v2`, the one main form the testmotor has no data for. It is converted to JSON by `api/utils/xmlToJsonConverter.mjs` like the rest. The directory name is the data type and the numeric prefix orders the files while being stripped from the label, so `01_Maksimumsversjon.xml` reads as `Maksimumsversjon`.
   Use synthetic/example data only — never commit real or personal data.
 - **Which apps have example data at all** is answered by `yarn drift`. The catalogue and the testmotor keep separate
   lists of the same apps and nothing reconciles them, so they drift silently. It reports apps the testmotor holds that

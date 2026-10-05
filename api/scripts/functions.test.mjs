@@ -183,28 +183,55 @@ function xml(tittel) {
 const INVALID_XML = `<?xml version="1.0" encoding="utf-8"?><skjema><ukjentFelt>nei</ukjentFelt></skjema>`;
 
 /**
- * Stubs both upstreams: the testmotor's two endpoints and the schema fetch from Altinn Studio.
+ * Stubs both upstreams: the testmotor's endpoints and the schema fetch from Altinn Studio.
+ *
+ * The attachment endpoints answer the way the testmotor does: a list of attachment types per app, and each file
+ * downloaded by the `fileName` header, with a 404 for a name it does not hold. Every testmotor request is recorded.
  *
  * @param {Object} options
  * @param {Array<{appId: string, mainFormId: string}>} [options.apps] - What /api/altinn-app answers.
  * @param {Object<string, Array<{name: string, contents: string}>>} [options.xmlByApp] - What /api/xml/{appId} answers.
+ * @param {Object<string, Object<string, Array<{fileName: string, contents: string|null}>>>} [options.subformsByApp] -
+ *   Per app and subform data type, the predefined files. A null `contents` is listed but answers 404 when downloaded.
  * @param {boolean} [options.testmotorDown] - Make every testmotor request fail.
  * @param {string|null} [options.xsd] - The schema every data type resolves to, or null to answer 404.
  * @param {string} [options.xsdError] - A schema path fragment to answer 500 for. A 404 means "no schema" and is
  *   handled; a 500 throws out of the fetch helper instead, which is the other path.
  */
-function stubExampleSources({ apps = [], xmlByApp = {}, testmotorDown = false, xsd = XSD, xsdError = null }) {
+function stubExampleSources({ apps = [], xmlByApp = {}, subformsByApp = {}, testmotorDown = false, xsd = XSD, xsdError = null }) {
     clearTestmotorCache();
-    globalThis.fetch = async (url) => {
+    const testmotorCalls = [];
+    const schemaCalls = [];
+    globalThis.fetch = async (url, init) => {
         const target = String(url);
         if (target.includes("app-ftpb-testmotor")) {
+            testmotorCalls.push(target);
             if (testmotorDown) {
                 throw new TypeError("fetch failed");
+            }
+            const attachment = target.split("/api/attachment/")[1];
+            if (attachment !== undefined) {
+                const [appId, dataType] = attachment.split("/").map(decodeURIComponent);
+                const types = subformsByApp[appId] ?? {};
+                if (dataType === undefined) {
+                    const list = Object.entries(types).map(([id, files]) => ({
+                        id,
+                        predefined: files.map(({ fileName }) => ({ fileName }))
+                    }));
+                    return { ok: true, status: 200, statusText: "OK", text: async () => JSON.stringify(list) };
+                }
+                const fileName = new Headers(init?.headers).get("fileName");
+                const file = (types[dataType] ?? []).find((candidate) => candidate.fileName === fileName);
+                if (!file || file.contents === null) {
+                    return { ok: false, status: 404, statusText: "Not Found", text: async () => "Fant ikke vedlegg" };
+                }
+                return { ok: true, status: 200, statusText: "OK", text: async () => file.contents };
             }
             const body = target.endsWith("/api/altinn-app") ? apps : (xmlByApp[decodeURIComponent(target.split("/api/xml/")[1])] ?? []);
             return { ok: true, status: 200, statusText: "OK", json: async () => body, text: async () => JSON.stringify(body) };
         }
         if (target.endsWith(".xsd")) {
+            schemaCalls.push(target);
             if (xsdError && target.includes(xsdError)) {
                 return { ok: false, status: 500, statusText: "Internal Server Error", text: async () => "" };
             }
@@ -214,6 +241,7 @@ function stubExampleSources({ apps = [], xmlByApp = {}, testmotorDown = false, x
         }
         return { ok: false, status: 404, text: async () => "" };
     };
+    return { testmotorCalls, schemaCalls };
 }
 
 /**
@@ -243,7 +271,36 @@ async function withExampleDir(t, files) {
  * @returns {Object|undefined}
  */
 function entryForApp(result, appName) {
-    return result.find((entry) => entry.appName === appName);
+    const app = altinnStudioApps.find((candidate) => candidate.appName === appName);
+    return result.find((entry) => entry.appName === appName && entry.dataType === app.dataType);
+}
+
+/**
+ * The main form entries, which name an app and that app's own data type. A subform entry names an app too, the one
+ * it was read through, but under the subform's data type.
+ *
+ * @param {Array<Object>} result
+ * @returns {Array<Object>}
+ */
+function mainFormEntries(result) {
+    return result.filter((entry) => altinnStudioApps.some((app) => app.appName === entry.appName && app.dataType === entry.dataType));
+}
+
+/**
+ * The entry for one subform as one app holds it, or the shared one when appName is null.
+ *
+ * @param {Array<Object>} result
+ * @param {string|null} appName
+ * @param {string} dataType
+ * @returns {Object|undefined}
+ */
+function subformEntry(result, appName, dataType) {
+    return result.find((entry) => entry.appName === appName && entry.dataType === dataType);
+}
+
+/** The apps in the catalogue that declare a subform data type, in catalogue order. */
+function appsDeclaring(dataType) {
+    return altinnStudioApps.filter((app) => app.subForms?.some((subForm) => subForm.dataType === dataType));
 }
 
 test("keys main form examples on the app, so two apps sharing a data type keep their own", async () => {
@@ -392,33 +449,140 @@ test("reports the schema when it is the schema that could not be read", async ()
     assert.match(entry.error, /App\/models\/AN\.xsd could not be read from Altinn Studio/);
 });
 
-test("files a subform under no app, once, however many apps declare it", async (t) => {
-    // GjennomfoeringsplanDataV7 is declared by several apps and its examples are one shared set, so the entry
-    // matches any app that declares the data type rather than naming whichever parent reached it first.
-    await withExampleDir(t, {
-        "subforms/GjennomfoeringsplanDataV7/GjennomfoeringsplanDataV7.xml": xml("gjennomfoeringsplan")
+test("files a subform under each app that declares it, with that app's own files", async () => {
+    // The testmotor files subform examples per app, and DispensasjonssoeknadDataV1 holds different files under
+    // disp-v1 and fts-v1. One shared set would show one of them the other's examples.
+    stubExampleSources({
+        apps: [
+            { appId: "disp-v1", mainFormId: "DS" },
+            { appId: "fts-v1", mainFormId: "FTS" }
+        ],
+        subformsByApp: {
+            "disp-v1": { DispensasjonssoeknadDataV1: [{ fileName: "Dispensasjonssoeknad1.xml", contents: xml("disp") }] },
+            "fts-v1": {
+                DispensasjonssoeknadDataV1: [
+                    { fileName: "Dispensasjonssoeknad1.xml", contents: xml("fts en") },
+                    { fileName: "DispensasjonssoeknadV1.xml", contents: xml("fts to") }
+                ]
+            }
+        }
     });
-    stubExampleSources({ apps: [] });
 
     const result = await getJsonExampleData();
-    const subformEntries = result.filter((entry) => entry.dataType === "GjennomfoeringsplanDataV7");
 
-    assert.equal(subformEntries.length, 1);
-    assert.equal(subformEntries[0].appName, null);
-    assert.equal(subformEntries[0].appOwner, null);
-    assert.deepEqual(subformEntries[0].files, [{ name: "GjennomfoeringsplanDataV7", data: { tittel: "gjennomfoeringsplan" } }]);
+    assert.deepEqual(subformEntry(result, "disp-v1", "DispensasjonssoeknadDataV1"), {
+        appOwner: "dibk",
+        appName: "disp-v1",
+        dataType: "DispensasjonssoeknadDataV1",
+        error: null,
+        files: [{ name: "Dispensasjonssoeknad1", data: { tittel: "disp" } }]
+    });
+    assert.deepEqual(subformEntry(result, "fts-v1", "DispensasjonssoeknadDataV1").files, [
+        { name: "Dispensasjonssoeknad1", data: { tittel: "fts en" } },
+        { name: "DispensasjonssoeknadV1", data: { tittel: "fts to" } }
+    ]);
+    for (const app of appsDeclaring("DispensasjonssoeknadDataV1")) {
+        assert.ok(subformEntry(result, app.appName, "DispensasjonssoeknadDataV1"), `${app.appName} should have its own entry`);
+    }
+});
 
-    const declaringApps = altinnStudioApps.filter((app) => app.subForms?.some((subForm) => subForm.dataType === "GjennomfoeringsplanDataV7"));
-    assert.ok(declaringApps.length > 1);
+test("also files each subform once under no app, as the first app declaring it holds it", async () => {
+    // Viewed as an app of its own, a subform has no parent to be matched through, and the dashboard falls back on the
+    // entry naming no app. disp-v1 is the first app declaring DispensasjonssoeknadDataV1, so its files are the ones.
+    const [first, second] = appsDeclaring("DispensasjonssoeknadDataV1");
+    assert.equal(first.appName, "disp-v1");
+    stubExampleSources({
+        apps: [
+            { appId: first.appName, mainFormId: first.dataType },
+            { appId: second.appName, mainFormId: second.dataType }
+        ],
+        subformsByApp: {
+            [first.appName]: { DispensasjonssoeknadDataV1: [{ fileName: "Forste.xml", contents: xml("first") }] },
+            [second.appName]: { DispensasjonssoeknadDataV1: [{ fileName: "Andre.xml", contents: xml("second") }] }
+        }
+    });
+
+    const result = await getJsonExampleData();
+    const shared = result.filter((entry) => entry.appName === null && entry.dataType === "DispensasjonssoeknadDataV1");
+
+    assert.equal(shared.length, 1);
+    assert.equal(shared[0].appOwner, null);
+    assert.deepEqual(shared[0].files, [{ name: "Forste", data: { tittel: "first" } }]);
+});
+
+test("reads a subform once per app, and the shared copy costs nothing more", async () => {
+    const { testmotorCalls, schemaCalls } = stubExampleSources({
+        apps: [{ appId: "disp-v1", mainFormId: "DS" }],
+        subformsByApp: { "disp-v1": { DispensasjonssoeknadDataV1: [{ fileName: "Dispensasjonssoeknad1.xml", contents: xml("disp") }] } }
+    });
+
+    await getJsonExampleData();
+
+    const downloads = testmotorCalls.filter((url) => url.endsWith("/api/attachment/disp-v1/DispensasjonssoeknadDataV1"));
+    assert.equal(downloads.length, 1);
+    // The schema comes from the repository of the app the subform was read through.
+    const schemas = schemaCalls.filter((url) => url.includes("DispensasjonssoeknadDataV1.xsd"));
+    assert.equal(schemas.length, 1);
+    assert.match(schemas[0], /disp-v1/);
+});
+
+test("gives a subform no examples and no error under an app the testmotor does not hold", async () => {
+    // An absence, as for a main form, and nothing is asked for that app at all.
+    const { testmotorCalls } = stubExampleSources({ apps: [{ appId: "an-v2", mainFormId: "AN" }] });
+
+    const result = await getJsonExampleData();
+    const entry = subformEntry(result, "disp-v1", "DispensasjonssoeknadDataV1");
+
+    assert.deepEqual(entry.files, []);
+    assert.equal(entry.error, null);
+    assert.equal(
+        testmotorCalls.some((url) => url.includes("/api/attachment/")),
+        false
+    );
+});
+
+test("carries the reason on every subform when the testmotor cannot be reached, without asking per subform", async () => {
+    const { testmotorCalls } = stubExampleSources({ testmotorDown: true });
+
+    const result = await getJsonExampleData();
+
+    for (const entry of result.filter((candidate) => candidate.dataType === "GjennomfoeringsplanDataV7")) {
+        assert.deepEqual(entry.files, []);
+        assert.match(entry.error, /could not be reached: fetch failed/);
+    }
+    assert.deepEqual(
+        testmotorCalls.map((url) => new URL(url).pathname),
+        ["/api/altinn-app"]
+    );
+});
+
+test("carries the reason on that app's subform when a download fails, naming the file", async () => {
+    stubExampleSources({
+        apps: [
+            { appId: "disp-v1", mainFormId: "DS" },
+            { appId: "es-v2", mainFormId: "ES" }
+        ],
+        subformsByApp: {
+            "disp-v1": { DispensasjonssoeknadDataV1: [{ fileName: "Mangler.xml", contents: null }] },
+            "es-v2": { DispensasjonssoeknadDataV1: [{ fileName: "Finnes.xml", contents: xml("es") }] }
+        }
+    });
+
+    const result = await getJsonExampleData();
+
+    const failed = subformEntry(result, "disp-v1", "DispensasjonssoeknadDataV1");
+    assert.deepEqual(failed.files, []);
+    assert.match(failed.error, /\(file Mangler\.xml\) answered 404/);
+    assert.deepEqual(subformEntry(result, "es-v2", "DispensasjonssoeknadDataV1").files, [{ name: "Finnes", data: { tittel: "es" } }]);
+    assert.equal(entryForApp(result, "disp-v1").error, null, "the main form is not affected");
 });
 
 test("gives every tracked app an entry of its own", async () => {
     stubExampleSources({ apps: [] });
 
     const result = await getJsonExampleData();
-    const mainFormEntries = result.filter((entry) => entry.appName !== null);
 
-    assert.equal(mainFormEntries.length, altinnStudioApps.length);
+    assert.equal(mainFormEntries(result).length, altinnStudioApps.length);
 });
 
 test("reports the schema when it is the schema that could not be parsed", async () => {
@@ -451,13 +615,18 @@ test("carries the reason on the app when a schema request fails outright", async
 
     assert.deepEqual(entry.files, []);
     assert.match(entry.error, /status 500/);
-    // And it costs that app only — every other app still gets its entry.
-    assert.equal(result.filter((other) => other.appName !== null).length, altinnStudioApps.length);
+    // And it costs that app only. Every other app still gets its entry.
+    assert.equal(mainFormEntries(result).length, altinnStudioApps.length);
 });
 
-test("drops a subform that could not be processed, and nothing else", async (t) => {
-    await withExampleDir(t, { "subforms/GjennomfoeringsplanDataV7/GjennomfoeringsplanDataV7.xml": xml("gjennomfoeringsplan") });
-    stubExampleSources({ apps: [], xsdError: "GjennomfoeringsplanDataV7.xsd" });
+test("drops a subform that could not be processed, and nothing else", async () => {
+    // A schema request that fails outright throws, and costs that subform under that app rather than the app.
+    const gjennomfoeringsplan = { GjennomfoeringsplanDataV7: [{ fileName: "GjennomfoeringsplanDataV7.xml", contents: xml("plan") }] };
+    stubExampleSources({
+        apps: [{ appId: "fa-v5", mainFormId: "FA" }],
+        subformsByApp: { "fa-v5": gjennomfoeringsplan },
+        xsdError: "GjennomfoeringsplanDataV7.xsd"
+    });
 
     const result = await getJsonExampleData();
 
@@ -465,38 +634,31 @@ test("drops a subform that could not be processed, and nothing else", async (t) 
         result.every((entry) => entry !== null),
         "a subform that could not be processed must leave no hole in the result"
     );
-    assert.equal(
-        result.some((entry) => entry.dataType === "GjennomfoeringsplanDataV7"),
-        false
-    );
-    assert.equal(result.filter((entry) => entry.appName !== null).length, altinnStudioApps.length);
+    assert.equal(subformEntry(result, "fa-v5", "GjennomfoeringsplanDataV7"), undefined);
+    assert.equal(mainFormEntries(result).length, altinnStudioApps.length);
 });
 
-test("answers in catalogue order, each subform placed with the first app that declares it", async () => {
+test("answers in catalogue order, each app's subforms after its main form and each shared copy after its source", async () => {
     // The apps are fetched concurrently, so the order they finish in is not the order they are named in. What the
     // dashboard receives has to be the catalogue's order regardless of which app's upstream answered first.
     stubExampleSources({ apps: [] });
 
     const result = await getJsonExampleData();
 
-    assert.deepEqual(
-        result.filter((entry) => entry.appName !== null).map((entry) => entry.appName),
-        altinnStudioApps.map((app) => app.appName)
-    );
-
-    // A subform's schema comes from the app it was reached through, so it has to sit with the first app declaring it
-    // — the one that supplied the schema — rather than with whichever app's fetch happened to settle first.
-    let precedingApp = null;
-    for (const entry of result) {
-        if (entry.appName !== null) {
-            precedingApp = entry.appName;
-            continue;
+    const expected = [];
+    const shared = new Set();
+    for (const app of altinnStudioApps) {
+        expected.push(`${app.appName}:${app.dataType}`);
+        for (const { dataType } of app.subForms ?? []) {
+            expected.push(`${app.appName}:${dataType}`);
+            if (!shared.has(dataType)) {
+                shared.add(dataType);
+                expected.push(`shared:${dataType}`);
+            }
         }
-        const firstDeclaringApp = altinnStudioApps.find((app) => app.subForms?.some((subForm) => subForm.dataType === entry.dataType));
-        assert.equal(precedingApp, firstDeclaringApp.appName, `${entry.dataType} should follow ${firstDeclaringApp.appName}`);
     }
-
-    // And each of them exactly once, however many apps declare it.
-    const subformDataTypes = result.filter((entry) => entry.appName === null).map((entry) => entry.dataType);
-    assert.equal(new Set(subformDataTypes).size, subformDataTypes.length);
+    assert.deepEqual(
+        result.map((entry) => `${entry.appName ?? "shared"}:${entry.dataType}`),
+        expected
+    );
 });

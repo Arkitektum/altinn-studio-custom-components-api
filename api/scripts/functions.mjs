@@ -11,7 +11,7 @@ import subforms from "../data/subforms.mjs";
 // Utils
 import { compileXmlSchema, convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { exampleDataDir, readExampleFilesFromDisk } from "../utils/exampleFiles.mjs";
-import { fetchTestmotorApps, fetchTestmotorFormXml } from "../utils/testmotorClient.mjs";
+import { fetchTestmotorApps, fetchTestmotorFormXml, fetchTestmotorSubformXml } from "../utils/testmotorClient.mjs";
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
 import { log } from "../utils/logger.mjs";
@@ -686,11 +686,12 @@ export async function getApplicationMetadata() {
 /**
  * @typedef {Object} ExampleDataEntry
  * @property {string|null} appOwner - The app these examples belong to, or null for a subform's shared examples.
- * @property {string|null} appName - As above. Null means "matches any app declaring this data type".
+ * @property {string|null} appName - As above. Null means "matches any app declaring this data type", which is what the
+ *   dashboard falls back on when a subform is viewed as an app of its own rather than through a parent.
  * @property {string} dataType - The Altinn data type the examples are filed under.
  * @property {string|null} error - Why `files` is empty, when the reason is a failure rather than an absence. The
  *   dashboard has to tell "there are no examples for this" from "the examples could not be fetched".
- * @property {ExampleFile[]} files - In source order: the testmotor's own for a main form, prefix order on disk.
+ * @property {ExampleFile[]} files - In source order: the testmotor's own for main forms and subforms, prefix order on disk.
  */
 
 /**
@@ -837,67 +838,100 @@ async function mainFormExampleEntry(app, sources) {
 }
 
 /**
- * One subform's examples, filed under no app.
+ * One subform's examples as one app holds them, filed under that app.
  *
- * Subform entries name no app. The same subform is declared by several parents, its examples are one shared set,
- * and it is whichever parent got there first whose repository supplies the schema — so recording an app on the
- * entry would record an arbitrary one. A null app means "matches any app that declares this data type" instead.
+ * The testmotor files subform examples per app, and the same subform can hold different files under different apps: DispensasjonssoeknadDataV1 does under disp-v1 and fts-v1. So the entry names the app it was read through, and the schema comes from that app's repository as well.
+ *
+ * The rules for what is available are the main form's. When the testmotor's app listing could not be read, the entry carries that reason rather than making a request per subform that would fail the same way. An app the testmotor does not hold has no subform examples either, which is an absence and not a failure.
  *
  * @async
- * @param {Object} app - The catalogue entry this subform was assigned to, which supplies the schema.
+ * @param {Object} app - The catalogue entry declaring the subform.
  * @param {string} dataType - The subform's data type.
+ * @param {Object} sources - As for readMainFormExampleFiles.
  * @returns {Promise<ExampleDataEntry|null>} Null when the subform could not be processed at all, which is reported
  *   and costs that one subform rather than the app it was reached through.
  */
-async function subformExampleEntry(app, dataType) {
+async function subformExampleEntry(app, dataType, { testmotorApps, testmotorError }) {
+    const { appOwner, appName } = app;
+    const scope = `${appOwner}/${appName}`;
+    if (!testmotorApps) {
+        return { appOwner, appName, dataType, error: testmotorError, files: [] };
+    }
+
+    let files = [];
+    if (testmotorApps.some((entry) => entry.appId === appName)) {
+        try {
+            files = await fetchTestmotorSubformXml(appName, dataType);
+        } catch (error) {
+            log.error({ scope, category: "Testmotor subform examples not fetched", message: dataType, detail: error.message });
+            return { appOwner, appName, dataType, error: error.message, files: [] };
+        }
+    }
+
     try {
-        const files = await readExampleFilesFromDisk(path.join(exampleDataDir(), "subforms", dataType));
-        const converted = await convertExampleFiles({
-            appOwner: app.appOwner,
-            appName: app.appName,
-            dataType,
-            files,
-            label: "subform example"
-        });
-        return { appOwner: null, appName: null, dataType, error: converted.error, files: converted.files };
+        const converted = await convertExampleFiles({ appOwner, appName, dataType, files, label: "subform example" });
+        return { appOwner, appName, dataType, error: converted.error, files: converted.files };
     } catch (error) {
-        log.error({
-            scope: `${app.appOwner}/${app.appName}`,
-            category: "Subform example data not processed",
-            message: dataType,
-            detail: error.message
-        });
+        log.error({ scope, category: "Subform example data not processed", message: dataType, detail: error.message });
         return null;
     }
 }
 
 /**
- * Which subforms each app is responsible for fetching, so that a subform declared by several apps is fetched once.
+ * Which subforms each app also supplies the shared, app-less entry for, so that each subform has exactly one.
  *
- * Decided up front rather than by checking what has already been collected, because the apps no longer run one after
- * another and "has anyone done this yet" has no answer while they are all in flight. Walking the catalogue in order
- * gives the subform to the first app that declares it — the same one that reached it first when this was a loop.
+ * A subform's own layout can be viewed as an app of its own, and there it has no parent to be matched through, so the dashboard falls back on an entry naming no app. That entry is a copy of one parent's, and walking the catalogue in order gives it to the first app that declares the subform, which is the parent that supplied every subform's examples before they were read per app.
+ *
+ * Decided up front rather than by checking what has already been collected, because the apps do not run one after another and "has anyone done this yet" has no answer while they are all in flight.
  *
  * @param {Array<Object>} apps - The catalogue, in order.
- * @returns {string[][]} One array of data types per app, positionally.
+ * @returns {Set<string>[]} One set of data types per app, positionally.
  */
-function subformDataTypesPerApp(apps) {
+function sharedSubformDataTypesPerApp(apps) {
     const assigned = new Set();
-    return apps.map((app) =>
-        (app.subForms ?? [])
-            .map((subForm) => subForm.dataType)
-            .filter((dataType) => {
-                if (assigned.has(dataType)) {
-                    return false;
-                }
-                assigned.add(dataType);
-                return true;
-            })
+    return apps.map(
+        (app) =>
+            new Set(
+                (app.subForms ?? [])
+                    .map((subForm) => subForm.dataType)
+                    .filter((dataType) => {
+                        if (assigned.has(dataType)) {
+                            return false;
+                        }
+                        assigned.add(dataType);
+                        return true;
+                    })
+            )
     );
 }
 
 /**
- * Every example the dashboard can offer: each tracked app's main form, and the subforms those apps declare.
+ * One app's entries: its main form, then each subform it declares, each followed by the shared copy when this app supplies it.
+ *
+ * @async
+ * @param {Object} app - The catalogue entry.
+ * @param {Object} sources - As for readMainFormExampleFiles.
+ * @param {Set<string>} sharedDataTypes - The subforms this app supplies the app-less entry for.
+ * @returns {Promise<Array<ExampleDataEntry|null>>}
+ */
+async function appExampleEntries(app, sources, sharedDataTypes) {
+    const subForms = app.subForms ?? [];
+    const [mainForm, ...subformEntries] = await Promise.all([
+        mainFormExampleEntry(app, sources),
+        ...subForms.map((subForm) => subformExampleEntry(app, subForm.dataType, sources))
+    ]);
+    const entries = [mainForm];
+    subformEntries.forEach((entry, index) => {
+        entries.push(entry);
+        if (entry && sharedDataTypes.has(subForms[index].dataType)) {
+            entries.push({ ...entry, appOwner: null, appName: null });
+        }
+    });
+    return entries;
+}
+
+/**
+ * Every example the dashboard can offer: each tracked app's main form, each subform as each app declaring it holds it, and one app-less copy of every subform for viewing it on its own.
  *
  * The main forms come from the FtPB testmotor rather than from disk, because it re-stamps the date fields on every
  * request and a copy committed here goes stale within a fortnight — see `api/utils/testmotorClient.mjs`. The
@@ -913,7 +947,8 @@ function subformDataTypesPerApp(apps) {
  *
  * @async
  * @function
- * @returns {Promise<ExampleDataEntry[]>} One entry per tracked app, plus one per subform they declare.
+ * @returns {Promise<ExampleDataEntry[]>} One entry per tracked app, one per subform each app declares, and one app-less
+ *   entry per distinct subform.
  */
 export async function getJsonExampleData() {
     let testmotorApps = null;
@@ -928,21 +963,14 @@ export async function getJsonExampleData() {
     }
 
     const sources = { testmotorApps, testmotorError };
-    const subformDataTypes = subformDataTypesPerApp(altinnStudioApps);
+    const sharedDataTypes = sharedSubformDataTypesPerApp(altinnStudioApps);
 
-    // Each app's entries are collected together — its main form alongside the subforms assigned to it, since subforms
-    // carry their own schemas and their own files and are worth having even when the main form examples could not be
-    // had — and the apps are flattened in catalogue order afterwards. Running them together therefore changes how long
-    // this takes and nothing about what comes out of it.
+    // Each app's entries are collected together, its main form alongside the subforms it declares, since subforms carry
+    // their own schemas and their own files and are worth having even when the main form examples could not be had.
+    // The apps are flattened in catalogue order afterwards, so running them together changes how long this takes and
+    // nothing about what comes out of it.
     const entriesPerApp = await Promise.all(
-        altinnStudioApps.map((app, index) =>
-            limitExampleDataApp(() =>
-                Promise.all([
-                    mainFormExampleEntry(app, sources),
-                    ...subformDataTypes[index].map((dataType) => subformExampleEntry(app, dataType))
-                ])
-            )
-        )
+        altinnStudioApps.map((app, index) => limitExampleDataApp(() => appExampleEntries(app, sources, sharedDataTypes[index])))
     );
 
     return entriesPerApp.flat().filter((entry) => entry !== null);
