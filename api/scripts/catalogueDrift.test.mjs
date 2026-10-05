@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import { compareCatalogueWithTestmotor, subformKey } from "./catalogueDrift.mjs";
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
-import { compareCatalogueWithTestmotor } from "./catalogueDrift.mjs";
 import subforms from "../data/subforms.mjs";
 
 /**
@@ -48,7 +48,7 @@ function compare(overrides = {}) {
         subformList,
         testmotorApps,
         formDataTypesOnDisk: new Set(["HoeringOgOffentligEttersynUttalelse"]),
-        subformDataTypesOnDisk: new Set(["GjennomfoeringsplanDataV7"]),
+        subformFileCounts: new Map([[subformKey("es-v2", "GjennomfoeringsplanDataV7"), 1]]),
         ...overrides
     });
 }
@@ -118,16 +118,84 @@ test("finds no disagreement when the two agree", () => {
     assert.deepEqual(compare().disagreements, []);
 });
 
-test("names a declared subform with no example file", () => {
-    const drift = compare({ subformDataTypesOnDisk: new Set() });
+test("credits a subform to the testmotor under an app it holds files for", () => {
+    assert.deepEqual(compare().subformCoverage, [
+        { appName: "es-v2", subformAppName: "gjennomfoeringsplan-v7", dataType: "GjennomfoeringsplanDataV7", source: "testmotor" }
+    ]);
+});
 
-    assert.deepEqual(drift.subformCoverage, [{ appName: "gjennomfoeringsplan-v7", dataType: "GjennomfoeringsplanDataV7", source: "none" }]);
+test("names a declared subform with no example file under an app declaring it", () => {
+    const drift = compare({ subformFileCounts: new Map([[subformKey("es-v2", "GjennomfoeringsplanDataV7"), 0]]) });
+
+    assert.deepEqual(drift.subformCoverage, [
+        { appName: "es-v2", subformAppName: "gjennomfoeringsplan-v7", dataType: "GjennomfoeringsplanDataV7", source: "none" }
+    ]);
+});
+
+test("gives a subform an entry under each app declaring it, since each holds its own files", () => {
+    // The testmotor files subform examples per app, so one parent can have them while another does not.
+    const gjennomfoeringsplan = { appName: "gjennomfoeringsplan-v7", dataType: "GjennomfoeringsplanDataV7" };
+    const drift = compare({
+        catalogue: [...catalogue, { appOwner: "dibk", appName: "fa-v5", dataType: "FA", subForms: [gjennomfoeringsplan] }]
+    });
+
+    assert.deepEqual(
+        drift.subformCoverage.map((entry) => [entry.appName, entry.source]),
+        [
+            ["es-v2", "testmotor"],
+            ["fa-v5", "none"]
+        ]
+    );
+});
+
+test("does not credit a subform under an app the testmotor does not hold", () => {
+    // getJsonExampleData asks nothing for such an app, so whatever a count says, the dashboard shows nothing.
+    const drift = compare({ testmotorApps: [{ appId: "an-v2", mainFormId: "AN" }] });
+
+    assert.equal(drift.subformCoverage[0].source, "none");
+});
+
+test("says so when a subform could not be checked, rather than calling it missing", () => {
+    const drift = compare({ subformErrors: new Map([[subformKey("es-v2", "GjennomfoeringsplanDataV7"), "answered 500"]]) });
+
+    assert.deepEqual(drift.subformCoverage, [
+        {
+            appName: "es-v2",
+            subformAppName: "gjennomfoeringsplan-v7",
+            dataType: "GjennomfoeringsplanDataV7",
+            source: "error",
+            error: "answered 500"
+        }
+    ]);
+});
+
+test("leaves a subform no layout is held for out of the coverage, since it has a finding of its own", () => {
+    const drift = compare({
+        catalogue: [
+            ...catalogue,
+            {
+                appOwner: "dibk",
+                appName: "disp-v1",
+                dataType: "DS",
+                subForms: [{ appName: "dispensasjonssoeknad-v1", dataType: "DispensasjonssoeknadDataV1" }]
+            }
+        ]
+    });
+
+    assert.deepEqual(
+        drift.subformCoverage.map((entry) => entry.dataType),
+        ["GjennomfoeringsplanDataV7"]
+    );
+    assert.deepEqual(
+        drift.subformsWithoutLayout.map((entry) => entry.dataType),
+        ["DispensasjonssoeknadDataV1"]
+    );
 });
 
 test("ignores a subform no app declares", () => {
-    // dispensasjonsvarsel-v1 is in the subform list but nothing in this catalogue references it, so its missing
-    // example file is not this report's finding.
-    const drift = compare({ subformDataTypesOnDisk: new Set() });
+    // dispensasjonsvarsel-v1 is in the subform list but nothing in this catalogue references it, so whether it has
+    // example files is not this report's finding.
+    const drift = compare({ subformFileCounts: new Map() });
 
     assert.ok(!drift.subformCoverage.some((entry) => entry.dataType === "DispensasjonsvarselDataV1"));
 });
@@ -179,7 +247,7 @@ test("reports nothing missing for the real catalogue, since subforms.mjs is buil
         subformList: subforms,
         testmotorApps: [],
         formDataTypesOnDisk: new Set(),
-        subformDataTypesOnDisk: new Set()
+        subformFileCounts: new Map()
     });
 
     assert.deepEqual(drift.subformsWithoutLayout, []);
@@ -192,7 +260,7 @@ test("runs over the real catalogue without losing or duplicating an app", () => 
         subformList: subforms,
         testmotorApps: [],
         formDataTypesOnDisk: new Set(),
-        subformDataTypesOnDisk: new Set()
+        subformFileCounts: new Map()
     });
 
     assert.equal(drift.coverage.length, altinnStudioApps.length);

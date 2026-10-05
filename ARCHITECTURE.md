@@ -135,7 +135,7 @@ api/
 
   If it cannot be reached there is **no fallback to disk**; the affected entries carry the reason instead, so the dashboard can tell "no examples" from "could not fetch the examples".
 
-  The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land.
+  The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land. It also asks the testmotor, per app, which declared subforms have no example files under that app, and names any it could not check.
 - **Local files.**
   Default text resources are read from the installed package at `node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json`. The one main form the testmotor has no data for, `hoeringettersynuttalelse-v2`, is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml`.
 

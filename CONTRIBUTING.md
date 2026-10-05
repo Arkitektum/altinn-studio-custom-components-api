@@ -96,6 +96,7 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
   lists of the same apps and nothing reconciles them, so they drift silently. It reports apps the testmotor holds that
   the catalogue does not name, apps with no example data from either source, and — the one that would actually break
   something — apps the two file under different data types. It is a report, not a gate, and exits 0 whatever it finds.
+  It also lists the declared subforms with no example files under an app declaring them, asking the testmotor per app since that is how it files them, and any it could not check.
 - **A reply form's example data** cannot be a file here. `nabovarsel-svar-v5`, `ts-v1` and `varselplanoppstartuttalelse-v3`
   reference the submission they reply to by instance, so a static file would point at a parent that exists in nobody's
   installation. They have no example data from either source, and that is why.
