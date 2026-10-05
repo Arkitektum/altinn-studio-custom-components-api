@@ -122,9 +122,9 @@ test("rethrows a read failure that is not a missing folder", async (t) => {
 
 test("reports that a data type has examples without reading them", async (t) => {
     restoreExampleDir(t);
-    process.env.EXAMPLE_DATA_DIR = await withFiles(t, { "subforms/GjennomfoeringsplanDataV7/plan.xml": "<a/>" });
+    process.env.EXAMPLE_DATA_DIR = await withFiles(t, { "forms/HoeringOgOffentligEttersynUttalelse/uttalelse.xml": "<a/>" });
 
-    assert.equal(await hasExampleFilesOnDisk("subforms", "GjennomfoeringsplanDataV7"), true);
+    assert.equal(await hasExampleFilesOnDisk("forms", "HoeringOgOffentligEttersynUttalelse"), true);
 });
 
 test("reports no examples for a data type with no folder, and for one holding no XML", async (t) => {

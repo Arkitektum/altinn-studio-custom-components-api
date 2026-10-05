@@ -23,7 +23,7 @@ const repoRoot = path.resolve(moduleDir, "../..");
  * Where the on-disk example data lives. Overridable so a test can point at fixtures, and so the directory can be
  * kept elsewhere without this repo holding a second copy of it.
  *
- * @returns {string} The example data root, holding `forms/` and `subforms/`.
+ * @returns {string} The example data root, holding `forms/`. Subform examples come from the testmotor, not from here.
  */
 export function exampleDataDir() {
     return process.env.EXAMPLE_DATA_DIR?.trim() || path.join(repoRoot, "api/data/exampleData");
@@ -86,7 +86,7 @@ export async function readExampleFilesFromDisk(folderPath) {
  * Whether a data type has example files on disk, without reading their contents.
  *
  * @async
- * @param {string} kind - "forms" or "subforms".
+ * @param {string} kind - The folder under the example root. "forms" is the only one there is.
  * @param {string} dataType - The data type, which is also the folder name.
  * @returns {Promise<boolean>}
  */
