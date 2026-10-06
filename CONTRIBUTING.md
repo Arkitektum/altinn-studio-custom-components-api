@@ -33,7 +33,7 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
     Installing pulls in three Arkitektum packages:
 
     - `@arkitektum/altinn-studio-custom-components`, whose `dist/resources.json` the API reads the default text resources from at runtime. It is read as a file, not imported.
-    - `@arkitektum/ftpb-testmotor-client`, which fetches the main form examples.
+    - `@arkitektum/ftpb-testmotor-client`, which fetches the main form and subform examples.
     - `@arkitektum/ftpb-app-catalogue`, which is the list of apps this API tracks.
 
     The last two are shared with `altinn-studio-api-tools`. Change either of them in its own repository and publish; both consumers are thin wrappers.
@@ -78,7 +78,7 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 
 ## Working on the API
 
-- **Routes** live in `api/index.mjs`.
+- **Routes** live in `api/app.mjs`. `api/index.mjs` only starts the server.
   Keep each route thin — delegate the actual work to a function in `api/scripts/functions.mjs`.
 - **Data fetching/parsing** belongs in `api/scripts/functions.mjs`.
   Wrap external calls in `try/catch` and return a `500` with a clear message, matching the existing routes.

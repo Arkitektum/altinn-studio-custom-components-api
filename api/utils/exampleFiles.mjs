@@ -7,8 +7,8 @@ import path from "node:path";
  * The example data still kept as files in this repository.
  *
  * Most main form examples are not here: they are read from the FtPB testmotor, which re-stamps their date fields on
- * every request (see `api/utils/testmotorClient.mjs`). What is left on disk is every subform, and the one main form
- * the testmotor has no data for.
+ * every request (see `api/utils/testmotorClient.mjs`), and so are the subform examples. What is left on disk is the one
+ * main form the testmotor has no data for.
  *
  * Reading these is kept apart from `api/scripts/functions.mjs` because the drift check needs the same rules without
  * pulling in the XML converter and its native `libxmljs2` binding.

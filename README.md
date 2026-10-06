@@ -31,8 +31,8 @@ cp .env.sample .env
 
 - `API_PORT` — the port to listen on (use `9001`, which the Statistics dashboard expects).
 - `GITEA_TOKEN` — a token for reading files from Altinn Studio's Gitea.
-- `TESTMOTOR_URL` — the FtPB testmotor, which serves the main form example data. The default is the hosted instance; override it to work against your own.
-- `EXAMPLE_DATA_DIR` — where the example data the testmotor does not serve lives. Defaults to `api/data/exampleData`.
+- `TESTMOTOR_URL` — the FtPB testmotor, which serves the main form and subform example data. The default is the hosted instance; override it to work against your own.
+- `EXAMPLE_DATA_DIR` — where the one main form the testmotor holds no data for lives. Defaults to `api/data/exampleData`.
 
 See `.env.sample` for the rest.
 

@@ -39,10 +39,12 @@ A few properties are relevant when assessing security:
   It is read from a git-ignored `.env` file and sent only to `https://altinn.studio`.
   Never commit the token, and prefer a least-privilege (read-only) scope.
 - **Not for public deployment.**
-  CORS is open and there is no authentication on the endpoints — the API assumes a trusted, local-only context.
+  There is no authentication on the endpoints, and CORS only keeps other origins' browsers out: it allows `CLIENT_ORIGIN`
+  (the local dev client by default), and does nothing about a request that is not made from a browser. The API assumes a
+  trusted, local-only context.
   Do not expose it to the public internet.
 - **FtPB testmotor.**
-  The main form example data is fetched from `TESTMOTOR_URL` over open endpoints, with **no token attached** — the
+  The main form and subform example data is fetched from `TESTMOTOR_URL` over open endpoints, with **no token attached** — the
   `GITEA_TOKEN` above must never be sent there. The XML it answers is parsed and validated against a schema fetched
   from Altinn Studio, so treat it as remote input like any other.
 - **Untrusted input.**
@@ -54,5 +56,5 @@ A few properties are relevant when assessing security:
 
 ## Dependencies
 
-The API depends on `express`, `cors`, `fast-xml-parser`, `libxmljs2`, `jsdom`, and the Arkitektum custom-components packages.
+The API depends on `express`, `cors`, `dotenv`, `fast-xml-parser`, `libxmljs2`, and the Arkitektum packages (the custom components, the app catalogue and the testmotor client).
 If you find a vulnerability in a dependency, please report it to that project as well, and open an advisory here if this API is affected.
