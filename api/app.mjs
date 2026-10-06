@@ -45,7 +45,9 @@ export function createApp() {
 
     // Warn loudly at startup if the Gitea token is missing — every Altinn Studio fetch depends on it.
     if (!process.env.GITEA_TOKEN || !process.env.GITEA_TOKEN.trim()) {
-        console.warn("⚠️ GITEA_TOKEN is not set. Requests for Altinn Studio data (layouts, metadata, resources, schemas) will fail. Add it to .env — see .env.sample.");
+        console.warn(
+            "⚠️ GITEA_TOKEN is not set. Requests for Altinn Studio data (layouts, metadata, resources, schemas) will fail. Add it to .env — see .env.sample."
+        );
     }
 
     // This API proxies private Altinn Studio content using a Gitea token, so restrict CORS to the local dev client

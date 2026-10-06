@@ -12,11 +12,11 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 - **Node.js 24** (other packages in the ecosystem target 24; the native ESM features used here work on current LTS too).
 - **Yarn 4**, managed via [Corepack](https://nodejs.org/api/corepack.html). Enable it once:
 
-  ```bash
-  corepack enable
-  ```
+    ```bash
+    corepack enable
+    ```
 
-  The correct Yarn version is then activated automatically from the `packageManager` field in `package.json`.
+    The correct Yarn version is then activated automatically from the `packageManager` field in `package.json`.
 
 ---
 
@@ -24,54 +24,54 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 
 1. **Clone and install**
 
-   ```bash
-   git clone https://github.com/Arkitektum/altinn-studio-custom-components-api.git
-   cd altinn-studio-custom-components-api
-   yarn install
-   ```
+    ```bash
+    git clone https://github.com/Arkitektum/altinn-studio-custom-components-api.git
+    cd altinn-studio-custom-components-api
+    yarn install
+    ```
 
-   Installing pulls in three Arkitektum packages:
+    Installing pulls in three Arkitektum packages:
 
-   - `@arkitektum/altinn-studio-custom-components`, whose `dist/resources.json` the API reads the default text resources from at runtime. It is read as a file, not imported.
-   - `@arkitektum/ftpb-testmotor-client`, which fetches the main form examples.
-   - `@arkitektum/ftpb-app-catalogue`, which is the list of apps this API tracks.
+    - `@arkitektum/altinn-studio-custom-components`, whose `dist/resources.json` the API reads the default text resources from at runtime. It is read as a file, not imported.
+    - `@arkitektum/ftpb-testmotor-client`, which fetches the main form examples.
+    - `@arkitektum/ftpb-app-catalogue`, which is the list of apps this API tracks.
 
-   The last two are shared with `altinn-studio-api-tools`. Change either of them in its own repository and publish; both consumers are thin wrappers.
+    The last two are shared with `altinn-studio-api-tools`. Change either of them in its own repository and publish; both consumers are thin wrappers.
 
 2. **Create your `.env`**
 
-   ```bash
-   cp .env.sample .env
-   ```
+    ```bash
+    cp .env.sample .env
+    ```
 
-   - `API_PORT` — the port to listen on (use `9001`, which the Statistics dashboard expects).
-   - `GITEA_TOKEN` — a token for reading files from Altinn Studio's Gitea.
+    - `API_PORT` — the port to listen on (use `9001`, which the Statistics dashboard expects).
+    - `GITEA_TOKEN` — a token for reading files from Altinn Studio's Gitea.
 
-   To generate a Gitea token:
-   - Go to <https://altinn.studio/repos/user/settings/applications>
-   - Create a token with the **`read:repository`** scope
-   - Put it in `.env` as `GITEA_TOKEN` (replacing `your_token_here`)
+    To generate a Gitea token:
+    - Go to <https://altinn.studio/repos/user/settings/applications>
+    - Create a token with the **`read:repository`** scope
+    - Put it in `.env` as `GITEA_TOKEN` (replacing `your_token_here`)
 
-   > ⚠️ `.env` is git-ignored. Never commit tokens or secrets.
+    > ⚠️ `.env` is git-ignored. Never commit tokens or secrets.
 
 3. **Start the API**
 
-   ```bash
-   yarn start
-   ```
+    ```bash
+    yarn start
+    ```
 
-   It serves on `http://localhost:<API_PORT>`.
-   Then start the components repo's dev server and open its **Statistics** page, which calls this API.
+    It serves on `http://localhost:<API_PORT>`.
+    Then start the components repo's dev server and open its **Statistics** page, which calls this API.
 
 ---
 
 ## Everyday commands
 
-| Command | What it does |
-| ------- | ------------ |
-| `yarn start` | Run the Express API (`node api/index.mjs`). |
-| `yarn test` | Run the tests with the built-in Node test runner (`node --test`). |
-| `yarn lint` | Lint the source (ESLint flat config in `eslint.config.mjs`). |
+| Command      | What it does                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| `yarn start` | Run the Express API (`node api/index.mjs`).                                                   |
+| `yarn test`  | Run the tests with the built-in Node test runner (`node --test`).                             |
+| `yarn lint`  | Lint the source (ESLint flat config in `eslint.config.mjs`).                                  |
 | `yarn drift` | Where the app catalogue and the testmotor have drifted apart. Needs the network, not a token. |
 
 ---

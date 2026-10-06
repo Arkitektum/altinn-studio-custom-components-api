@@ -1,41 +1,41 @@
 name: CI
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
 
 permissions:
-  contents: read
+    contents: read
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v6
 
-      - name: Use Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "24"
+            - name: Use Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: "24"
 
-      # Completely remove Yarn 1 so Corepack takes over
-      - name: Remove preinstalled Yarn 1
-        run: sudo rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg || true
+            # Completely remove Yarn 1 so Corepack takes over
+            - name: Remove preinstalled Yarn 1
+              run: sudo rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg || true
 
-      - name: Enable Corepack
-        run: corepack enable
+            - name: Enable Corepack
+              run: corepack enable
 
-      - name: Verify Yarn version
-        run: yarn --version
+            - name: Verify Yarn version
+              run: yarn --version
 
-      - name: Install dependencies
-        run: yarn install --immutable
+            - name: Install dependencies
+              run: yarn install --immutable
 
-      - name: Lint
-        run: yarn lint
+            - name: Lint
+              run: yarn lint
 
-      - name: Run tests
-        run: yarn test
+            - name: Run tests
+              run: yarn test

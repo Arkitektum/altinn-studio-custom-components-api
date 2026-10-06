@@ -25,7 +25,10 @@ test("runs no more than the limit at a time and still completes every task", asy
     const results = await Promise.all(Array.from({ length: 12 }, (_, index) => limit(task(index))));
 
     assert.equal(state.peak, 3);
-    assert.deepEqual(results, Array.from({ length: 12 }, (_, index) => index));
+    assert.deepEqual(
+        results,
+        Array.from({ length: 12 }, (_, index) => index)
+    );
 });
 
 test("starts queued tasks in the order they were queued", async () => {

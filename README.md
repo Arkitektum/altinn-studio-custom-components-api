@@ -55,17 +55,17 @@ Start the components repo's dev server and open its **Statistics** page to use i
 
 All routes are `GET` under `/api` and return JSON:
 
-| Route | Purpose |
-| ----- | ------- |
-| `/api/displayLayouts` | Layout JSON for the tracked apps (used to compute component usage). |
-| `/api/packageVersions` | The custom-components version each tracked app currently uses. |
-| `/api/latestPackageVersions` | Latest versions from npm / GitHub for the configured sources. |
-| `/api/appResources` | App-level text-resource values (accepts a `language` query param). |
-| `/api/resources` | The package's default text resources. |
-| `/api/altinnStudioForms` | The configured list of tracked Altinn apps / forms. |
-| `/api/exampleData` | Example form + subform data, converted from XML to JSON. Main forms and subforms come from the FtPB testmotor, and the one main form it holds no data for comes from disk. |
-| `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
-| `/api/diagnostics` | What the endpoints above last ran into: counts per app plus the grouped warnings and errors. |
+| Route                        | Purpose                                                                                                                                                                    |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/displayLayouts`        | Layout JSON for the tracked apps (used to compute component usage).                                                                                                        |
+| `/api/packageVersions`       | The custom-components version each tracked app currently uses.                                                                                                             |
+| `/api/latestPackageVersions` | Latest versions from npm / GitHub for the configured sources.                                                                                                              |
+| `/api/appResources`          | App-level text-resource values (accepts a `language` query param).                                                                                                         |
+| `/api/resources`             | The package's default text resources.                                                                                                                                      |
+| `/api/altinnStudioForms`     | The configured list of tracked Altinn apps / forms.                                                                                                                        |
+| `/api/exampleData`           | Example form + subform data, converted from XML to JSON. Main forms and subforms come from the FtPB testmotor, and the one main form it holds no data for comes from disk. |
+| `/api/applicationMetadata`   | `applicationmetadata.json` for the tracked apps.                                                                                                                           |
+| `/api/diagnostics`           | What the endpoints above last ran into: counts per app plus the grouped warnings and errors.                                                                               |
 
 Which apps are tracked comes from `@arkitektum/ftpb-app-catalogue`, a package shared with `altinn-studio-api-tools`. `api/data/altinnStudioApps.mjs` only renames its fields to the `appOwner`/`appName` this repository uses, so **an app is added to the package, not here**. Subform layouts are still local, in `api/data/subforms.mjs`.
 

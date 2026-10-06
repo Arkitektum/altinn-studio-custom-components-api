@@ -44,17 +44,17 @@ It is not published to npm and is not deployed — each developer runs it locall
 
 All routes are `GET` under `/api` and return JSON. They are registered in `api/app.mjs`, which builds the app and holds the caches; `api/index.mjs` only starts it listening.
 
-| Route | Purpose |
-| ----- | ------- |
-| `/api/displayLayouts` | Layout JSON for the tracked apps (used to compute component usage). |
-| `/api/packageVersions` | The custom-components version each tracked app currently uses. |
-| `/api/latestPackageVersions` | Latest versions from npm / GitHub for the sources in `packageSources.mjs`. |
-| `/api/appResources` | App-level text-resource values (accepts a `language` query param). |
-| `/api/resources` | The package's default text resources. |
-| `/api/altinnStudioForms` | The configured list of tracked Altinn apps / forms. |
-| `/api/exampleData` | Example form + subform data, converted from XML to JSON. One entry per tracked app, one per subform each app declares, and one app-less entry per subform for viewing it on its own. An entry carries an `error` when its examples could not be fetched. |
-| `/api/applicationMetadata` | `applicationmetadata.json` for the tracked apps. |
-| `/api/diagnostics` | What the data endpoints above last ran into — counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches. |
+| Route                        | Purpose                                                                                                                                                                                                                                                  |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/displayLayouts`        | Layout JSON for the tracked apps (used to compute component usage).                                                                                                                                                                                      |
+| `/api/packageVersions`       | The custom-components version each tracked app currently uses.                                                                                                                                                                                           |
+| `/api/latestPackageVersions` | Latest versions from npm / GitHub for the sources in `packageSources.mjs`.                                                                                                                                                                               |
+| `/api/appResources`          | App-level text-resource values (accepts a `language` query param).                                                                                                                                                                                       |
+| `/api/resources`             | The package's default text resources.                                                                                                                                                                                                                    |
+| `/api/altinnStudioForms`     | The configured list of tracked Altinn apps / forms.                                                                                                                                                                                                      |
+| `/api/exampleData`           | Example form + subform data, converted from XML to JSON. One entry per tracked app, one per subform each app declares, and one app-less entry per subform for viewing it on its own. An entry carries an `error` when its examples could not be fetched. |
+| `/api/applicationMetadata`   | `applicationmetadata.json` for the tracked apps.                                                                                                                                                                                                         |
+| `/api/diagnostics`           | What the data endpoints above last ran into — counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches.                                                                                                          |
 
 The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`).
 CORS is restricted to a single origin (`CLIENT_ORIGIN`, default `http://localhost:9000`).
@@ -116,37 +116,38 @@ api/
 - **FtPB testmotor.**
   `api/utils/testmotorClient.mjs` reads the main form and subform example data from `TESTMOTOR_URL` (default `https://app-ftpb-testmotor.azurewebsites.net`). No token is sent, and all four endpoints are open.
 
-  | Endpoint | Answers |
-  | -------- | ------- |
-  | `GET /api/altinn-app` | The apps it holds data for, and each one's main form data type. |
-  | `GET /api/xml/{appId}` | That app's example files, contents and all. |
-  | `GET /api/attachment/{appId}` | That app's attachment types, each with the names of its predefined files. Subforms are among them, under their data type. |
-  | `GET /api/attachment/{appId}/{dataType}` | One predefined file, named by a `fileName` request header, answered as the XML itself. |
+    | Endpoint                                 | Answers                                                                                                                   |
+    | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+    | `GET /api/altinn-app`                    | The apps it holds data for, and each one's main form data type.                                                           |
+    | `GET /api/xml/{appId}`                   | That app's example files, contents and all.                                                                               |
+    | `GET /api/attachment/{appId}`            | That app's attachment types, each with the names of its predefined files. Subforms are among them, under their data type. |
+    | `GET /api/attachment/{appId}/{dataType}` | One predefined file, named by a `fileName` request header, answered as the XML itself.                                    |
 
-  It serves the copy the DiBK test team maintains out of an Azure file share, and **re-stamps the date fields on every request** with a date ten days out. That is the whole reason these examples are not files here: a ferdigattest example is only valid while its `bekreftelseInnen` and `utfoertInnen` fall inside the next fortnight, so a committed copy is right on the day it is committed and stale a couple of weeks later. Several other form types have a rule of that shape.
+    It serves the copy the DiBK test team maintains out of an Azure file share, and **re-stamps the date fields on every request** with a date ten days out. That is the whole reason these examples are not files here: a ferdigattest example is only valid while its `bekreftelseInnen` and `utfoertInnen` fall inside the next fortnight, so a committed copy is right on the day it is committed and stale a couple of weeks later. Several other form types have a rule of that shape.
 
-  It is keyed by **app id**, and has to be: `fa-v3` and `fa-v5` are both filed under the data type `FA` and hold different files. This is why `/api/exampleData` names the app on each entry rather than only the data type.
+    It is keyed by **app id**, and has to be: `fa-v3` and `fa-v5` are both filed under the data type `FA` and hold different files. This is why `/api/exampleData` names the app on each entry rather than only the data type.
 
-  Subforms are keyed by app id as well. The testmotor files them per app, as predefined attachments, and the same subform can hold different files under different apps: `DispensasjonssoeknadDataV1` does under `disp-v1` and `fts-v1`. So each app gets an entry per subform it declares, read through that app and validated against the schema in that app's repository. A subform can also be viewed as an app of its own, with no parent to be matched through, so each subform gets one more entry naming no app. It is a copy of the first declaring app's entry that holds files, or of the first declaring app's when none does, so it costs no extra request.
+    Subforms are keyed by app id as well. The testmotor files them per app, as predefined attachments, and the same subform can hold different files under different apps: `DispensasjonssoeknadDataV1` does under `disp-v1` and `fts-v1`. So each app gets an entry per subform it declares, read through that app and validated against the schema in that app's repository. A subform can also be viewed as an app of its own, with no parent to be matched through, so each subform gets one more entry naming no app. It is a copy of the first declaring app's entry that holds files, or of the first declaring app's when none does, so it costs no extra request.
 
-  Answers are cached for five minutes, which is how long the testmotor caches its own reads of the share. File names arrive as bare stems — `01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon` — and are **not sorted**, because the prefix that carried the order is already gone.
+    Answers are cached for five minutes, which is how long the testmotor caches its own reads of the share. File names arrive as bare stems — `01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon` — and are **not sorted**, because the prefix that carried the order is already gone.
 
-  There is a third endpoint, `GET /api/altinn-app/{appId}`, which answers the same files alongside parties, metadata and attachments. It is deliberately unused: it makes Altinn calls this API has no use for.
+    There is a third endpoint, `GET /api/altinn-app/{appId}`, which answers the same files alongside parties, metadata and attachments. It is deliberately unused: it makes Altinn calls this API has no use for.
 
-  If it cannot be reached there is **no fallback to disk**; the affected entries carry the reason instead, so the dashboard can tell "no examples" from "could not fetch the examples".
+    If it cannot be reached there is **no fallback to disk**; the affected entries carry the reason instead, so the dashboard can tell "no examples" from "could not fetch the examples".
 
-  The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land. It also asks the testmotor, per app, which declared subforms have no example files under that app, and names any it could not check.
+    The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land. It also asks the testmotor, per app, which declared subforms have no example files under that app, and names any it could not check.
+
 - **Local files.**
   Default text resources are read from the installed package at `node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json`. The one main form the testmotor has no data for, `hoeringettersynuttalelse-v2`, is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml`.
 
-  A `forms/` folder is named after the data type rather than the app, so it is only read when exactly one tracked app claims that data type. A folder named `FA` could not say whether it was `fa-v3`'s or `fa-v5`'s.
+    A `forms/` folder is named after the data type rather than the app, so it is only read when exactly one tracked app claims that data type. A folder named `FA` could not say whether it was `fa-v3`'s or `fa-v5`'s.
 
 ---
 
 ## 6. Logging
 
 Each fan-out endpoint runs inside a **logging run** (`api/utils/logger.mjs`). Instead of logging a line per step —
-which made a single "Synchronize" produce hundreds of interleaved lines — the fetch/parse helpers *record* events
+which made a single "Synchronize" produce hundreds of interleaved lines — the fetch/parse helpers _record_ events
 (`log.ok` / `log.warn` / `log.error`), and the run prints one report when the request finishes:
 
 ```text

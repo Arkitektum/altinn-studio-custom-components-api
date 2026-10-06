@@ -4,7 +4,7 @@ import { test } from "node:test";
 import { stripJsonComments } from "./stripJsonComments.mjs";
 
 test("removes a full-line comment", () => {
-    const input = ["{", '  // a comment', '  "a": 1', "}"].join("\n");
+    const input = ["{", "  // a comment", '  "a": 1', "}"].join("\n");
     assert.deepEqual(JSON.parse(stripJsonComments(input)), { a: 1 });
 });
 
@@ -31,6 +31,6 @@ test("keeps an escaped quote inside a string intact", () => {
 });
 
 test("returns valid JSON for a realistic commented layout snippet", () => {
-    const input = ['{', '  // layout id', '  "id": "Form", // inline', '  "type": "Group"', "}"].join("\n");
+    const input = ["{", "  // layout id", '  "id": "Form", // inline', '  "type": "Group"', "}"].join("\n");
     assert.deepEqual(JSON.parse(stripJsonComments(input)), { id: "Form", type: "Group" });
 });

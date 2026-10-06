@@ -64,7 +64,11 @@ test("reduces an all-clear run to a single line", async () => {
 test("folds the source list once more than a screenful needs attention", async () => {
     await withRunLog("App resources", async () => {
         for (let index = 0; index < 20; index += 1) {
-            log.warn({ scope: `dibk/app-${String(index).padStart(2, "0")}`, category: "File not found in Altinn Studio", message: "resource.nn.json" });
+            log.warn({
+                scope: `dibk/app-${String(index).padStart(2, "0")}`,
+                category: "File not found in Altinn Studio",
+                message: "resource.nn.json"
+            });
         }
     });
 

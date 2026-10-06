@@ -1,77 +1,77 @@
 name: ESLint
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-  schedule:
-    - cron: "40 8 * * 3"
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+    schedule:
+        - cron: "40 8 * * 3"
 
 jobs:
-  eslint:
-    name: Run ESLint scanning
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
+    eslint:
+        name: Run ESLint scanning
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            security-events: write
+            actions: read
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 24
 
-      - name: Enable Corepack and activate Yarn 4
-        run: |
-          corepack enable
-          yarn --version
+            - name: Enable Corepack and activate Yarn 4
+              run: |
+                  corepack enable
+                  yarn --version
 
-      # The project has to be installed before the scan, not just the formatter. eslint.config.mjs starts with an import from "eslint/config", which resolves out of this repository's node_modules, so without an install the config cannot load, no SARIF file is written, and the steps below quietly upload nothing. Installing also means the scan uses the same eslint as `yarn lint` rather than whatever npx would fetch.
-      #
-      # A registry timeout can crash Yarn outright instead of failing one fetch, so retry the whole install rather than trusting Yarn's own retries to recover.
-      - name: Install dependencies
-        run: |
-          for attempt in 1 2 3; do
-              yarn install --immutable && exit 0
-              echo "::warning::yarn install failed (attempt $attempt/3), retrying in 15s"
-              sleep 15
-          done
-          exit 1
+            # The project has to be installed before the scan, not just the formatter. eslint.config.mjs starts with an import from "eslint/config", which resolves out of this repository's node_modules, so without an install the config cannot load, no SARIF file is written, and the steps below quietly upload nothing. Installing also means the scan uses the same eslint as `yarn lint` rather than whatever npx would fetch.
+            #
+            # A registry timeout can crash Yarn outright instead of failing one fetch, so retry the whole install rather than trusting Yarn's own retries to recover.
+            - name: Install dependencies
+              run: |
+                  for attempt in 1 2 3; do
+                      yarn install --immutable && exit 0
+                      echo "::warning::yarn install failed (attempt $attempt/3), retrying in 15s"
+                      sleep 15
+                  done
+                  exit 1
 
-      # ESLint exits 1 when it found problems, which is a successful scan and has to reach the upload below, and 2 when
-      # it could not run at all: a config it cannot load, a formatter it cannot resolve. Only the second is a failure
-      # of this workflow, and it says so with whatever ESLint printed rather than swallowing it, which is how this
-      # step came to be scanning nothing without anyone noticing.
-      - name: Run ESLint
-        env:
-          SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
-        run: |
-          status=0
-          npx --no-install eslint . \
-            --config eslint.config.mjs \
-            --format @microsoft/eslint-formatter-sarif \
-            --output-file eslint-results.sarif || status=$?
-          echo "eslint exited with $status"
-          if [ "$status" -gt 1 ]; then
-            echo "::error::ESLint could not run, so nothing was scanned. See the output above."
-            exit "$status"
-          fi
+            # ESLint exits 1 when it found problems, which is a successful scan and has to reach the upload below, and 2 when
+            # it could not run at all: a config it cannot load, a formatter it cannot resolve. Only the second is a failure
+            # of this workflow, and it says so with whatever ESLint printed rather than swallowing it, which is how this
+            # step came to be scanning nothing without anyone noticing.
+            - name: Run ESLint
+              env:
+                  SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
+              run: |
+                  status=0
+                  npx --no-install eslint . \
+                    --config eslint.config.mjs \
+                    --format @microsoft/eslint-formatter-sarif \
+                    --output-file eslint-results.sarif || status=$?
+                  echo "eslint exited with $status"
+                  if [ "$status" -gt 1 ]; then
+                    echo "::error::ESLint could not run, so nothing was scanned. See the output above."
+                    exit "$status"
+                  fi
 
-      # A missing SARIF file means the scan itself failed rather than that the code is clean, so it fails the job instead of passing quietly. That is the state this workflow sat in while it was scanning nothing.
-      - name: Check that a SARIF file was produced
-        run: |
-          if [ ! -f eslint-results.sarif ]; then
-            echo "::error::ESLint produced no SARIF file, so there is nothing to upload. Check the Run ESLint step."
-            exit 1
-          fi
+            # A missing SARIF file means the scan itself failed rather than that the code is clean, so it fails the job instead of passing quietly. That is the state this workflow sat in while it was scanning nothing.
+            - name: Check that a SARIF file was produced
+              run: |
+                  if [ ! -f eslint-results.sarif ]; then
+                    echo "::error::ESLint produced no SARIF file, so there is nothing to upload. Check the Run ESLint step."
+                    exit 1
+                  fi
 
-      - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: eslint-results.sarif
-          wait-for-processing: true
+            - name: Upload analysis results to GitHub
+              uses: github/codeql-action/upload-sarif@v4
+              with:
+                  sarif_file: eslint-results.sarif
+                  wait-for-processing: true

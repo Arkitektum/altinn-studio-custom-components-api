@@ -249,9 +249,7 @@ export async function reportCatalogueDrift() {
     const subformWidth = widestOf(subformsWithout.map((entry) => entry.subformAppName));
     printSection(
         "Declared subforms with no example file under an app declaring them",
-        subformsWithout.map(
-            (entry) => `${entry.appName.padEnd(parentWidth)}  ${entry.subformAppName.padEnd(subformWidth)}  (${entry.dataType})`
-        )
+        subformsWithout.map((entry) => `${entry.appName.padEnd(parentWidth)}  ${entry.subformAppName.padEnd(subformWidth)}  (${entry.dataType})`)
     );
 
     printSection(

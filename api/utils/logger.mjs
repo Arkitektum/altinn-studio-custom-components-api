@@ -210,7 +210,11 @@ function renderTable(counts) {
     const folded = allRows.slice(shown.length);
     const rows = [...shown];
     if (folded.length) {
-        const tally = folded.reduce((sum, row) => ({ ok: sum.ok + row.ok, warn: sum.warn + row.warn, error: sum.error + row.error }), { ok: 0, warn: 0, error: 0 });
+        const tally = folded.reduce((sum, row) => ({ ok: sum.ok + row.ok, warn: sum.warn + row.warn, error: sum.error + row.error }), {
+            ok: 0,
+            warn: 0,
+            error: 0
+        });
         const allClear = !tally.warn && !tally.error;
         rows.push({
             scope: `${folded.length} other source${folded.length === 1 ? "" : "s"}${allClear ? " · all clear" : ""}`,
@@ -273,7 +277,10 @@ function summariseRun(run) {
     }
 
     const issues = [...run.groups.values()]
-        .sort((a, b) => (a.level === b.level ? 0 : a.level === "error" ? -1 : 1) || b.entries.size - a.entries.size || a.category.localeCompare(b.category))
+        .sort(
+            (a, b) =>
+                (a.level === b.level ? 0 : a.level === "error" ? -1 : 1) || b.entries.size - a.entries.size || a.category.localeCompare(b.category)
+        )
         .map((group) => {
             const outcomes = summariseEntries([...group.entries.values()]);
             return {
