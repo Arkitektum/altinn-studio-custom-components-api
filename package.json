@@ -8,13 +8,16 @@
         "start": "node api/index.mjs",
         "test": "node --test",
         "lint": "eslint api",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
         "drift": "node api/scripts/catalogueDrift.mjs"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@microsoft/eslint-formatter-sarif": "^3.1.0",
         "eslint": "^10.12.0",
-        "globals": "^17.13.0"
+        "globals": "^17.13.0",
+        "prettier": "^3.9.9"
     },
     "dependencies": {
         "@arkitektum/altinn-studio-custom-components": "^17.2.0",
