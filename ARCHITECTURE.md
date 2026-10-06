@@ -111,7 +111,7 @@ api/
   connections. The limit is **`ALTINN_STUDIO_CONCURRENCY`** (default `16`): raise it for a faster cold sync, lower it if
   Altinn Studio starts refusing connections. The gate is around the request helper rather than each fan-out, so the
   budget is shared however many endpoints are in flight.
-  Each request, to Altinn Studio, npm and GitHub alike, is abandoned after **`REQUEST_TIMEOUT_MS`** (default `30000`), body included, so an upstream that never answers cannot hold an endpoint or a slot for undici's five minutes.
+  Each request, to Altinn Studio, npm, GitHub and the testmotor alike, is abandoned after **`REQUEST_TIMEOUT_MS`** (default `30000`), body included, so an upstream that never answers cannot hold an endpoint or a slot for undici's five minutes.
 - **npm registry & GitHub releases.**
   `getLatestPackageVersions` resolves the latest version for each entry in `packageSources.mjs` — from `registry.npmjs.org` for `npm` sources and from the GitHub releases API for `github` sources.
 - **FtPB testmotor.**
@@ -130,7 +130,7 @@ api/
 
     Subforms are keyed by app id as well. The testmotor files them per app, as predefined attachments, and the same subform can hold different files under different apps: `DispensasjonssoeknadDataV1` does under `disp-v1` and `fts-v1`. So each app gets an entry per subform it declares, read through that app and validated against the schema in that app's repository. A subform can also be viewed as an app of its own, with no parent to be matched through, so each subform gets one more entry naming no app. It is a copy of the first declaring app's entry that holds files, or of the first declaring app's when none does, so it costs no extra request.
 
-    Answers are cached for five minutes, which is how long the testmotor caches its own reads of the share. File names arrive as bare stems — `01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon` — and are **not sorted**, because the prefix that carried the order is already gone.
+    Answers are reused for `CACHE_TTL_MS`, the same as the endpoints, and requests are abandoned after `REQUEST_TIMEOUT_MS`, the same as every other upstream. File names arrive as bare stems — `01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon` — and are **not sorted**, because the prefix that carried the order is already gone.
 
     There is a third endpoint, `GET /api/altinn-app/{appId}`, which answers the same files alongside parties, metadata and attachments. It is deliberately unused: it makes Altinn calls this API has no use for.
 

@@ -285,3 +285,45 @@ test("falls back to the hosted testmotor when TESTMOTOR_URL is blank", async (t)
 
     assert.deepEqual(urls, [`${DEFAULT_URL}/api/altinn-app`]);
 });
+
+/**
+ * A copy of this module built afresh, after the given settings are in place, since the client reads them once when it is created.
+ *
+ * @param {import("node:test").TestContext} t
+ * @param {Record<string, string>} env
+ */
+async function freshClient(t, env) {
+    const originals = Object.fromEntries(Object.keys(env).map((name) => [name, process.env[name]]));
+    Object.assign(process.env, env);
+    t.after(() => {
+        for (const [name, value] of Object.entries(originals)) {
+            if (value === undefined) delete process.env[name];
+            else process.env[name] = value;
+        }
+    });
+    return import(`./testmotorClient.mjs?fresh=${Math.random()}`);
+}
+
+test("hands CACHE_TTL_MS to the client, so zero stops it reusing answers", async (t) => {
+    const urls = stubFetch(t, () => jsonResponse([]));
+    const fresh = await freshClient(t, { CACHE_TTL_MS: "0" });
+
+    await fresh.fetchTestmotorApps();
+    await fresh.fetchTestmotorApps();
+
+    assert.equal(urls.length, 2, "with reuse off, each call should reach the testmotor");
+});
+
+test("hands REQUEST_TIMEOUT_MS to the client, so a testmotor that never answers is given up on", async (t) => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (url, init) =>
+        new Promise((resolve, reject) => {
+            init?.signal?.addEventListener("abort", () => reject(init.signal.reason), { once: true });
+        });
+    t.after(() => {
+        globalThis.fetch = originalFetch;
+    });
+    const fresh = await freshClient(t, { REQUEST_TIMEOUT_MS: "20" });
+
+    await assert.rejects(() => fresh.fetchTestmotorApps(), /did not answer within 20 ms/);
+});

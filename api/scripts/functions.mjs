@@ -15,6 +15,7 @@ import { fetchTestmotorApps, fetchTestmotorFormXml, fetchTestmotorSubformXml } f
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
 import { log } from "../utils/logger.mjs";
+import { requestTimeoutMs } from "../utils/settings.mjs";
 import { stripJsonComments } from "../utils/stripJsonComments.mjs";
 
 // Resolve paths relative to this module rather than the current working directory, so the server works
@@ -46,21 +47,6 @@ const limitAltinnStudioRequest = createConcurrencyLimiter(altinnStudioConcurrenc
 // Altinn Studio requests stay inside their own budget above whatever this is set to.
 const EXAMPLE_DATA_APP_CONCURRENCY = 8;
 const limitExampleDataApp = createConcurrencyLimiter(EXAMPLE_DATA_APP_CONCURRENCY);
-
-/** How long an outbound request may take when REQUEST_TIMEOUT_MS does not say, the same default altinn-studio-api-tools uses. */
-const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
-
-/**
- * How long one outbound request may take, reading the body included, before it is abandoned.
- *
- * Without one, only undici's own five-minute timeouts apply, so an upstream that accepts the connection and never answers holds the endpoint for minutes, and a Gitea request holds one of the shared Altinn Studio slots for as long. Read on every request rather than once at import, like GITEA_BRANCH, so that dotenv has run and a test can change it.
- *
- * @returns {number} The timeout in milliseconds.
- */
-function requestTimeoutMs() {
-    const parsed = Number.parseInt(process.env.REQUEST_TIMEOUT_MS, 10);
-    return Number.isInteger(parsed) && parsed > 0 ? parsed : DEFAULT_REQUEST_TIMEOUT_MS;
-}
 
 /**
  * Fetches the latest version of a package from the npm registry.

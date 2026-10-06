@@ -16,6 +16,7 @@ import {
     supportedResourceLanguage
 } from "./scripts/functions.mjs";
 import { getDiagnostics, withRunLog } from "./utils/logger.mjs";
+import { cacheTtlMs as cacheTtlSetting } from "./utils/settings.mjs";
 import { createCachedFunction } from "./utils/cache.mjs";
 
 /**
@@ -33,8 +34,7 @@ export function createApp() {
     // Each endpoint below re-fetches from Altinn Studio / npm / disk for every tracked app. Cache the expensive
     // getters so repeated "Synchronize" runs within a session don't re-fan-out. The TTL is short so an intentional
     // re-sync after editing an app still reflects the changes; tune or disable via CACHE_TTL_MS (0 disables).
-    const cacheTtlEnv = Number.parseInt(process.env.CACHE_TTL_MS, 10);
-    const cacheTtlMs = Number.isInteger(cacheTtlEnv) && cacheTtlEnv >= 0 ? cacheTtlEnv : 60000;
+    const cacheTtlMs = cacheTtlSetting();
 
     const cachedGetDisplayLayouts = createCachedFunction(getDisplayLayouts, { ttlMs: cacheTtlMs });
     const cachedGetPackageVersions = createCachedFunction(getPackageVersions, { ttlMs: cacheTtlMs });

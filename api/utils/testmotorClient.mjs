@@ -1,6 +1,9 @@
 // Dependencies
 import { createTestmotorClient } from "@arkitektum/ftpb-testmotor-client";
 
+// Local functions
+import { cacheTtlMs, requestTimeoutMs } from "./settings.mjs";
+
 /**
  * The FtPB testmotor, which is where the main form and subform example data comes from.
  *
@@ -12,8 +15,13 @@ import { createTestmotorClient } from "@arkitektum/ftpb-testmotor-client";
 /** Where the testmotor lives when nothing says otherwise. Overridable so a test, or a local instance, can be pointed at instead. */
 const DEFAULT_TESTMOTOR_URL = "https://app-ftpb-testmotor.azurewebsites.net";
 
-// The base url is given as a function, so it is read on every request rather than once at import. That is what lets `dotenv` run first, and what lets a test move the host between cases.
-const client = createTestmotorClient({ baseUrl: () => process.env.TESTMOTOR_URL?.trim() || DEFAULT_TESTMOTOR_URL });
+// The base url is given as a function, so it is read on every request rather than once at import. That is what lets a test move the host between cases.
+// The cache and the timeout are read once, when this module is first imported, which the entry points do only after loading dotenv. They are the same settings the rest of the API uses: without them the client kept its own five-minute cache under the endpoints' minute, so CACHE_TTL_MS=0 did not stop it, and an edit on the testmotor took up to six minutes to show.
+const client = createTestmotorClient({
+    baseUrl: () => process.env.TESTMOTOR_URL?.trim() || DEFAULT_TESTMOTOR_URL,
+    cacheTtlMs: cacheTtlMs(),
+    timeoutMs: requestTimeoutMs()
+});
 
 /** Forgets everything read so far. Only the tests need this. */
 export function clearTestmotorCache() {
