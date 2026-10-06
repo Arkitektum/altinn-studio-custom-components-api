@@ -36,10 +36,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@arkitektum/ftpb-testmotor-client@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.1.0"
-  checksum: 10c0/7088a0689f1e7017bd337ba5af9ff3a42957a716cbfdb761e88b4138bff58675560c8085219ff6e2f887747761ab2ce027d13a6c80049b6b18e0c03d11d14aa4
+"@arkitektum/ftpb-testmotor-client@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.1.1"
+  checksum: 10c0/beae61675e39b282a28f7ecf8d1eee3a8d5c8185d37df3da638c419908f0d103e0a196b562063ed10b9fa39003b5676aeda6884a395e9481d10a3f9a2267efa1
   languageName: node
   linkType: hard
 
@@ -436,7 +436,7 @@ __metadata:
   dependencies:
     "@arkitektum/altinn-studio-custom-components": "npm:^17.2.0"
     "@arkitektum/ftpb-app-catalogue": "npm:^1.0.1"
-    "@arkitektum/ftpb-testmotor-client": "npm:^1.1.0"
+    "@arkitektum/ftpb-testmotor-client": "npm:^1.1.1"
     "@eslint/js": "npm:^10.0.1"
     "@microsoft/eslint-formatter-sarif": "npm:^3.1.0"
     cors: "npm:^2.8.6"
