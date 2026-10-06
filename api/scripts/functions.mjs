@@ -47,6 +47,21 @@ const limitAltinnStudioRequest = createConcurrencyLimiter(altinnStudioConcurrenc
 const EXAMPLE_DATA_APP_CONCURRENCY = 8;
 const limitExampleDataApp = createConcurrencyLimiter(EXAMPLE_DATA_APP_CONCURRENCY);
 
+/** How long an outbound request may take when REQUEST_TIMEOUT_MS does not say, the same default altinn-studio-api-tools uses. */
+const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
+
+/**
+ * How long one outbound request may take, reading the body included, before it is abandoned.
+ *
+ * Without one, only undici's own five-minute timeouts apply, so an upstream that accepts the connection and never answers holds the endpoint for minutes, and a Gitea request holds one of the shared Altinn Studio slots for as long. Read on every request rather than once at import, like GITEA_BRANCH, so that dotenv has run and a test can change it.
+ *
+ * @returns {number} The timeout in milliseconds.
+ */
+function requestTimeoutMs() {
+    const parsed = Number.parseInt(process.env.REQUEST_TIMEOUT_MS, 10);
+    return Number.isInteger(parsed) && parsed > 0 ? parsed : DEFAULT_REQUEST_TIMEOUT_MS;
+}
+
 /**
  * Fetches the latest version of a package from the npm registry.
  *
@@ -57,7 +72,7 @@ async function fetchLatestVersionFromNpm(packageName) {
     try {
         // Encode every "/" so scoped names like "@scope/name" become "@scope%2Fname" for the registry path.
         const encodedName = packageName.replaceAll("/", "%2F");
-        const response = await fetch(`https://registry.npmjs.org/${encodedName}/latest`);
+        const response = await fetch(`https://registry.npmjs.org/${encodedName}/latest`, { signal: AbortSignal.timeout(requestTimeoutMs()) });
         if (!response.ok) return null;
         const data = await response.json();
         return data.version ?? null;
@@ -76,7 +91,8 @@ async function fetchLatestVersionFromGithub(repo) {
     try {
         // GitHub's REST API rejects requests without a User-Agent header (HTTP 403), so one must be sent explicitly.
         const response = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
-            headers: { "User-Agent": "altinn-studio-custom-components-api", Accept: "application/vnd.github+json" }
+            headers: { "User-Agent": "altinn-studio-custom-components-api", Accept: "application/vnd.github+json" },
+            signal: AbortSignal.timeout(requestTimeoutMs())
         });
         if (!response.ok) return null;
         const data = await response.json();
@@ -137,11 +153,13 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
     if (!token || !token.trim()) {
         throw new Error("GITEA_TOKEN is not set — add it to your .env (see .env.sample) to fetch Altinn Studio data.");
     }
+    const timeoutMs = requestTimeoutMs();
     const options = {
         method: "GET",
         headers: {
             Authorization: `Bearer ${token}`
-        }
+        },
+        signal: AbortSignal.timeout(timeoutMs)
     };
     try {
         // The slot is held until the body has been read, so the cap bounds open connections rather than just how many
@@ -174,6 +192,10 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
         // The caller records this failure with its own context (which app, which endpoint), so logging it here too
         // would only duplicate a line in the report. Keep the exact URL for verbose runs.
         log.progress(`⚠️ Error fetching file content from ${url}: ${error.message}`);
+        // The abort says only "The operation was aborted due to timeout", and the caller reports the message without the url.
+        if (error?.name === "TimeoutError") {
+            throw new Error(`${filePath} was not answered within ${timeoutMs} ms by ${url}`, { cause: error });
+        }
         throw error;
     }
 }

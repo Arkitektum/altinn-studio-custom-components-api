@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { getAppResourceValues, getJsonExampleData, supportedResourceLanguage } from "./functions.mjs";
+import { getAppResourceValues, getJsonExampleData, getLatestPackageVersions, supportedResourceLanguage } from "./functions.mjs";
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
 import { clearTestmotorCache } from "../utils/testmotorClient.mjs";
 import { createCachedFunction } from "../utils/cache.mjs";
@@ -109,6 +109,56 @@ test("restricts the fetch to a single supported language", async () => {
 
     assert.ok(requested.every((url) => url.includes("resource.nb.json")));
     assert.deepEqual(result[0].resourceValues, [{ id: "a", values: { nb: "bokmål" } }]);
+});
+
+/**
+ * Stubs fetch with an upstream that accepts every request and never answers, so a request only ends when its signal aborts. Records whether each request carried a signal.
+ */
+function stubHangingFetch() {
+    const signals = [];
+    globalThis.fetch = (url, init) => {
+        signals.push(init?.signal);
+        return new Promise((resolve, reject) => {
+            if (!init?.signal) return;
+            init.signal.addEventListener("abort", () => reject(init.signal.reason), { once: true });
+        });
+    };
+    return signals;
+}
+
+/** Sets REQUEST_TIMEOUT_MS for one test and puts it back afterwards. */
+function withRequestTimeout(t, value) {
+    const original = process.env.REQUEST_TIMEOUT_MS;
+    process.env.REQUEST_TIMEOUT_MS = value;
+    t.after(() => {
+        if (original === undefined) delete process.env.REQUEST_TIMEOUT_MS;
+        else process.env.REQUEST_TIMEOUT_MS = original;
+    });
+}
+
+test("abandons an Altinn Studio request that is never answered, after REQUEST_TIMEOUT_MS", async (t) => {
+    withRequestTimeout(t, "30");
+    const signals = stubHangingFetch();
+
+    const start = Date.now();
+    const result = await getAppResourceValues("nb");
+
+    // Every app's resource file timed out, so every app is skipped, as for any other failure to read it.
+    assert.deepEqual(result, []);
+    assert.ok(Date.now() - start < 2000, `took ${Date.now() - start} ms`);
+    assert.ok(signals.length > 0 && signals.every((signal) => signal instanceof AbortSignal), "every request should carry a signal");
+});
+
+test("abandons the npm and GitHub version lookups too, answering null for each", async (t) => {
+    withRequestTimeout(t, "30");
+    const signals = stubHangingFetch();
+
+    const start = Date.now();
+    const versions = await getLatestPackageVersions();
+
+    assert.ok(Object.values(versions).every((version) => version === null));
+    assert.ok(Date.now() - start < 2000, `took ${Date.now() - start} ms`);
+    assert.ok(signals.length > 0 && signals.every((signal) => signal instanceof AbortSignal), "every request should carry a signal");
 });
 
 test("keeps the supported languages and turns everything else into 'all of them'", () => {
