@@ -127,7 +127,7 @@ api/
 
   It is keyed by **app id**, and has to be: `fa-v3` and `fa-v5` are both filed under the data type `FA` and hold different files. This is why `/api/exampleData` names the app on each entry rather than only the data type.
 
-  Subforms are keyed by app id as well. The testmotor files them per app, as predefined attachments, and the same subform can hold different files under different apps: `DispensasjonssoeknadDataV1` does under `disp-v1` and `fts-v1`. So each app gets an entry per subform it declares, read through that app and validated against the schema in that app's repository. A subform can also be viewed as an app of its own, with no parent to be matched through, so each subform gets one more entry naming no app. It is a copy of the first declaring app's entry, so it costs no extra request.
+  Subforms are keyed by app id as well. The testmotor files them per app, as predefined attachments, and the same subform can hold different files under different apps: `DispensasjonssoeknadDataV1` does under `disp-v1` and `fts-v1`. So each app gets an entry per subform it declares, read through that app and validated against the schema in that app's repository. A subform can also be viewed as an app of its own, with no parent to be matched through, so each subform gets one more entry naming no app. It is a copy of the first declaring app's entry that holds files, or of the first declaring app's when none does, so it costs no extra request.
 
   Answers are cached for five minutes, which is how long the testmotor caches its own reads of the share. File names arrive as bare stems — `01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon` — and are **not sorted**, because the prefix that carried the order is already gone.
 
