@@ -149,6 +149,26 @@ test("abandons an Altinn Studio request that is never answered, after REQUEST_TI
     assert.ok(signals.length > 0 && signals.every((signal) => signal instanceof AbortSignal), "every request should carry a signal");
 });
 
+test("starts a request's timeout when it gets a slot, not while it waits for one", async (t) => {
+    // Every answer comes well within the timeout, but there are more apps than slots (16), so the later requests wait a
+    // full round before they are sent. Counting that wait against the timeout would abandon them unsent.
+    withRequestTimeout(t, "300");
+    let requests = 0;
+    globalThis.fetch = async (url, init) => {
+        requests += 1;
+        await new Promise((resolve, reject) => {
+            const timer = setTimeout(resolve, 200);
+            init?.signal?.addEventListener("abort", () => (clearTimeout(timer), reject(init.signal.reason)), { once: true });
+        });
+        return { ok: true, status: 200, text: async () => JSON.stringify({ language: "nb", resources: [] }) };
+    };
+
+    const result = await getAppResourceValues("nb");
+
+    assert.ok(requests > 16, `needs more requests than slots to mean anything, made ${requests}`);
+    assert.equal(result.length, altinnStudioApps.length);
+});
+
 test("abandons the npm and GitHub version lookups too, answering null for each", async (t) => {
     withRequestTimeout(t, "30");
     const signals = stubHangingFetch();

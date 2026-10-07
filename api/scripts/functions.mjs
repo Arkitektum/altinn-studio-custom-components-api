@@ -140,18 +140,19 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
         throw new Error("GITEA_TOKEN is not set — add it to your .env (see .env.sample) to fetch Altinn Studio data.");
     }
     const timeoutMs = requestTimeoutMs();
-    const options = {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
-        signal: AbortSignal.timeout(timeoutMs)
-    };
     try {
         // The slot is held until the body has been read, so the cap bounds open connections rather than just how many
         // requests have been started.
         return await limitAltinnStudioRequest(async () => {
-            const response = await fetch(url, options);
+            // The clock starts once the request has a slot, so time spent waiting behind other requests does not count
+            // against it: on a slow day the tail of a sync would otherwise time out without ever having been sent.
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                signal: AbortSignal.timeout(timeoutMs)
+            });
             if (!response.ok) {
                 // Missing files are expected (optional layouts/subforms); return null so callers can skip them gracefully.
                 if (response.status === 404) {

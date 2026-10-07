@@ -112,7 +112,7 @@ api/
   connections. The limit is **`ALTINN_STUDIO_CONCURRENCY`** (default `16`): raise it for a faster cold sync, lower it if
   Altinn Studio starts refusing connections. The gate is around the request helper rather than each fan-out, so the
   budget is shared however many endpoints are in flight.
-  Each request, to Altinn Studio, npm, GitHub and the testmotor alike, is abandoned after **`REQUEST_TIMEOUT_MS`** (default `30000`), body included, so an upstream that never answers cannot hold an endpoint or a slot for undici's five minutes.
+  Each request, to Altinn Studio, npm, GitHub and the testmotor alike, is abandoned after **`REQUEST_TIMEOUT_MS`** (default `30000`), body included and counted from when an Altinn Studio request gets its slot rather than from when it was queued, so an upstream that never answers cannot hold an endpoint or a slot for undici's five minutes.
 - **npm registry & GitHub releases.**
   `getLatestPackageVersions` resolves the latest version for each entry in `packageSources.mjs` — from `registry.npmjs.org` for `npm` sources and from the GitHub releases API for `github` sources.
 - **FtPB testmotor.**
