@@ -1,5 +1,6 @@
 import { after, afterEach, before, describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { request as httpRequest } from "node:http";
 
 import { createApp } from "./app.mjs";
 
@@ -187,4 +188,37 @@ describe("what the API refuses", () => {
 
         assert.equal(response.status, 404);
     });
+
+    it("refuses a request addressed to a name that is not ours, as a page that rebound its domain would send", async () => {
+        const urls = stubUpstreams();
+
+        assert.equal(await statusForHost("attacker.example:9001", "/api/displayLayouts"), 403);
+        // Refused before the endpoint ran, so nothing was fetched with the token.
+        assert.deepEqual(urls, []);
+    });
+
+    it("answers a request addressed to localhost or an IP address", async () => {
+        assert.equal(await statusForHost("localhost:9001"), 200);
+        assert.equal(await statusForHost("127.0.0.1:9001"), 200);
+        assert.equal(await statusForHost("[::1]:9001"), 200);
+    });
 });
+
+/**
+ * The status the API answers with, given a Host header. fetch will not send a Host other than the URL's, so this goes
+ * through node:http.
+ *
+ * @param {string} host
+ * @param {string} [path="/api/diagnostics"]
+ * @returns {Promise<number>}
+ */
+function statusForHost(host, path = "/api/diagnostics") {
+    return new Promise((resolve, reject) => {
+        const req = httpRequest(`${base}${path}`, { headers: { host } }, (res) => {
+            res.resume();
+            resolve(res.statusCode ?? 0);
+        });
+        req.on("error", reject);
+        req.end();
+    });
+}

@@ -4,6 +4,7 @@ import cors from "cors";
 import express from "express";
 
 // Local functions
+import { allowedHostsSetting, isAllowedHost } from "./utils/hostCheck.mjs";
 import {
     getAltinnStudioForms,
     getAppResourceValues,
@@ -49,6 +50,16 @@ export function createApp() {
             "⚠️ GITEA_TOKEN is not set. Requests for Altinn Studio data (layouts, metadata, resources, schemas) will fail. Add it to .env — see .env.sample."
         );
     }
+
+    // First, so a request by a name that is not ours is refused before any endpoint runs. See utils/hostCheck.mjs.
+    const allowedHosts = allowedHostsSetting();
+    app.use((req, res, next) => {
+        if (!isAllowedHost(req.headers.host, allowedHosts)) {
+            res.status(403).json({ error: "Host not allowed. Add it to ALLOWED_HOSTS to reach the API by that name." });
+            return;
+        }
+        next();
+    });
 
     // This API proxies private Altinn Studio content using a Gitea token, so restrict CORS to the local dev client
     // (default: the webpack dev server on port 9000) instead of allowing every origin. Override with CLIENT_ORIGIN.

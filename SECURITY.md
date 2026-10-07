@@ -41,8 +41,13 @@ A few properties are relevant when assessing security:
 - **Not for public deployment.**
   There is no authentication on the endpoints, and CORS only keeps other origins' browsers out: it allows `CLIENT_ORIGIN`
   (the local dev client by default), and does nothing about a request that is not made from a browser. The API assumes a
-  trusted, local-only context.
+  trusted, local-only context, and enforces the local part: it binds `127.0.0.1` unless `API_HOST` says otherwise.
   Do not expose it to the public internet.
+- **DNS rebinding.**
+  Binding loopback does not keep out a web page in your own browser, which can point its own domain at 127.0.0.1 after
+  loading and then call the API as if same-origin. Such a request still names the page's domain in its `Host` header, so
+  the API answers only to `localhost`, to IP addresses, and to the names in `ALLOWED_HOSTS`, and refuses anything else
+  with a 403 before any endpoint runs.
 - **FtPB testmotor.**
   The main form and subform example data is fetched from `TESTMOTOR_URL` over open endpoints, with **no token attached** — the
   `GITEA_TOKEN` above must never be sent there. The XML it answers is parsed and validated against a schema fetched

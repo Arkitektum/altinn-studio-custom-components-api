@@ -56,8 +56,9 @@ All routes are `GET` under `/api` and return JSON. They are registered in `api/a
 | `/api/applicationMetadata`   | `applicationmetadata.json` for the tracked apps.                                                                                                                                                                                                         |
 | `/api/diagnostics`           | What the data endpoints above last ran into — counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches.                                                                                                          |
 
-The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`).
+The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`), bound to `API_HOST` (default `127.0.0.1`).
 CORS is restricted to a single origin (`CLIENT_ORIGIN`, default `http://localhost:9000`).
+A request whose `Host` header is not `localhost`, an IP address or a name in `ALLOWED_HOSTS` is refused with a 403 (`utils/hostCheck.mjs`), which keeps a web page from reaching the API through DNS rebinding.
 
 The expensive getters (everything except the static forms list and the already-cached default resources) are wrapped in a
 short-lived in-memory TTL cache (`api/utils/cache.mjs`) so repeated "Synchronize" runs within a session don't re-fan-out to
@@ -83,6 +84,7 @@ api/
 │   ├── altinnAppFrontendVersions.mjs# Extracts frontend asset versions from Index.cshtml
 │   ├── cache.mjs                    # In-memory TTL cache used by the expensive endpoints
 │   ├── concurrencyLimiter.mjs       # Caps simultaneous Altinn Studio requests
+│   ├── hostCheck.mjs                # Refuses a request by a host name that is not ours (DNS rebinding)
 │   ├── exampleFiles.mjs             # Reading the example XML still kept on disk
 │   ├── logger.mjs                   # Run-scoped logging: one aggregated report per request
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
