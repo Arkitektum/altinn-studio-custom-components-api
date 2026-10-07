@@ -1,5 +1,6 @@
-import { after, afterEach, before, describe, it } from "node:test";
+import { after, afterEach, before, describe, it, mock } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs/promises";
 import { request as httpRequest } from "node:http";
 
 import { createApp } from "./app.mjs";
@@ -179,6 +180,24 @@ describe("the language a caller asks for", () => {
             assert.ok(afterFirst > 0, "the first request fetched something");
             assert.equal(urls.length, afterFirst, "and the three that mean the same thing fetched nothing more");
         });
+    });
+});
+
+describe("the default text resources", () => {
+    it("answers 500 rather than a 200 with nothing when the file cannot be read, and reads it again next time", async (t) => {
+        const readFile = mock.method(fs, "readFile", async () => {
+            throw new Error("ENOENT: no such file or directory");
+        });
+        t.after(() => readFile.mock.restore());
+
+        const failed = await call("/api/resources");
+        assert.equal(failed.status, 500);
+        assert.deepEqual(failed.body, { error: "Failed to fetch default text resources" });
+
+        readFile.mock.mockImplementation(async () => JSON.stringify({ resources: { nb: [] } }));
+        const read = await call("/api/resources");
+        assert.equal(read.status, 200);
+        assert.deepEqual(read.body, { resources: { nb: [] } });
     });
 });
 

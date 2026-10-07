@@ -496,14 +496,14 @@ export async function getAppResourceValues(language) {
 /**
  * Fetches the default text resources from a local JSON file.
  *
- * This function reads the content of the 'resources.json' file located in the './api/data/' directory,
- * parses it as JSON, and returns the resulting object. If there is an error during file reading or parsing,
- * it logs the error and returns null.
+ * Reads `dist/resources.json` out of the installed `@arkitektum/altinn-studio-custom-components` package, parses it,
+ * and keeps it for the life of the process. A read that fails is not kept, so the next call tries again.
  *
  * @async
  * @function
- * @returns {Promise<Object|null>} A promise that resolves to the parsed JSON object containing default text resources,
- *   or null if an error occurs.
+ * @returns {Promise<Object>} A promise that resolves to the parsed default text resources.
+ * @throws {Error} If the file cannot be read or parsed. The endpoint answers 500 for it rather than a 200 with nothing,
+ *   which a caller could not tell from a package that ships no resources.
  */
 export async function getDefaultTextResources() {
     if (defaultTextResourcesCache !== undefined) {
@@ -513,13 +513,7 @@ export async function getDefaultTextResources() {
         defaultTextResourcesCache = JSON.parse(await fs.readFile(defaultTextResourcesFilePath, "utf8"));
         return defaultTextResourcesCache;
     } catch (error) {
-        log.error({
-            scope: "@arkitektum/altinn-studio-custom-components",
-            category: "Default text resources unreadable",
-            message: defaultTextResourcesFilePath,
-            detail: error.message
-        });
-        return null;
+        throw new Error(`Default text resources unreadable at ${defaultTextResourcesFilePath}: ${error.message}`, { cause: error });
     }
 }
 

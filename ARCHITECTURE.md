@@ -181,7 +181,7 @@ The report is assembled into a single string and written with one call, so repor
 interleave, and it is printed even if the run throws.
 
 The active run is tracked with `AsyncLocalStorage`, so the nested helpers need no context argument. Events recorded
-outside a run (startup checks, `/api/resources`) fall back to plain `console` output. Set **`LOG_VERBOSE=1`** to also
+outside a run (startup checks) fall back to plain `console` output. Set **`LOG_VERBOSE=1`** to also
 print every event as it happens — the old line-per-step behaviour, useful when following one failing app.
 
 Because of this, code in `api/scripts/functions.mjs` should record events rather than call `console.*` directly, and
