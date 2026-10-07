@@ -88,6 +88,7 @@ api/
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
 │   ├── testmotorClient.mjs          # Thin wrapper over @arkitektum/ftpb-testmotor-client
 │   ├── xmlToJsonConverter.mjs       # Converts example form XML into JSON
+│   ├── xsdValueTypes.mjs            # Which elements an XSD types as numbers or booleans; the rest stay text
 │   └── *.test.mjs
 └── data/
     ├── altinnStudioApps.mjs         # @arkitektum/ftpb-app-catalogue, spelled appOwner / appName

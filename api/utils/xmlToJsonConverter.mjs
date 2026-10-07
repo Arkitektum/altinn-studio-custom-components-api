@@ -2,6 +2,9 @@
 import { XMLParser } from "fast-xml-parser";
 import { createRequire } from "node:module";
 
+// Utils
+import { extractValueKinds, typedValue } from "./xsdValueTypes.mjs";
+
 /**
  * libxmljs2, loaded the first time XML is actually handled rather than when this module is imported.
  *
@@ -54,6 +57,8 @@ function extractArrayPaths(xsdDoc) {
  * @typedef {Object} CompiledXmlSchema
  * @property {Object} document - The parsed XSD, reused for every file validated against it.
  * @property {string[]} arrayPaths - Dot-separated paths of the elements the schema allows more than one of.
+ * @property {Map<string, "number" | "boolean">} valueKinds - Dot-separated paths of the elements the schema types as
+ *   numbers or booleans. Every other element holds text.
  */
 
 /**
@@ -73,7 +78,7 @@ function extractArrayPaths(xsdDoc) {
  */
 export function compileXmlSchema(xsdContent) {
     const document = libxml().parseXml(xsdContent);
-    return { document, arrayPaths: [...extractArrayPaths(document)] };
+    return { document, arrayPaths: [...extractArrayPaths(document)], valueKinds: extractValueKinds(xsdContent) };
 }
 
 /**
@@ -98,13 +103,20 @@ export function convertXmlToJson(xmlContent, schema) {
     }
 
     const arrayPathList = schema.arrayPaths;
+    const valueKinds = schema.valueKinds;
 
     const parser = new XMLParser({
         ignoreAttributes: true,
         attributeNamePrefix: "@",
-        parseTagValue: true,
+        parseTagValue: false,
         parseAttributeValue: true,
         trimValues: true,
+        // Values are typed from the schema rather than guessed from how they look: guessing turns a kommunenummer like
+        // 0301 into 301, and any text that happens to look like a number into one. Undefined keeps the text as it is.
+        tagValueProcessor: (_tagName, value, jpath) => {
+            const kind = valueKinds.get(jpath);
+            return kind ? typedValue(value, kind) : undefined;
+        },
 
         isArray: (tagName, jpath) => {
             // Example jpath: Order.Item or Order.Item.Sku

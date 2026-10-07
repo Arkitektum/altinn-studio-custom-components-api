@@ -21,6 +21,9 @@ const XSD = `<?xml version="1.0" encoding="utf-8"?>
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="merknad" type="xs:string" minOccurs="0" maxOccurs="3" />
+                <xs:element name="kommunenummer" type="xs:string" minOccurs="0" />
+                <xs:element name="areal" type="xs:decimal" minOccurs="0" />
+                <xs:element name="erGodkjent" type="xs:boolean" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -33,14 +36,16 @@ const XSD = `<?xml version="1.0" encoding="utf-8"?>
  * @param {string} [options.tittel]
  * @param {string[]} [options.vedlegg] - One `<vedlegg>` per file name.
  * @param {string[]} [options.merknader]
+ * @param {string} [options.extra] - Raw XML appended after the other elements, for the optional typed ones.
  * @param {boolean} [options.declaration=true] - Whether to write the `<?xml ?>` declaration.
  * @returns {string}
  */
-function xml({ tittel = "Tittel", vedlegg = ["a.pdf"], merknader = [], declaration = true } = {}) {
+function xml({ tittel = "Tittel", vedlegg = ["a.pdf"], merknader = [], extra = "", declaration = true } = {}) {
     const body = [
         `<tittel>${tittel}</tittel>`,
         ...vedlegg.map((filnavn) => `<vedlegg><filnavn>${filnavn}</filnavn></vedlegg>`),
-        ...merknader.map((merknad) => `<merknad>${merknad}</merknad>`)
+        ...merknader.map((merknad) => `<merknad>${merknad}</merknad>`),
+        extra
     ].join("");
     return `${declaration ? '<?xml version="1.0" encoding="utf-8"?>' : ""}<skjema>${body}</skjema>`;
 }
@@ -100,6 +105,31 @@ test("leaves an element the schema allows only once as a scalar", () => {
     assert.equal(Array.isArray(data.vedlegg[0].filnavn), false);
 });
 
+test("keeps text that looks like a number as text when the schema says it is text", () => {
+    const schema = compileXmlSchema(XSD);
+
+    const data = convertXmlToJson(xml({ tittel: "0150", merknader: ["+4722334455", "1e3"], extra: "<kommunenummer>0301</kommunenummer>" }), schema);
+
+    assert.equal(data.tittel, "0150");
+    assert.equal(data.kommunenummer, "0301");
+    assert.deepEqual(data.merknad, ["+4722334455", "1e3"]);
+});
+
+test("keeps text that looks like a boolean as text when the schema says it is text", () => {
+    const schema = compileXmlSchema(XSD);
+
+    assert.equal(convertXmlToJson(xml({ tittel: "true" }), schema).tittel, "true");
+});
+
+test("turns the elements the schema types as numbers and booleans into numbers and booleans", () => {
+    const schema = compileXmlSchema(XSD);
+
+    const data = convertXmlToJson(xml({ extra: "<areal>60.10</areal><erGodkjent>true</erGodkjent>" }), schema);
+
+    assert.equal(data.areal, 60.1);
+    assert.equal(data.erGodkjent, true);
+});
+
 test("throws, naming the validation errors, when the XML does not match the schema", () => {
     const schema = compileXmlSchema(XSD);
     const invalid = '<?xml version="1.0" encoding="utf-8"?><skjema><ukjentFelt>nei</ukjentFelt></skjema>';
@@ -134,4 +164,10 @@ test("reports the array paths it found, so a schema is scanned once rather than 
 
     // Dot-separated and rooted at the top-level element, which is how the parser's jpath arrives for comparison.
     assert.deepEqual([...schema.arrayPaths].sort(), ["skjema.merknad", "skjema.vedlegg"]);
+});
+
+test("reports the paths the schema types as numbers and booleans", () => {
+    const schema = compileXmlSchema(XSD);
+
+    assert.deepEqual(Object.fromEntries(schema.valueKinds), { "skjema.areal": "number", "skjema.erGodkjent": "boolean" });
 });
