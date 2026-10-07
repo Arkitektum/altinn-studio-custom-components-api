@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { createCachedFunction } from "./cache.mjs";
+import { createCachedFunction, isTransientError, isTransientStatus, noteTransientFailure } from "./cache.mjs";
 
 test("returns the cached result for repeated identical calls within the TTL", async () => {
     let calls = 0;
@@ -131,4 +131,115 @@ test("surfaces a synchronous throw in the wrapped function as a rejection", asyn
     });
 
     await assert.rejects(() => cached(), /sync boom/);
+});
+
+test("does not keep a result whose call noted a transient failure, so the next call fetches again", async () => {
+    let calls = 0;
+    const cached = createCachedFunction(async () => {
+        calls++;
+        // A getter that caught one app's timeout and answered the rest.
+        if (calls === 1) noteTransientFailure();
+        return calls;
+    });
+
+    assert.equal(await cached(), 1);
+    assert.equal(await cached(), 2);
+    assert.equal(await cached(), 2);
+    assert.equal(calls, 2);
+});
+
+test("still shares a call that notes a transient failure between the callers waiting on it", async () => {
+    let calls = 0;
+    const cached = createCachedFunction(async () => {
+        calls++;
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        noteTransientFailure();
+        return "partial";
+    });
+
+    assert.deepEqual(await Promise.all([cached(), cached()]), ["partial", "partial"]);
+    assert.equal(calls, 1);
+});
+
+test("hears of a transient failure noted after an await, deep inside the call", async () => {
+    let calls = 0;
+    const fetchOne = async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1));
+        noteTransientFailure();
+    };
+    const cached = createCachedFunction(async () => {
+        calls++;
+        await Promise.all([fetchOne(), fetchOne()]);
+        return "partial";
+    });
+
+    await cached();
+    await cached();
+    assert.equal(calls, 2);
+});
+
+test("passes a transient failure up to the cached call another runs inside", async () => {
+    let outerCalls = 0;
+    const inner = createCachedFunction(async () => {
+        noteTransientFailure();
+        return "inner";
+    });
+    const outer = createCachedFunction(async () => {
+        outerCalls++;
+        return inner();
+    });
+
+    await outer();
+    await outer();
+    assert.equal(outerCalls, 2);
+});
+
+test("keeps the transient failures of one call to that call", async () => {
+    const calls = { a: 0, b: 0 };
+    const cached = createCachedFunction(async (key) => {
+        calls[key]++;
+        await new Promise((resolve) => setTimeout(resolve, 1));
+        if (key === "a") noteTransientFailure();
+        return key;
+    });
+
+    await Promise.all([cached("a"), cached("b")]);
+    await Promise.all([cached("a"), cached("b")]);
+    assert.deepEqual(calls, { a: 2, b: 1 });
+});
+
+test("ignores a transient failure noted outside any cached call", () => {
+    assert.doesNotThrow(() => noteTransientFailure());
+});
+
+test("reads the network, a timeout and an upstream 5xx or 429 as transient, and nothing else", () => {
+    const timeout = Object.assign(new Error("The operation was aborted due to timeout"), { name: "TimeoutError" });
+
+    assert.equal(isTransientError(timeout), true);
+    assert.equal(isTransientError(new TypeError("fetch failed")), true);
+    // The testmotor client wraps the original, so the cause is what says so.
+    assert.equal(
+        isTransientError(new Error("https://x/api/xml/fa-v5 could not be reached: fetch failed", { cause: new TypeError("fetch failed") })),
+        true
+    );
+    assert.equal(isTransientError(new Error("x.xml was not answered within 30000 ms by https://x", { cause: timeout })), true);
+    assert.equal(isTransientError(new Error("https://x/api/altinn-app answered 503 Service Unavailable")), true);
+    assert.equal(isTransientError(new Error("https://x/api/altinn-app answered 429 Too Many Requests")), true);
+    assert.equal(isTransientError(new Error("Failed to fetch App/x.json (status 502) from https://x")), true);
+
+    assert.equal(isTransientError(new Error("Failed to fetch App/x.json (status 404) from https://x")), false);
+    assert.equal(isTransientError(new Error("https://x/api/altinn-app answered 400 Bad Request")), false);
+    assert.equal(isTransientError(new Error("XML does not conform to XSD:\nline 3")), false);
+    assert.equal(isTransientError(new TypeError("Cannot read properties of undefined")), false);
+    assert.equal(isTransientError("fetch failed"), false);
+    assert.equal(isTransientError(undefined), false);
+});
+
+test("reads 5xx and 429 as statuses worth asking again about", () => {
+    assert.equal(isTransientStatus(500), true);
+    assert.equal(isTransientStatus(503), true);
+    assert.equal(isTransientStatus(429), true);
+    assert.equal(isTransientStatus(404), false);
+    assert.equal(isTransientStatus(400), false);
+    assert.equal(isTransientStatus(200), false);
 });

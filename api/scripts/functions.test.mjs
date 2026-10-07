@@ -220,6 +220,91 @@ test("gives every request that means 'all languages' the same cache entry", asyn
 });
 
 /**
+ * Stubs Gitea so the first app in the catalogue answers `firstAppStatus` on the first round and every other request
+ * answers a resource file, and counts the requests made.
+ */
+function stubResourcesWithFirstAppFailing(firstAppStatus) {
+    const firstApp = altinnStudioApps[0];
+    const state = { requests: 0, round: 1 };
+    globalThis.fetch = async (url) => {
+        state.requests += 1;
+        if (state.round === 1 && String(url).includes(`/${firstApp.appOwner}/${firstApp.appName}/`)) {
+            return { ok: false, status: firstAppStatus, text: async () => "" };
+        }
+        return { ok: true, status: 200, text: async () => JSON.stringify({ language: "nb", resources: [] }) };
+    };
+    return state;
+}
+
+test("does not cache resources that are missing an app because Altinn Studio answered 503 for it", async () => {
+    const state = stubResourcesWithFirstAppFailing(503);
+    const cached = createCachedFunction(getAppResourceValues);
+
+    const first = await cached("nb");
+    state.round = 2;
+    const second = await cached("nb");
+
+    assert.equal(first.length, altinnStudioApps.length - 1);
+    // Fetched again, and complete this time, rather than the gap served for the rest of the TTL.
+    assert.equal(second.length, altinnStudioApps.length);
+});
+
+test("caches resources that are missing an app for a reason that will not go away", async () => {
+    const state = stubResourcesWithFirstAppFailing(403);
+    const cached = createCachedFunction(getAppResourceValues);
+
+    const first = await cached("nb");
+    const requestsAfterFirst = state.requests;
+    state.round = 2;
+    const second = await cached("nb");
+
+    assert.equal(first.length, altinnStudioApps.length - 1);
+    assert.equal(state.requests, requestsAfterFirst);
+    assert.equal(second, first);
+});
+
+for (const [host, failure] of [
+    ["registry.npmjs.org", "could not be reached"],
+    ["registry.npmjs.org", "answered 503"],
+    ["api.github.com", "could not be reached"],
+    ["api.github.com", "answered 503"]
+]) {
+    test(`does not cache latest versions when ${host} ${failure}`, async () => {
+        let requests = 0;
+        globalThis.fetch = async (url) => {
+            requests += 1;
+            if (String(url).includes(host)) {
+                if (failure === "could not be reached") throw new TypeError("fetch failed");
+                return { ok: false, status: 503, json: async () => ({}) };
+            }
+            return { ok: true, status: 200, json: async () => ({ version: "1.0.0", tag_name: "v1.0.0" }) };
+        };
+        const cached = createCachedFunction(getLatestPackageVersions);
+
+        await cached();
+        const requestsAfterFirst = requests;
+        await cached();
+
+        assert.equal(requests, 2 * requestsAfterFirst);
+    });
+}
+
+test("caches latest versions when a lookup answers 404, which asking again will not change", async () => {
+    let requests = 0;
+    globalThis.fetch = async () => {
+        requests += 1;
+        return { ok: false, status: 404, json: async () => ({}) };
+    };
+    const cached = createCachedFunction(getLatestPackageVersions);
+
+    await cached();
+    const requestsAfterFirst = requests;
+    await cached();
+
+    assert.equal(requests, requestsAfterFirst);
+});
+
+/**
  * Example data, assembled from the testmotor and from disk.
  *
  * These run against the real app catalogue, because which apps share a data type is exactly what is under test —

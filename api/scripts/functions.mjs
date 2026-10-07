@@ -12,6 +12,7 @@ import subforms from "../data/subforms.mjs";
 import { compileXmlSchema, convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { exampleDataDir, readExampleFilesFromDisk } from "../utils/exampleFiles.mjs";
 import { fetchTestmotorApps, fetchTestmotorFormXml, fetchTestmotorSubformXml } from "../utils/testmotorClient.mjs";
+import { isTransientError, isTransientStatus, noteTransientFailure } from "../utils/cache.mjs";
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
 import { log } from "../utils/logger.mjs";
@@ -59,10 +60,14 @@ async function fetchLatestVersionFromNpm(packageName) {
         // Encode every "/" so scoped names like "@scope/name" become "@scope%2Fname" for the registry path.
         const encodedName = packageName.replaceAll("/", "%2F");
         const response = await fetch(`https://registry.npmjs.org/${encodedName}/latest`, { signal: AbortSignal.timeout(requestTimeoutMs()) });
-        if (!response.ok) return null;
+        if (!response.ok) {
+            if (isTransientStatus(response.status)) noteTransientFailure();
+            return null;
+        }
         const data = await response.json();
         return data.version ?? null;
-    } catch {
+    } catch (error) {
+        if (isTransientError(error)) noteTransientFailure();
         return null;
     }
 }
@@ -80,10 +85,14 @@ async function fetchLatestVersionFromGithub(repo) {
             headers: { "User-Agent": "altinn-studio-custom-components-api", Accept: "application/vnd.github+json" },
             signal: AbortSignal.timeout(requestTimeoutMs())
         });
-        if (!response.ok) return null;
+        if (!response.ok) {
+            if (isTransientStatus(response.status)) noteTransientFailure();
+            return null;
+        }
         const data = await response.json();
         return data.tag_name?.replace(/^v/, "") ?? null;
-    } catch {
+    } catch (error) {
+        if (isTransientError(error)) noteTransientFailure();
         return null;
     }
 }
@@ -164,6 +173,7 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
                     return null;
                 }
                 // No severity marker in the message: it is reported as the detail of whichever event the caller records.
+                // The status stays in it because the catch below reads a 5xx or a 429 from it as a transient failure.
                 throw new Error(`Failed to fetch ${filePath} (status ${response.status}) from ${url}`);
             }
             let content = await response.text();
@@ -179,6 +189,7 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
         // The caller records this failure with its own context (which app, which endpoint), so logging it here too
         // would only duplicate a line in the report. Keep the exact URL for verbose runs.
         log.progress(`⚠️ Error fetching file content from ${url}: ${error.message}`);
+        if (isTransientError(error)) noteTransientFailure();
         // The abort says only "The operation was aborted due to timeout", and the caller reports the message without the url.
         if (error?.name === "TimeoutError") {
             throw new Error(`${filePath} was not answered within ${timeoutMs} ms by ${url}`, { cause: error });

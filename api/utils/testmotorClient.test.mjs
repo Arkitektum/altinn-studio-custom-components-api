@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { clearTestmotorCache, fetchTestmotorApps, fetchTestmotorFormXml } from "./testmotorClient.mjs";
+import { createCachedFunction } from "./cache.mjs";
 
 const DEFAULT_URL = "https://app-ftpb-testmotor.azurewebsites.net";
 
@@ -245,6 +246,33 @@ test("names the url when the testmotor cannot be reached at all", async (t) => {
             return true;
         }
     );
+});
+
+test("tells the endpoint's cache not to keep an answer the testmotor failed to give for a passing reason", async (t) => {
+    stubFetch(t, (url, count) => (count === 1 ? errorResponse(503, "Service Unavailable") : jsonResponse(FA_V5_FILES)));
+    let calls = 0;
+    // What the getters do: catch one app's failure and answer the rest.
+    const cached = createCachedFunction(async () => {
+        calls += 1;
+        return fetchTestmotorFormXml("fa-v5").catch(() => []);
+    });
+
+    assert.deepEqual(await cached(), []);
+    assert.equal((await cached()).length, FA_V5_FILES.length);
+    assert.equal(calls, 2);
+});
+
+test("lets the endpoint's cache keep an answer the testmotor refused for good", async (t) => {
+    stubFetch(t, () => errorResponse(400, "Bad Request"));
+    let calls = 0;
+    const cached = createCachedFunction(async () => {
+        calls += 1;
+        return fetchTestmotorFormXml("fa-v5").catch(() => []);
+    });
+
+    await cached();
+    await cached();
+    assert.equal(calls, 1);
 });
 
 test("throws when an endpoint answers something other than a list", async (t) => {

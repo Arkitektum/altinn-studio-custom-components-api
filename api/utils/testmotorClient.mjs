@@ -3,6 +3,7 @@ import { createTestmotorClient } from "@arkitektum/ftpb-testmotor-client";
 
 // Local functions
 import { cacheTtlMs, requestTimeoutMs } from "./settings.mjs";
+import { isTransientError, noteTransientFailure } from "./cache.mjs";
 
 /**
  * The FtPB testmotor, which is where the main form and subform example data comes from.
@@ -23,6 +24,22 @@ const client = createTestmotorClient({
     timeoutMs: requestTimeoutMs()
 });
 
+/**
+ * Passes a failure on, first noting it if it may not happen again, so an endpoint does not cache an answer that is
+ * missing this app's examples only because the testmotor had a bad moment. Attached per call rather than inside the
+ * client, because the client shares one request between callers and each caller's own cached call has to hear of it.
+ *
+ * @template T
+ * @param {Promise<T>} request
+ * @returns {Promise<T>}
+ */
+function noteIfTransient(request) {
+    return request.catch((error) => {
+        if (isTransientError(error)) noteTransientFailure();
+        throw error;
+    });
+}
+
 /** Forgets everything read so far. Only the tests need this. */
 export function clearTestmotorCache() {
     client.clearCache();
@@ -37,7 +54,7 @@ export function clearTestmotorCache() {
  * @throws {Error} If the testmotor could not be reached or did not answer a list.
  */
 export function fetchTestmotorApps() {
-    return client.fetchApps();
+    return noteIfTransient(client.fetchApps());
 }
 
 /**
@@ -48,7 +65,7 @@ export function fetchTestmotorApps() {
  * @throws {Error} If the testmotor could not be reached or did not answer a list.
  */
 export function fetchTestmotorFormXml(appId) {
-    return client.fetchFormXml(appId);
+    return noteIfTransient(client.fetchFormXml(appId));
 }
 
 /**
@@ -62,5 +79,5 @@ export function fetchTestmotorFormXml(appId) {
  * @throws {Error} If the testmotor could not be reached, or a file could not be downloaded. The message names the file.
  */
 export function fetchTestmotorSubformXml(appId, dataType) {
-    return client.fetchSubformXml(appId, dataType);
+    return noteIfTransient(client.fetchSubformXml(appId, dataType));
 }

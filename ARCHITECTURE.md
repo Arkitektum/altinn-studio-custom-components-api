@@ -62,7 +62,7 @@ A request whose `Host` header is not `localhost`, an IP address or a name in `AL
 
 The expensive getters (everything except the static forms list and the already-cached default resources) are wrapped in a
 short-lived in-memory TTL cache (`api/utils/cache.mjs`) so repeated "Synchronize" runs within a session don't re-fan-out to
-Altinn Studio / npm / disk. Concurrent identical requests share one in-flight fetch, and failures are not cached. Reusing
+Altinn Studio / npm / disk. Concurrent identical requests share one in-flight fetch, and failures are not cached. Nor is an answer that is only partial because something it fetched failed for a reason that may pass (the network, a timeout, a 5xx or a 429): the getters catch one app's failure and answer the rest, so without this a blip would be served for the whole TTL. A fetch says so with `noteTransientFailure()`, which reaches the cached call it runs inside. An answer whose only failures are permanent (a 404, an example that does not validate) is cached as usual, or one broken file would switch the cache off for that endpoint. Reusing
 a call is noted on the request's log report (see [§ Logging](#6-logging)), so a request that logged nothing says why. The TTL
 defaults to 60s and is configurable via `CACHE_TTL_MS` (`0` disables caching).
 
