@@ -80,3 +80,7 @@ Which apps are tracked comes from `@arkitektum/ftpb-app-catalogue`, a package sh
 - [Component documentation & gallery](https://arkitektum.github.io/altinn-studio-custom-components-docs/)
 - [FtPB testmotor client](https://github.com/Arkitektum/ftpb-testmotor-client) — shared with the API tools
 - [FtPB app catalogue](https://github.com/Arkitektum/ftpb-app-catalogue) — shared with the API tools; add a tracked app there
+
+## Licence
+
+[MIT](./LICENSE)
