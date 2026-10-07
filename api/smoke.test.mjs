@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createServer } from "node:net";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { test } from "node:test";
@@ -48,6 +49,17 @@ function startServer() {
     });
 }
 
+/**
+ * Stops the server and waits for it to be gone, so the next test does not find the port still held.
+ */
+function stopServer(child) {
+    if (child.exitCode !== null || child.signalCode !== null) return Promise.resolve();
+    return new Promise((resolve) => {
+        child.once("exit", resolve);
+        child.kill("SIGTERM");
+    });
+}
+
 test("server boots and accepts HTTP connections", async () => {
     const child = await startServer();
     try {
@@ -55,7 +67,7 @@ test("server boots and accepts HTTP connections", async () => {
         const response = await fetch(`${BASE_URL}/__smoke__`);
         assert.equal(typeof response.status, "number");
     } finally {
-        child.kill("SIGTERM");
+        await stopServer(child);
     }
 });
 
@@ -72,6 +84,27 @@ test("serves diagnostics for a server that has not run anything yet", async () =
         assert.deepEqual(body.runs, []);
         assert.match(body.generatedAt, /^\d{4}-\d{2}-\d{2}T/);
     } finally {
-        child.kill("SIGTERM");
+        await stopServer(child);
     }
+});
+
+test("exits with an error, rather than claiming to listen, when the port is taken", async (t) => {
+    const blocker = createServer();
+    await new Promise((resolve) => blocker.listen(TEST_PORT, "127.0.0.1", resolve));
+    t.after(() => blocker.close());
+
+    const child = spawn(process.execPath, [SERVER_ENTRY], {
+        env: { ...process.env, API_PORT: String(TEST_PORT), GITEA_TOKEN: "smoke-test-token" },
+        stdio: ["ignore", "pipe", "pipe"]
+    });
+    let output = "";
+    child.stdout.on("data", (chunk) => (output += chunk));
+    child.stderr.on("data", (chunk) => (output += chunk));
+    const timer = setTimeout(() => child.kill("SIGKILL"), BOOT_TIMEOUT_MS);
+    const code = await new Promise((resolve) => child.on("exit", resolve));
+    clearTimeout(timer);
+
+    assert.equal(code, 1, output);
+    assert.doesNotMatch(output, /listening on port/);
+    assert.match(output, /could not listen on 127\.0\.0\.1:9099: .*EADDRINUSE/);
 });
