@@ -5,20 +5,20 @@ __metadata:
   version: 10
   cacheKey: 10c0
 
-"@arkitektum/altinn-studio-custom-components-utils@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:2.0.3"
-  checksum: 10c0/7913964017c1c139196a3d344becb7feffed34ff9ebbb0b94a9b1d4b3e3c1071fdb1b3587036a25444e0e24102ae2b0dad8936c4aa573760b50de684859744fd
+"@arkitektum/altinn-studio-custom-components-utils@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:2.0.4"
+  checksum: 10c0/ad6e66857354a8b803cdf022b8aec2ac38f4908e12937217dfd169d6a8661c8c96cb2906b9a465236f548f98b66f82091c2bfdcd1a1a72b6a37e76af432cab96
   languageName: node
   linkType: hard
 
-"@arkitektum/altinn-studio-custom-components@npm:^17.3.1":
-  version: 17.3.1
-  resolution: "@arkitektum/altinn-studio-custom-components@npm:17.3.1"
+"@arkitektum/altinn-studio-custom-components@npm:^17.4.0":
+  version: 17.4.0
+  resolution: "@arkitektum/altinn-studio-custom-components@npm:17.4.0"
   dependencies:
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^2.0.3"
+    "@arkitektum/altinn-studio-custom-components-utils": "npm:^2.0.4"
     "@arkitektum/client-logger": "npm:^1.2.2"
-  checksum: 10c0/ae746cb731f9ee0717faaf3fb82a37ffa2b0dc13ae4bf1b08ecdca5d607f6288b722a2ac1405d1bc2f9884344b2c3189838582f43f690dad0c29d7242a9c8088
+  checksum: 10c0/7a58abff97778d3af105e3de2e84827bd1359b8bddf4538cff42b7853dbc792f0d1bc696287b1a2eb6b855145d4a19e5b5c2a856310daeeef45c333c5c03231f
   languageName: node
   linkType: hard
 
@@ -29,17 +29,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@arkitektum/ftpb-app-catalogue@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@arkitektum/ftpb-app-catalogue@npm:1.0.1"
-  checksum: 10c0/4984c78a9a3200e0452ad2ba14bbb52c9b0d1d666ecf68a7a2e960474f1a868f66c7ec52da2d4a455493f13c83c6f6d945d3847ab79edcf4cefed53e5ee19032
+"@arkitektum/ftpb-app-catalogue@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@arkitektum/ftpb-app-catalogue@npm:1.0.2"
+  checksum: 10c0/1a36859c617c7afa4c1ff846ecffc2f486af4324fd529da4377aa571114841ef32804cc4d9aa6b74ba8d6ca3b3ff020dcce52c54e88b34eeb2466bce432cfabd
   languageName: node
   linkType: hard
 
-"@arkitektum/ftpb-testmotor-client@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.2.1"
-  checksum: 10c0/ba79db6529d697a7bfa5092f05ebce1595d036bcf1c5b541f2c46984cbdfaceb9609d5570d08fd22bfa6f08d409d515ff091b8291e811253c52a402b0f420071
+"@arkitektum/ftpb-testmotor-client@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.2.2"
+  checksum: 10c0/72a6cb13b963b920734165d8f8504ccb066b0a338b5ec55605b69ba5567782a18038c0e52cd001cdccf6c9a980dd8ab622515747d40338e8534f13f6c38425c4
   languageName: node
   linkType: hard
 
@@ -434,13 +434,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
-    "@arkitektum/altinn-studio-custom-components": "npm:^17.3.1"
-    "@arkitektum/ftpb-app-catalogue": "npm:^1.0.1"
-    "@arkitektum/ftpb-testmotor-client": "npm:^1.2.1"
+    "@arkitektum/altinn-studio-custom-components": "npm:^17.4.0"
+    "@arkitektum/ftpb-app-catalogue": "npm:^1.0.2"
+    "@arkitektum/ftpb-testmotor-client": "npm:^1.2.2"
     "@eslint/js": "npm:^10.0.1"
     "@microsoft/eslint-formatter-sarif": "npm:^3.1.0"
     cors: "npm:^2.8.6"
-    dotenv: "npm:^18.0.5"
+    dotenv: "npm:^18.0.6"
     eslint: "npm:^10.12.0"
     express: "npm:^5.2.1"
     fast-xml-parser: "npm:^5.11.2"
@@ -832,12 +832,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^18.0.5":
-  version: 18.0.5
-  resolution: "dotenv@npm:18.0.5"
+"dotenv@npm:^18.0.6":
+  version: 18.0.6
+  resolution: "dotenv@npm:18.0.6"
   bin:
     dotenv: dist/index.cjs
-  checksum: 10c0/fade137f063f3d3483459b71c6ed0f98f18189fa52b14c9f192e57df6b76719340aa6d9a1d194e4fa0e025deb5af9d545efcc3a28f09230af815518f0b9c0785
+  checksum: 10c0/fe26487d82e6e1dcedc890bb7176fdb71d5540ebaf8b2adca5996a4891e133d0108699235e81c943ba6f02f00a4775843b96841bf24595b1fa67d9fb2c242efb
   languageName: node
   linkType: hard
 

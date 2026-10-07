@@ -21,11 +21,11 @@
         "prettier": "^3.9.9"
     },
     "dependencies": {
-        "@arkitektum/altinn-studio-custom-components": "^17.3.1",
-        "@arkitektum/ftpb-app-catalogue": "^1.0.1",
-        "@arkitektum/ftpb-testmotor-client": "^1.2.1",
+        "@arkitektum/altinn-studio-custom-components": "^17.4.0",
+        "@arkitektum/ftpb-app-catalogue": "^1.0.2",
+        "@arkitektum/ftpb-testmotor-client": "^1.2.2",
         "cors": "^2.8.6",
-        "dotenv": "^18.0.5",
+        "dotenv": "^18.0.6",
         "express": "^5.2.1",
         "fast-xml-parser": "^5.11.2",
         "libxmljs2": "^0.37.0"
