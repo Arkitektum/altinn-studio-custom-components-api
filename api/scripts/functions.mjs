@@ -690,9 +690,8 @@ export async function getApplicationMetadata() {
 
 /**
  * @typedef {Object} ExampleDataEntry
- * @property {string|null} appOwner - The app these examples belong to, or null for a subform's shared examples.
- * @property {string|null} appName - As above. Null means "matches any app declaring this data type", which is what the
- *   dashboard falls back on when a subform is viewed as an app of its own rather than through a parent.
+ * @property {string} appOwner - The app these examples belong to. A subform's examples belong to the app declaring it.
+ * @property {string} appName - As above.
  * @property {string} dataType - The Altinn data type the examples are filed under.
  * @property {string|null} error - Why `files` is empty, when the reason is a failure rather than an absence. The
  *   dashboard has to tell "there are no examples for this" from "the examples could not be fetched".
@@ -896,41 +895,7 @@ async function appExampleEntries(app, sources) {
 }
 
 /**
- * Flattens the entries in catalogue order, adding one app-less copy of every subform straight after the entry it was copied from.
- *
- * A subform's own layout can be viewed as an app of its own, and there it has no parent to be matched through, so the dashboard falls back on an entry naming no app. That entry is a copy of the first app declaring the subform that holds files for it, and of the first one declaring it at all when none does. Each app holds its own files, so taking the first app regardless would show a subform with no examples whenever that one app had none, while others had them.
- *
- * Chosen once everything has been fetched, since which apps hold files is only known then.
- *
- * @param {Array<Object>} apps - The catalogue, in order.
- * @param {Array<Array<ExampleDataEntry|null>>} entriesPerApp - Each app's entries, positionally, as appExampleEntries answers them.
- * @returns {ExampleDataEntry[]}
- */
-function withSharedSubformEntries(apps, entriesPerApp) {
-    const sourceByDataType = new Map();
-    apps.forEach((app, appIndex) => {
-        (app.subForms ?? []).forEach((subForm, subFormIndex) => {
-            // The main form comes first, so a subform's entry is one along.
-            const entry = entriesPerApp[appIndex][subFormIndex + 1];
-            if (!entry) {
-                return;
-            }
-            const current = sourceByDataType.get(subForm.dataType);
-            if (!current || (current.files.length === 0 && entry.files.length > 0)) {
-                sourceByDataType.set(subForm.dataType, entry);
-            }
-        });
-    });
-
-    const sources = new Set(sourceByDataType.values());
-    return entriesPerApp
-        .flat()
-        .filter((entry) => entry !== null)
-        .flatMap((entry) => (sources.has(entry) ? [entry, { ...entry, appOwner: null, appName: null }] : [entry]));
-}
-
-/**
- * Every example the dashboard can offer: each tracked app's main form, each subform as each app declaring it holds it, and one app-less copy of every subform for viewing it on its own.
+ * Every example the dashboard can offer: each tracked app's main form, and each subform as each app declaring it holds it.
  *
  * The main forms come from the FtPB testmotor rather than from disk, because it re-stamps the date fields on every
  * request and a copy committed here goes stale within a fortnight — see `api/utils/testmotorClient.mjs`. The
@@ -946,8 +911,8 @@ function withSharedSubformEntries(apps, entriesPerApp) {
  *
  * @async
  * @function
- * @returns {Promise<ExampleDataEntry[]>} One entry per tracked app, one per subform each app declares, and one app-less
- *   entry per distinct subform.
+ * @returns {Promise<ExampleDataEntry[]>} One entry per tracked app and one per subform each app declares, in catalogue
+ *   order.
  */
 export async function getJsonExampleData() {
     let testmotorApps = null;
@@ -969,5 +934,5 @@ export async function getJsonExampleData() {
     // nothing about what comes out of it.
     const entriesPerApp = await Promise.all(altinnStudioApps.map((app) => limitExampleDataApp(() => appExampleEntries(app, sources))));
 
-    return withSharedSubformEntries(altinnStudioApps, entriesPerApp);
+    return entriesPerApp.flat().filter((entry) => entry !== null);
 }

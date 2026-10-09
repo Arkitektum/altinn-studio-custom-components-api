@@ -442,10 +442,10 @@ function mainFormEntries(result) {
 }
 
 /**
- * The entry for one subform as one app holds it, or the shared one when appName is null.
+ * The entry for one subform as one app holds it.
  *
  * @param {Array<Object>} result
- * @param {string|null} appName
+ * @param {string} appName
  * @param {string} dataType
  * @returns {Object|undefined}
  */
@@ -641,84 +641,7 @@ test("files a subform under each app that declares it, with that app's own files
     }
 });
 
-test("also files each subform once under no app, as the first app declaring it holds it", async () => {
-    // Viewed as an app of its own, a subform has no parent to be matched through, and the dashboard falls back on the
-    // entry naming no app. disp-v1 is the first app declaring DispensasjonssoeknadDataV1, so its files are the ones.
-    const [first, second] = appsDeclaring("DispensasjonssoeknadDataV1");
-    assert.equal(first.appName, "disp-v1");
-    stubExampleSources({
-        apps: [
-            { appId: first.appName, mainFormId: first.dataType },
-            { appId: second.appName, mainFormId: second.dataType }
-        ],
-        subformsByApp: {
-            [first.appName]: { DispensasjonssoeknadDataV1: [{ fileName: "Forste.xml", contents: xml("first") }] },
-            [second.appName]: { DispensasjonssoeknadDataV1: [{ fileName: "Andre.xml", contents: xml("second") }] }
-        }
-    });
-
-    const result = await getJsonExampleData();
-    const shared = result.filter((entry) => entry.appName === null && entry.dataType === "DispensasjonssoeknadDataV1");
-
-    assert.equal(shared.length, 1);
-    assert.equal(shared[0].appOwner, null);
-    assert.deepEqual(shared[0].files, [{ name: "Forste", data: { tittel: "first" } }]);
-});
-
-test("copies the shared entry from a later app when the first app declaring the subform holds no files for it", async () => {
-    // Each app holds its own files, so the first app declaring a subform can have none while another has some. Viewed on its own, the subform should show those rather than nothing.
-    const [first, second] = appsDeclaring("GjennomfoeringsplanDataV7");
-    stubExampleSources({
-        apps: [
-            { appId: first.appName, mainFormId: first.dataType },
-            { appId: second.appName, mainFormId: second.dataType }
-        ],
-        subformsByApp: { [second.appName]: { GjennomfoeringsplanDataV7: [{ fileName: "Plan.xml", contents: xml("plan") }] } }
-    });
-
-    const result = await getJsonExampleData();
-    const shared = result.filter((entry) => entry.appName === null && entry.dataType === "GjennomfoeringsplanDataV7");
-
-    assert.deepEqual(subformEntry(result, first.appName, "GjennomfoeringsplanDataV7").files, []);
-    assert.equal(shared.length, 1);
-    assert.deepEqual(shared[0].files, [{ name: "Plan", data: { tittel: "plan" } }]);
-    // Straight after the entry it was copied from.
-    const sourceIndex = result.indexOf(subformEntry(result, second.appName, "GjennomfoeringsplanDataV7"));
-    assert.equal(result[sourceIndex + 1], shared[0]);
-});
-
-test("copies the shared entry from a later app when the first app's download fails", async () => {
-    const [first, second] = appsDeclaring("DispensasjonssoeknadDataV1");
-    stubExampleSources({
-        apps: [
-            { appId: first.appName, mainFormId: first.dataType },
-            { appId: second.appName, mainFormId: second.dataType }
-        ],
-        subformsByApp: {
-            [first.appName]: { DispensasjonssoeknadDataV1: [{ fileName: "Borte.xml", contents: null }] },
-            [second.appName]: { DispensasjonssoeknadDataV1: [{ fileName: "Andre.xml", contents: xml("second") }] }
-        }
-    });
-
-    const result = await getJsonExampleData();
-    const shared = subformEntry(result, null, "DispensasjonssoeknadDataV1");
-
-    assert.ok(subformEntry(result, first.appName, "DispensasjonssoeknadDataV1").error, "the first app's entry should carry the failure");
-    assert.equal(shared.error, null);
-    assert.deepEqual(shared.files, [{ name: "Andre", data: { tittel: "second" } }]);
-});
-
-test("copies the shared entry from the first app declaring the subform when no app holds files for it", async () => {
-    const [first] = appsDeclaring("DispensasjonssoeknadDataV1");
-    stubExampleSources({ apps: [] });
-
-    const result = await getJsonExampleData();
-    const sourceIndex = result.indexOf(subformEntry(result, first.appName, "DispensasjonssoeknadDataV1"));
-
-    assert.deepEqual(result[sourceIndex + 1], { appOwner: null, appName: null, dataType: "DispensasjonssoeknadDataV1", error: null, files: [] });
-});
-
-test("reads a subform once per app, and the shared copy costs nothing more", async () => {
+test("reads a subform once per app", async () => {
     const { testmotorCalls, schemaCalls } = stubExampleSources({
         apps: [{ appId: "disp-v1", mainFormId: "DS" }],
         subformsByApp: { "disp-v1": { DispensasjonssoeknadDataV1: [{ fileName: "Dispensasjonssoeknad1.xml", contents: xml("disp") }] } }
@@ -846,27 +769,19 @@ test("drops a subform that could not be processed, and nothing else", async () =
     assert.equal(mainFormEntries(result).length, altinnStudioApps.length);
 });
 
-test("answers in catalogue order, each app's subforms after its main form and each shared copy after its source", async () => {
+test("answers in catalogue order, each app's subforms after its main form, and every entry naming its app", async () => {
     // The apps are fetched concurrently, so the order they finish in is not the order they are named in. What the
     // dashboard receives has to be the catalogue's order regardless of which app's upstream answered first.
     stubExampleSources({ apps: [] });
 
     const result = await getJsonExampleData();
 
-    const expected = [];
-    const shared = new Set();
-    for (const app of altinnStudioApps) {
-        expected.push(`${app.appName}:${app.dataType}`);
-        for (const { dataType } of app.subForms ?? []) {
-            expected.push(`${app.appName}:${dataType}`);
-            if (!shared.has(dataType)) {
-                shared.add(dataType);
-                expected.push(`shared:${dataType}`);
-            }
-        }
-    }
+    const expected = altinnStudioApps.flatMap((app) => [
+        `${app.appOwner}/${app.appName}:${app.dataType}`,
+        ...(app.subForms ?? []).map(({ dataType }) => `${app.appOwner}/${app.appName}:${dataType}`)
+    ]);
     assert.deepEqual(
-        result.map((entry) => `${entry.appName ?? "shared"}:${entry.dataType}`),
+        result.map((entry) => `${entry.appOwner}/${entry.appName}:${entry.dataType}`),
         expected
     );
 });
