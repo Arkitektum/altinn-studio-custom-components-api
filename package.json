@@ -26,7 +26,7 @@
         "@arkitektum/ftpb-testmotor-client": "^1.2.2",
         "cors": "^2.8.6",
         "dotenv": "^18.0.6",
-        "express": "^5.2.1",
+        "express": "^5.3.0",
         "fast-xml-parser": "^5.11.2",
         "libxmljs2": "^0.37.0"
     }
