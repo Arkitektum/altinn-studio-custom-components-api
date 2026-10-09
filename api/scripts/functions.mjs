@@ -6,7 +6,6 @@ import path from "node:path";
 // Data
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
 import packageSources from "../data/packageSources.mjs";
-import subforms from "../data/subforms.mjs";
 
 // Utils
 import { compileXmlSchema, convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
@@ -277,12 +276,12 @@ async function getSubFormLayout(appOwner, appName, subFormDataType) {
  *
  * This function iterates over the list of Altinn Studio apps, fetches every display layout for each app (as defined by its `layoutFiles`,
  * falling back to a single default layout), and if the app has associated subforms it also fetches the display layouts for those subforms.
- * The resulting array contains layout objects for both main-form apps and subforms. Each app object includes the app owner, app name, data type,
- * an array of named display layouts, and any associated subforms.
+ * The resulting array holds one object per app, with the app owner, app name, data type, an array of named display layouts, and the subforms it
+ * carries, each with the layout fetched from that app's repository. A subform is not an entry of its own: it is only ever seen through an app.
  *
  * @async
  * @function
- * @returns {Promise<Array<Object>>} A promise that resolves to an array of display layout objects for all Altinn Studio apps and their subforms.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of display layout objects, one per Altinn Studio app.
  * @throws {Error} If fetching or parsing any of the display layouts fails.
  */
 export async function getDisplayLayouts() {
@@ -329,8 +328,7 @@ export async function getDisplayLayouts() {
             });
     });
     const layouts = await Promise.all(layoutPromises);
-    const allLayouts = layouts.filter((layout) => layout !== null).concat(subforms);
-    return allLayouts;
+    return layouts.filter((layout) => layout !== null);
 }
 
 /**
@@ -592,22 +590,15 @@ export async function getPackageVersions() {
 }
 
 /**
- * Retrieves a combined list of Altinn Studio applications and subforms.
+ * Retrieves the list of tracked Altinn Studio apps.
  *
- * This function maps over the `subforms` array to extract relevant properties
- * (`appOwner`, `appName`, `dataType`) from each subform, then merges these with
- * the existing `altinnStudioApps` array to produce a single array containing all apps.
+ * Subforms are not listed as apps of their own. Each app names the subforms it carries in its `subForms`, which is the
+ * only way the dashboard reaches a subform.
  *
- * @returns {Array<Object>} An array of objects representing both Altinn Studio apps and subforms.
+ * @returns {Array<Object>} The tracked Altinn Studio apps.
  */
 export function getAltinnStudioForms() {
-    const subFormApps = subforms?.map((subform) => ({
-        appOwner: subform?.appOwner,
-        appName: subform?.appName,
-        dataType: subform?.dataType
-    }));
-    const allApps = [...altinnStudioApps, ...subFormApps];
-    return allApps;
+    return altinnStudioApps;
 }
 
 /**

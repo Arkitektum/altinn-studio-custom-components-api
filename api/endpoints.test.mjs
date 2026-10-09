@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import { request as httpRequest } from "node:http";
 
+import altinnStudioApps from "./data/altinnStudioApps.mjs";
 import { createApp } from "./app.mjs";
 
 /**
@@ -65,7 +66,7 @@ async function call(path) {
 }
 
 describe("the routes that answer from disk or memory", () => {
-    it("lists the tracked apps and the subforms they declare", async () => {
+    it("lists the tracked apps, with the subforms each declares but not as apps of their own", async () => {
         const { status, body } = await call("/api/altinnStudioForms");
 
         assert.equal(status, 200);
@@ -74,6 +75,13 @@ describe("the routes that answer from disk or memory", () => {
             body.every((entry) => typeof entry.appOwner === "string" && typeof entry.appName === "string"),
             "every entry names an app"
         );
+        assert.deepEqual(
+            body.map((entry) => `${entry.appOwner}/${entry.appName}`),
+            altinnStudioApps.map((app) => `${app.appOwner}/${app.appName}`)
+        );
+        const subformAppNames = new Set(altinnStudioApps.flatMap((app) => (app.subForms ?? []).map((subForm) => subForm.appName)));
+        assert.ok(subformAppNames.size > 0, "expected the catalogue to declare at least one subform");
+        assert.ok(!body.some((entry) => subformAppNames.has(entry.appName)), "a subform is listed as an app");
     });
 
     it("answers diagnostics without running anything of its own", async () => {
@@ -96,6 +104,25 @@ describe("the routes that fan out to Altinn Studio", () => {
 
         assert.equal(status, 200);
         assert.equal(headers.get("access-control-allow-origin"), process.env.CLIENT_ORIGIN || "http://localhost:9000");
+    });
+
+    it("answers one display layout entry per app, with each subform under the app carrying it", async () => {
+        stubUpstreams((url) => (url.endsWith(".json") ? { data: { layout: [] } } : null));
+
+        const { status, body } = await call("/api/displayLayouts");
+
+        assert.equal(status, 200);
+        assert.deepEqual(
+            body.map((entry) => `${entry.appOwner}/${entry.appName}`),
+            altinnStudioApps.map((app) => `${app.appOwner}/${app.appName}`)
+        );
+        assert.ok(!body.some((entry) => entry.isSubform), "a subform is answered as an entry of its own");
+        const carried = body.flatMap((entry) => entry.subForms ?? []);
+        assert.ok(carried.length > 0, "expected at least one app to carry a subform");
+        assert.ok(
+            carried.every((subForm) => subForm.layout),
+            "every subform carries the layout fetched for it"
+        );
     });
 
     it("still answers when the network is gone, rather than failing the request", async () => {
