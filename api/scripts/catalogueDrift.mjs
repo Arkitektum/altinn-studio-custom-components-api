@@ -3,7 +3,6 @@ import { pathToFileURL } from "node:url";
 
 // Data
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
-import subforms from "../data/subforms.mjs";
 
 // Utils
 import { fetchTestmotorApps, fetchTestmotorSubformXml } from "../utils/testmotorClient.mjs";
@@ -16,7 +15,7 @@ import { hasExampleFilesOnDisk } from "../utils/exampleFiles.mjs";
  * apps the dashboard shows; the testmotor keeps its own list and decides which apps have example data. Nothing
  * reconciles them, so they drift, and the drift is invisible until someone opens an app and finds an empty picker.
  *
- * Five findings come out of it:
+ * Four findings come out of it:
  *
  * - **Apps the testmotor holds that the catalogue does not name.** Usually a new app version worth tracking.
  * - **Apps with no example data from either source.** The one worth having: an app you cannot see rendered with
@@ -25,8 +24,6 @@ import { hasExampleFilesOnDisk } from "../utils/exampleFiles.mjs";
  *   catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land.
  * - **Declared subforms with no example file under an app declaring them.** The testmotor files subform examples
  *   per app, so a subform can have examples under one parent and none under another.
- * - **Subforms the catalogue declares that this repository holds no layout for.** `subforms.mjs` serves only the
- *   subforms it has a layout for, so one added to the catalogue alone is quietly absent rather than broken.
  *
  * This is a report, not a gate: it exits 0 whatever it finds. Drift is normal and is usually resolved by editing
  * the catalogue, which is a judgement call rather than something to fail a build over.
@@ -45,7 +42,6 @@ import { hasExampleFilesOnDisk } from "../utils/exampleFiles.mjs";
  *
  * @param {Object} params
  * @param {Array<Object>} params.catalogue - The tracked apps, as in `altinnStudioApps.mjs`.
- * @param {Array<Object>} params.subformList - The subforms, as in `subforms.mjs`.
  * @param {Array<{appId: string, mainFormId: string}>} params.testmotorApps - What the testmotor holds.
  * @param {Set<string>} params.formDataTypesOnDisk - Data types with files under `forms/`.
  * @param {Map<string, number>} params.subformFileCounts - How many files the testmotor holds per subform under each
@@ -55,18 +51,10 @@ import { hasExampleFilesOnDisk } from "../utils/exampleFiles.mjs";
  *   unknownToCatalogue: Array<{appId: string, mainFormId: string}>,
  *   disagreements: Array<{appOwner: string, appName: string, catalogue: string, testmotor: string}>,
  *   coverage: CoverageEntry[],
- *   subformCoverage: Array<{appName: string, subformAppName: string, dataType: string, source: "testmotor"|"none"|"error", error?: string}>,
- *   subformsWithoutLayout: Array<{appName: string, dataType: string}>
+ *   subformCoverage: Array<{appName: string, subformAppName: string, dataType: string, source: "testmotor"|"none"|"error", error?: string}>
  * }}
  */
-export function compareCatalogueWithTestmotor({
-    catalogue,
-    subformList,
-    testmotorApps,
-    formDataTypesOnDisk,
-    subformFileCounts,
-    subformErrors = new Map()
-}) {
+export function compareCatalogueWithTestmotor({ catalogue, testmotorApps, formDataTypesOnDisk, subformFileCounts, subformErrors = new Map() }) {
     const heldByTestmotor = new Map(testmotorApps.map((app) => [app.appId, app.mainFormId]));
     const catalogueAppNames = new Set(catalogue.map((app) => app.appName));
 
@@ -95,39 +83,21 @@ export function compareCatalogueWithTestmotor({
     const unknownToCatalogue = testmotorApps.filter((app) => !catalogueAppNames.has(app.appId));
 
     // One entry per subform under each app declaring it, because that is how the testmotor files them and how
-    // getJsonExampleData serves them. Only the subforms this repository holds a layout for, since the rest are not
-    // served at all and have a finding of their own below. An app the testmotor does not hold has no subform examples
-    // either, the same rule getJsonExampleData applies.
-    const servedDataTypes = new Set(subformList.map((subForm) => subForm.dataType));
+    // getJsonExampleData serves them. An app the testmotor does not hold has no subform examples either, the same rule
+    // getJsonExampleData applies.
     const subformCoverage = catalogue.flatMap((app) =>
-        (app.subForms ?? [])
-            .filter((subForm) => servedDataTypes.has(subForm.dataType))
-            .map((subForm) => {
-                const key = subformKey(app.appName, subForm.dataType);
-                const entry = { appName: app.appName, subformAppName: subForm.appName, dataType: subForm.dataType };
-                if (subformErrors.has(key)) {
-                    return { ...entry, source: "error", error: subformErrors.get(key) };
-                }
-                const held = heldByTestmotor.has(app.appName) && (subformFileCounts.get(key) ?? 0) > 0;
-                return { ...entry, source: held ? "testmotor" : "none" };
-            })
+        (app.subForms ?? []).map((subForm) => {
+            const key = subformKey(app.appName, subForm.dataType);
+            const entry = { appName: app.appName, subformAppName: subForm.appName, dataType: subForm.dataType };
+            if (subformErrors.has(key)) {
+                return { ...entry, source: "error", error: subformErrors.get(key) };
+            }
+            const held = heldByTestmotor.has(app.appName) && (subformFileCounts.get(key) ?? 0) > 0;
+            return { ...entry, source: held ? "testmotor" : "none" };
+        })
     );
 
-    // Declared in the catalogue but not served, which happens when a subform is added there without a layout being
-    // added here. It goes missing quietly rather than breaking, since subforms.mjs leaves out what it cannot serve.
-    const subformsWithoutLayout = [];
-    const seenWithoutLayout = new Set();
-    for (const app of catalogue) {
-        for (const subForm of app.subForms ?? []) {
-            if (servedDataTypes.has(subForm.dataType) || seenWithoutLayout.has(subForm.dataType)) {
-                continue;
-            }
-            seenWithoutLayout.add(subForm.dataType);
-            subformsWithoutLayout.push({ appName: subForm.appName, dataType: subForm.dataType });
-        }
-    }
-
-    return { unknownToCatalogue, disagreements, coverage, subformCoverage, subformsWithoutLayout };
+    return { unknownToCatalogue, disagreements, coverage, subformCoverage };
 }
 
 /**
@@ -142,7 +112,7 @@ export function subformKey(appName, dataType) {
 }
 
 /**
- * Asks the testmotor how many files it holds for each served subform under each app declaring it.
+ * Asks the testmotor how many files it holds for each declared subform under each app declaring it.
  *
  * Only the apps it holds are asked about. The client has no way to list a subform's files without downloading them, so this downloads them, which is a few dozen small files and only when the report is run.
  *
@@ -152,12 +122,9 @@ export function subformKey(appName, dataType) {
  */
 async function countSubformFiles(testmotorApps) {
     const held = new Set(testmotorApps.map((app) => app.appId));
-    const servedDataTypes = new Set(subforms.map((subForm) => subForm.dataType));
     const pairs = altinnStudioApps
         .filter((app) => held.has(app.appName))
-        .flatMap((app) =>
-            (app.subForms ?? []).filter((subForm) => servedDataTypes.has(subForm.dataType)).map((subForm) => [app.appName, subForm.dataType])
-        );
+        .flatMap((app) => (app.subForms ?? []).map((subForm) => [app.appName, subForm.dataType]));
 
     const subformFileCounts = new Map();
     const subformErrors = new Map();
@@ -217,7 +184,6 @@ export async function reportCatalogueDrift() {
 
     const drift = compareCatalogueWithTestmotor({
         catalogue: altinnStudioApps,
-        subformList: subforms,
         testmotorApps,
         formDataTypesOnDisk: new Set(formsOnDisk.filter(([, present]) => present).map(([dataType]) => dataType)),
         subformFileCounts,
@@ -257,11 +223,6 @@ export async function reportCatalogueDrift() {
         drift.subformCoverage
             .filter((entry) => entry.source === "error")
             .map((entry) => `${entry.appName}  ${entry.subformAppName}  (${entry.dataType}): ${entry.error}`)
-    );
-
-    printSection(
-        "Subforms the catalogue declares that this repository holds no layout for",
-        drift.subformsWithoutLayout.map((entry) => `${entry.appName}  (${entry.dataType})`)
     );
 
     const fromTestmotor = drift.coverage.filter((entry) => entry.source === "testmotor").length;

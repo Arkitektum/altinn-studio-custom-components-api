@@ -3,7 +3,6 @@ import { test } from "node:test";
 
 import { compareCatalogueWithTestmotor, subformKey } from "./catalogueDrift.mjs";
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
-import subforms from "../data/subforms.mjs";
 
 /**
  * A catalogue small enough to reason about, holding every case that matters: an app both lists know, two apps
@@ -23,11 +22,6 @@ const catalogue = [
     }
 ];
 
-const subformList = [
-    { appOwner: "dibk", appName: "gjennomfoeringsplan-v7", dataType: "GjennomfoeringsplanDataV7" },
-    { appOwner: "dibk", appName: "dispensasjonsvarsel-v1", dataType: "DispensasjonsvarselDataV1" }
-];
-
 const testmotorApps = [
     { appId: "an-v2", mainFormId: "AN" },
     { appId: "fa-v3", mainFormId: "FA" },
@@ -45,7 +39,6 @@ const testmotorApps = [
 function compare(overrides = {}) {
     return compareCatalogueWithTestmotor({
         catalogue,
-        subformList,
         testmotorApps,
         formDataTypesOnDisk: new Set(["HoeringOgOffentligEttersynUttalelse"]),
         subformFileCounts: new Map([[subformKey("es-v2", "GjennomfoeringsplanDataV7"), 1]]),
@@ -169,7 +162,8 @@ test("says so when a subform could not be checked, rather than calling it missin
     ]);
 });
 
-test("leaves a subform no layout is held for out of the coverage, since it has a finding of its own", () => {
+test("covers every subform an app declares, with no list of subforms to narrow it", () => {
+    // DispensasjonssoeknadDataV1 is declared here and nowhere else, so nothing but the declaration can put it in.
     const drift = compare({
         catalogue: [
             ...catalogue,
@@ -183,21 +177,12 @@ test("leaves a subform no layout is held for out of the coverage, since it has a
     });
 
     assert.deepEqual(
-        drift.subformCoverage.map((entry) => entry.dataType),
-        ["GjennomfoeringsplanDataV7"]
+        drift.subformCoverage.map((entry) => [entry.appName, entry.dataType]),
+        [
+            ["es-v2", "GjennomfoeringsplanDataV7"],
+            ["disp-v1", "DispensasjonssoeknadDataV1"]
+        ]
     );
-    assert.deepEqual(
-        drift.subformsWithoutLayout.map((entry) => entry.dataType),
-        ["DispensasjonssoeknadDataV1"]
-    );
-});
-
-test("ignores a subform no app declares", () => {
-    // dispensasjonsvarsel-v1 is in the subform list but nothing in this catalogue references it, so whether it has
-    // example files is not this report's finding.
-    const drift = compare({ subformFileCounts: new Map() });
-
-    assert.ok(!drift.subformCoverage.some((entry) => entry.dataType === "DispensasjonsvarselDataV1"));
 });
 
 test("copes with a testmotor that answered nothing", () => {
@@ -208,56 +193,10 @@ test("copes with a testmotor that answered nothing", () => {
     assert.ok(drift.coverage.every((entry) => entry.source !== "testmotor"));
 });
 
-test("names a declared subform that no layout is held for", () => {
-    // The fixture catalogue declares GjennomfoeringsplanDataV7 and the fixture subform list serves it, so nothing
-    // is reported until a second subform is declared without being served.
-    assert.deepEqual(compare().subformsWithoutLayout, []);
-
-    const withUnserved = compare({
-        catalogue: [
-            ...catalogue,
-            {
-                appOwner: "dibk",
-                appName: "disp-v1",
-                dataType: "DS",
-                subForms: [{ appName: "dispensasjonssoeknad-v1", dataType: "DispensasjonssoeknadDataV1" }]
-            }
-        ]
-    });
-
-    assert.deepEqual(withUnserved.subformsWithoutLayout, [{ appName: "dispensasjonssoeknad-v1", dataType: "DispensasjonssoeknadDataV1" }]);
-});
-
-test("names a subform declared by several apps only once", () => {
-    const declaredTwice = { appName: "dispensasjonssoeknad-v1", dataType: "DispensasjonssoeknadDataV1" };
-    const drift = compare({
-        catalogue: [
-            ...catalogue,
-            { appOwner: "dibk", appName: "disp-v1", dataType: "DS", subForms: [declaredTwice] },
-            { appOwner: "dibk", appName: "disp-v2", dataType: "DS", subForms: [declaredTwice] }
-        ]
-    });
-
-    assert.deepEqual(drift.subformsWithoutLayout, [declaredTwice]);
-});
-
-test("reports nothing missing for the real catalogue, since subforms.mjs is built from it", () => {
-    const drift = compareCatalogueWithTestmotor({
-        catalogue: altinnStudioApps,
-        subformList: subforms,
-        testmotorApps: [],
-        formDataTypesOnDisk: new Set(),
-        subformFileCounts: new Map()
-    });
-
-    assert.deepEqual(drift.subformsWithoutLayout, []);
-});
-
 test("runs over the real catalogue without losing or duplicating an app", () => {
     // Fixtures cannot go wrong the way the real catalogue does — three of its data types are claimed twice.
     const drift = compareCatalogueWithTestmotor({
         catalogue: altinnStudioApps,
-        subformList: subforms,
         testmotorApps: [],
         formDataTypesOnDisk: new Set(),
         subformFileCounts: new Map()
@@ -265,4 +204,20 @@ test("runs over the real catalogue without losing or duplicating an app", () => 
 
     assert.equal(drift.coverage.length, altinnStudioApps.length);
     assert.equal(new Set(drift.coverage.map((entry) => `${entry.appOwner}/${entry.appName}`)).size, altinnStudioApps.length);
+});
+
+test("covers every subform the real catalogue declares, once under each app declaring it", () => {
+    const drift = compareCatalogueWithTestmotor({
+        catalogue: altinnStudioApps,
+        testmotorApps: [],
+        formDataTypesOnDisk: new Set(),
+        subformFileCounts: new Map()
+    });
+    const declared = altinnStudioApps.flatMap((app) => (app.subForms ?? []).map((subForm) => subformKey(app.appName, subForm.dataType)));
+
+    assert.ok(declared.length > 0, "expected the catalogue to declare at least one subform");
+    assert.deepEqual(
+        drift.subformCoverage.map((entry) => subformKey(entry.appName, entry.dataType)),
+        declared
+    );
 });
