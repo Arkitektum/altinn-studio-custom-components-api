@@ -86,7 +86,7 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
   `console.*`, so the events end up in the request's summary report (see
   [ARCHITECTURE § Logging](./ARCHITECTURE.md#6-logging)). Wrap a new fan-out route in `withRunLog("<name>", …)`.
   Run with `LOG_VERBOSE=1` to see every event as it happens while debugging.
-- **Tracked apps** come from `@arkitektum/ftpb-app-catalogue`; add one there and bump the dependency. `api/data/altinnStudioApps.mjs` only renames the fields for this repository. Subform layouts stay here, in `api/data/subforms.mjs`.
+- **Tracked apps** come from `@arkitektum/ftpb-app-catalogue`; add one there and bump the dependency. `api/data/altinnStudioApps.mjs` only renames the fields for this repository. Subform layouts are not kept here: each is read from the repository of the app that carries it.
   Add an app there to include it in the statistics.
 - **Version sources** for `latestPackageVersions` are configured in `api/data/packageSources.mjs` (`npm` or `github`).
 - **Example data** for the main forms and the subforms is read from the FtPB testmotor at request time, not from this repo. For main forms that is because it re-stamps the date fields on every request, and a committed copy goes stale within a fortnight. For subforms it is because the testmotor files them per app, and the same subform can hold different files under different apps (see [ARCHITECTURE § External data sources](./ARCHITECTURE.md#5-external-data-sources)). To add or change one, change it on the testmotor's Azure file share instead.

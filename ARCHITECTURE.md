@@ -94,8 +94,6 @@ api/
 │   └── *.test.mjs
 └── data/
     ├── altinnStudioApps.mjs         # @arkitektum/ftpb-app-catalogue, spelled appOwner / appName
-    ├── subforms.mjs                 # Subform definitions + their layouts
-    ├── subforms/                    # One module per subform, re-exported by subforms.mjs
     ├── packageSources.mjs           # Which packages to look up latest versions for (npm / GitHub)
     └── exampleData/                 # Example XML the testmotor does not serve (one form, under forms/)
 ```
