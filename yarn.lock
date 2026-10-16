@@ -5,20 +5,20 @@ __metadata:
   version: 10
   cacheKey: 10c0
 
-"@arkitektum/altinn-studio-custom-components-utils@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:2.0.4"
-  checksum: 10c0/ad6e66857354a8b803cdf022b8aec2ac38f4908e12937217dfd169d6a8661c8c96cb2906b9a465236f548f98b66f82091c2bfdcd1a1a72b6a37e76af432cab96
+"@arkitektum/altinn-studio-custom-components-utils@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:2.0.5"
+  checksum: 10c0/68deb42419c606bb32f397da5a8d8f97044c8585fd44465c1cfa2208b7aa1a841bf38f39fd009e63c1ed80ea2c647ffc9ce81461627cdeaee5926698fe581974
   languageName: node
   linkType: hard
 
-"@arkitektum/altinn-studio-custom-components@npm:^17.7.0":
-  version: 17.7.0
-  resolution: "@arkitektum/altinn-studio-custom-components@npm:17.7.0"
+"@arkitektum/altinn-studio-custom-components@npm:^17.8.1":
+  version: 17.8.1
+  resolution: "@arkitektum/altinn-studio-custom-components@npm:17.8.1"
   dependencies:
-    "@arkitektum/altinn-studio-custom-components-utils": "npm:^2.0.4"
+    "@arkitektum/altinn-studio-custom-components-utils": "npm:^2.0.5"
     "@arkitektum/client-logger": "npm:^1.2.2"
-  checksum: 10c0/d1a1d579d46eb02b38906cd90887c90055a0cc2574044e3b6e873422415e30c36ee458453369606cce20d261ecbbaaa88b98b69e6662c30b34a33b2069d92a94
+  checksum: 10c0/acf55a629909be1234ea3458d901ab84eb777035a1062839edbae91a8fc4e870af0c6ee7b8febb97dbabb0b8ad1b891cce54a9178d2cd0c555afa259f2be4b69
   languageName: node
   linkType: hard
 
@@ -434,7 +434,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "altinn-studio-custom-components-api@workspace:."
   dependencies:
-    "@arkitektum/altinn-studio-custom-components": "npm:^17.7.0"
+    "@arkitektum/altinn-studio-custom-components": "npm:^17.8.1"
     "@arkitektum/ftpb-app-catalogue": "npm:^1.0.3"
     "@arkitektum/ftpb-testmotor-client": "npm:^1.2.2"
     "@eslint/js": "npm:^10.0.1"
@@ -2092,11 +2092,11 @@ __metadata:
   linkType: hard
 
 "node-abi@npm:^3.3.0":
-  version: 3.98.0
-  resolution: "node-abi@npm:3.98.0"
+  version: 3.99.0
+  resolution: "node-abi@npm:3.99.0"
   dependencies:
     semver: "npm:^7.3.5"
-  checksum: 10c0/94b869117c668b14b63ffc1d58ef805ddfa780b27a1a2b80033052b9451826b36ec70b6100345bf4971f3eba63ec03f38dcf098a42232a0c41434032594c1935
+  checksum: 10c0/feee68e3fdeb13f37c71348e5a8df46068d2bedf0b038c46893f32dae87bb81ce36d75a169915ca445c5db3a2d060777abc2d97c9eb00bd4addd5ec47e3800b7
   languageName: node
   linkType: hard
 
@@ -2895,9 +2895,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^8.4.1":
-  version: 8.12.1
-  resolution: "undici@npm:8.12.1"
-  checksum: 10c0/8ba448a30f85ec9bffe0065b45b471a578dbb56eafd4162741fd7be3b955672e98fabd7a4ab0703365d5ffc6f1927f4ed1c1221f678aa67af18fb7bc3dfe283b
+  version: 8.12.2
+  resolution: "undici@npm:8.12.2"
+  checksum: 10c0/25b0e0a69585b2b2e2678fdcd07942bbe15b14c6686d496712b0ee37ce15753af90ab7335ee42c8e65ec60b72bf3a21adc72bbabf86c1eaca74f27a3779532de
   languageName: node
   linkType: hard
 
