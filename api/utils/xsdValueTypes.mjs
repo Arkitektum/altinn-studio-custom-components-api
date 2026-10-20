@@ -64,52 +64,62 @@ function indexSchema(schemaNode) {
 }
 
 /**
- * Follows a simple type down to the built-in type it restricts, and says whether that is a number or a boolean.
+ * Follows a simple type down to the built-in type it restricts.
  *
- * A union or a list is text as far as the data model is concerned, and so is a type the schema names but does not
- * define here.
+ * A union or a list has no single built-in type, and a type the schema names but does not define here is answered by
+ * its own name.
  *
  * @param {string | undefined} typeName - A type name as written in the schema.
  * @param {ReturnType<typeof indexSchema>} index
  * @param {Set<string>} [seen] - Simple types already followed, so a restriction that refers back to itself ends.
- * @returns {"number" | "boolean" | undefined}
+ * @returns {string | undefined} The built-in type's name without its prefix, like `decimal`.
  */
-function builtInKind(typeName, index, seen = new Set()) {
+function builtInTypeName(typeName, index, seen = new Set()) {
     const name = localName(typeName);
     if (!name) return undefined;
     const simpleType = index.simpleTypes.get(name);
-    if (simpleType) {
-        if (seen.has(name)) return undefined;
-        seen.add(name);
-        return simpleTypeKind(simpleType, index, seen);
-    }
-    if (NUMERIC_TYPES.has(name)) return "number";
-    if (name === BOOLEAN_TYPE) return "boolean";
-    return undefined;
+    if (!simpleType) return name;
+    if (seen.has(name)) return undefined;
+    seen.add(name);
+    return simpleTypeBase(simpleType, index, seen);
 }
 
 /**
  * @param {Object} simpleType - A `simpleType` node, named or inline.
  * @param {ReturnType<typeof indexSchema>} index
- * @param {Set<string>} seen
- * @returns {"number" | "boolean" | undefined}
+ * @param {Set<string>} [seen]
+ * @returns {string | undefined}
  */
-function simpleTypeKind(simpleType, index, seen) {
-    return builtInKind(simpleType.restriction?.[0]?.base, index, seen);
+function simpleTypeBase(simpleType, index, seen = new Set()) {
+    return builtInTypeName(simpleType.restriction?.[0]?.base, index, seen);
 }
 
 /**
- * Collects the element declarations a complex type contributes, through its sequences, choices and groups, and through
- * the type it extends.
+ * Says whether a built-in type's values are held as numbers or booleans. Everything else is text.
+ *
+ * @param {string | undefined} builtInName - From `builtInTypeName`.
+ * @returns {"number" | "boolean" | undefined}
+ */
+function kindOf(builtInName) {
+    if (!builtInName) return undefined;
+    if (NUMERIC_TYPES.has(builtInName)) return "number";
+    if (builtInName === BOOLEAN_TYPE) return "boolean";
+    return undefined;
+}
+
+/**
+ * Collects the element and attribute declarations a complex type contributes, through its sequences, choices and
+ * groups, and through the type it extends.
  *
  * @param {Object} complexType - A `complexType` node, named or inline.
  * @param {ReturnType<typeof indexSchema>} index
- * @returns {{ childElements: Object[], valueKind: "number" | "boolean" | undefined }} The child element declarations,
- *   and for simple content (text with attributes), the kind of that text.
+ * @returns {{ childElements: Object[], attributes: Object[], valueType: string | undefined }} The child element and
+ *   attribute declarations, and for simple content (text with attributes), the built-in type of that text.
  */
 function complexTypeContent(complexType, index) {
     const childElements = [];
-    let valueKind;
+    const attributes = [...(complexType.attribute ?? [])];
+    let valueType;
 
     const collectParticles = (node) => {
         for (const particle of ["sequence", "choice", "all"]) {
@@ -127,18 +137,30 @@ function complexTypeContent(complexType, index) {
     if (derivation) {
         // A restriction restates the content it keeps, so only an extension inherits its base's elements.
         const base = complexContent.extension?.[0] && index.complexTypes.get(localName(derivation.base));
-        if (base) childElements.push(...complexTypeContent(base, index).childElements);
+        if (base) {
+            const baseContent = complexTypeContent(base, index);
+            childElements.push(...baseContent.childElements);
+            attributes.push(...baseContent.attributes);
+        }
         collectParticles(derivation);
+        attributes.push(...(derivation.attribute ?? []));
     }
 
     const simpleContent = complexType.simpleContent?.[0];
     const simpleDerivation = simpleContent?.extension?.[0] ?? simpleContent?.restriction?.[0];
     if (simpleDerivation?.base) {
         const baseComplexType = index.complexTypes.get(localName(simpleDerivation.base));
-        valueKind = baseComplexType ? complexTypeContent(baseComplexType, index).valueKind : builtInKind(simpleDerivation.base, index);
+        if (baseComplexType) {
+            const baseContent = complexTypeContent(baseComplexType, index);
+            valueType = baseContent.valueType;
+            if (simpleContent.extension?.[0]) attributes.push(...baseContent.attributes);
+        } else {
+            valueType = builtInTypeName(simpleDerivation.base, index);
+        }
     }
+    attributes.push(...(simpleDerivation?.attribute ?? []));
 
-    return { childElements, valueKind };
+    return { childElements, attributes, valueType };
 }
 
 /**
@@ -170,19 +192,110 @@ export function extractValueKinds(xsdContent) {
         if (complexType) {
             if (typeName && typesOnPath.has(typeName)) return;
             const nextTypesOnPath = typeName ? new Set(typesOnPath).add(typeName) : typesOnPath;
-            const { childElements, valueKind } = complexTypeContent(complexType, index);
+            const { childElements, valueType } = complexTypeContent(complexType, index);
+            const valueKind = kindOf(valueType);
             if (valueKind) kinds.set(path, valueKind);
             for (const child of childElements) visit(child, path, nextTypesOnPath);
             return;
         }
 
         const inlineSimpleType = declaration.simpleType?.[0];
-        const kind = inlineSimpleType ? simpleTypeKind(inlineSimpleType, index, new Set()) : builtInKind(declaration.type, index);
+        const kind = kindOf(inlineSimpleType ? simpleTypeBase(inlineSimpleType, index) : builtInTypeName(declaration.type, index));
         if (kind) kinds.set(path, kind);
     };
 
     for (const element of schemaNode.element ?? []) visit(element, "", new Set());
     return kinds;
+}
+
+/**
+ * @typedef {Object} XsdField
+ * @property {string} path - Dot-separated from below the root element, the way a layout's `dataModelBindings` name a
+ *   field. An attribute is named like an element, as Altinn's data model holds it.
+ * @property {"element" | "attribute"} node
+ * @property {string | null} type - The built-in XSD type the value is held as, after following simple types (`string`,
+ *   `decimal`). Null for an element that holds other elements, and for a union or a list.
+ * @property {number} minOccurs - 0 for an optional attribute, 1 for a required one.
+ * @property {number | "unbounded"} maxOccurs - Always 1 for an attribute.
+ * @property {string} [fixed] - The value the schema fixes, as Altinn's models do for `dataFormatVersion`.
+ */
+
+/**
+ * @param {string | undefined} value - A `minOccurs` or `maxOccurs` as written, absent meaning 1.
+ * @returns {number | "unbounded"}
+ */
+function occurs(value) {
+    return value === "unbounded" ? value : Number(value ?? "1");
+}
+
+/**
+ * Lists every field an Altinn app's data model declares, so two apps' copies of the same model can be compared field by
+ * field without ordering, annotations or formatting getting in the way.
+ *
+ * The root is the first top-level element, the one Altinn Studio generates; other top-level elements are only reached
+ * through references. A field's occurrence is read where it is used, so a reference can make an element repeat that
+ * does not repeat where it is declared. A type that contains itself is listed once per path and not followed further,
+ * as in `extractValueKinds`.
+ *
+ * @param {string} xsdContent - The XSD schema content as a string.
+ * @returns {{ rootElement: string | null, fields: XsdField[] }} The fields, parents before their children. The order
+ *   within a type is not the schema's (a nested choice comes after its siblings), so compare them by path.
+ */
+export function extractFields(xsdContent) {
+    const schemaNode = xsdParser.parse(xsdContent).schema?.[0];
+    const root = schemaNode?.element?.find((element) => element.name);
+    if (!root) return { rootElement: null, fields: [] };
+    const index = indexSchema(schemaNode);
+    const fields = [];
+    const join = (parentPath, name) => (parentPath ? `${parentPath}.${name}` : name);
+
+    const visitAttributes = (attributes, parentPath) => {
+        for (const attribute of attributes) {
+            if (!attribute.name) continue;
+            const inlineSimpleType = attribute.simpleType?.[0];
+            fields.push({
+                path: join(parentPath, attribute.name),
+                node: "attribute",
+                type: (inlineSimpleType ? simpleTypeBase(inlineSimpleType, index) : builtInTypeName(attribute.type, index)) ?? null,
+                minOccurs: attribute.use === "required" ? 1 : 0,
+                maxOccurs: 1,
+                ...(attribute.fixed === undefined ? {} : { fixed: attribute.fixed })
+            });
+        }
+    };
+
+    const visitContent = (declaration, path, typesOnPath) => {
+        const typeName = localName(declaration.type);
+        const complexType = declaration.complexType?.[0] ?? (typeName && index.complexTypes.get(typeName));
+        if (complexType) {
+            if (typeName && typesOnPath.has(typeName)) return null;
+            const nextTypesOnPath = typeName ? new Set(typesOnPath).add(typeName) : typesOnPath;
+            const { childElements, attributes, valueType } = complexTypeContent(complexType, index);
+            visitAttributes(attributes, path);
+            for (const child of childElements) visitElement(child, path, nextTypesOnPath);
+            return valueType ?? null;
+        }
+        const inlineSimpleType = declaration.simpleType?.[0];
+        return (inlineSimpleType ? simpleTypeBase(inlineSimpleType, index) : builtInTypeName(declaration.type, index)) ?? null;
+    };
+
+    const visitElement = (element, parentPath, typesOnPath) => {
+        const declaration = element.ref ? index.elements.get(localName(element.ref)) : element;
+        if (!declaration?.name) return;
+        const field = {
+            path: join(parentPath, declaration.name),
+            node: "element",
+            type: null,
+            minOccurs: Number(element.minOccurs ?? "1"),
+            maxOccurs: occurs(element.maxOccurs),
+            ...(declaration.fixed === undefined ? {} : { fixed: declaration.fixed })
+        };
+        fields.push(field);
+        field.type = visitContent(declaration, field.path, typesOnPath);
+    };
+
+    visitContent(root, "", new Set());
+    return { rootElement: root.name, fields };
 }
 
 /**

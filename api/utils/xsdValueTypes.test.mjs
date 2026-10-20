@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { extractValueKinds, typedValue } from "./xsdValueTypes.mjs";
+import { extractFields, extractValueKinds, typedValue } from "./xsdValueTypes.mjs";
 
 /**
  * Shaped like the schemas Altinn Studio generates: one root element typed by a named complex type, the rest declared
@@ -175,4 +175,174 @@ test("reads all four spellings of an XSD boolean", () => {
 test("leaves text as text", () => {
     assert.equal(typedValue("0301", undefined), "0301");
     assert.equal(typedValue("+4722334455", undefined), "+4722334455");
+});
+
+/**
+ * @param {string} xsd
+ * @returns {Map<string, Object>} The fields `extractFields` finds, by path.
+ */
+function fieldsByPath(xsd) {
+    return new Map(extractFields(xsd).fields.map((field) => [field.path, field]));
+}
+
+test("lists fields from below the root element, the way a layout binds them", () => {
+    const { rootElement, fields } = extractFields(XSD);
+
+    assert.equal(rootElement, "Soeknad");
+    assert.deepEqual(
+        fields
+            .filter((field) => !field.path.includes("."))
+            .map((field) => field.path)
+            .sort(),
+        ["ansvarligSoeker", "antallEtasjer", "arealBYA", "beloep", "eiendom", "erTiltakshaver", "fraSluttbrukersystem", "merknad", "tiltakshaver"]
+    );
+    // merknad is a top-level element too, but only reached through the reference.
+    assert.equal(fields.filter((field) => field.path === "merknad").length, 1);
+});
+
+test("names each field's built-in type after following simple types, and none for a group", () => {
+    const fields = fieldsByPath(XSD);
+
+    assert.equal(fields.get("fraSluttbrukersystem").type, "string");
+    assert.equal(fields.get("eiendom.gaardsnummer").type, "integer");
+    assert.equal(fields.get("eiendom.postnr").type, "string");
+    assert.equal(fields.get("arealBYA").type, "decimal");
+    assert.equal(fields.get("antallEtasjer").type, "int");
+    assert.equal(fields.get("merknad").type, "decimal");
+    assert.equal(fields.get("beloep").type, "decimal");
+    assert.equal(fields.get("eiendom").type, null);
+});
+
+test("reads how often a field occurs where it is used, absent meaning once", () => {
+    const fields = fieldsByPath(XSD);
+
+    assert.deepEqual([fields.get("eiendom").minOccurs, fields.get("eiendom").maxOccurs], [0, "unbounded"]);
+    assert.deepEqual([fields.get("fraSluttbrukersystem").minOccurs, fields.get("fraSluttbrukersystem").maxOccurs], [1, 1]);
+    assert.deepEqual([fields.get("merknad").minOccurs, fields.get("merknad").maxOccurs], [0, 1]);
+    assert.equal(fields.get("tiltakshaver.telefonnummer").minOccurs, 0);
+});
+
+test("gives a named complex type's fields a path under every element that uses it, inherited ones included", () => {
+    const xsd = XSD.replace(
+        '<xsd:element name="tiltakshaver" type="tns:PartType" />',
+        '<xsd:element name="tiltakshaver" type="tns:UtvidetPartType" />'
+    );
+    const fields = fieldsByPath(xsd);
+
+    assert.equal(fields.get("tiltakshaver.erPrivatperson").type, "boolean");
+    assert.equal(fields.get("tiltakshaver.navn").type, "string");
+    assert.equal(fields.has("ansvarligSoeker.erPrivatperson"), false);
+    assert.equal(fields.get("eiendom.eier.antallAnsatte").type, "nonNegativeInteger");
+});
+
+test("lists attributes as fields, with whether they are required and the value the schema fixes", () => {
+    const xsd = `<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="Skjema" type="SkjemaType" />
+    <xs:complexType name="SkjemaType">
+        <xs:sequence>
+            <xs:element name="beloep" type="BeloepType" />
+        </xs:sequence>
+        <xs:attribute name="dataFormatVersion" type="xs:string" use="required" fixed="47365" />
+        <xs:attribute name="kilde">
+            <xs:simpleType><xs:restriction base="xs:int" /></xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="BeloepType">
+        <xs:simpleContent>
+            <xs:extension base="xs:decimal">
+                <xs:attribute name="valuta" type="xs:string" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>`;
+    const fields = fieldsByPath(xsd);
+
+    assert.deepEqual(fields.get("dataFormatVersion"), {
+        path: "dataFormatVersion",
+        node: "attribute",
+        type: "string",
+        minOccurs: 1,
+        maxOccurs: 1,
+        fixed: "47365"
+    });
+    assert.deepEqual(fields.get("kilde"), { path: "kilde", node: "attribute", type: "int", minOccurs: 0, maxOccurs: 1 });
+    assert.equal(fields.get("beloep.valuta").node, "attribute");
+    assert.equal(fields.get("beloep").type, "decimal");
+});
+
+test("inherits the attributes of the type it extends", () => {
+    const xsd = `<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="rot" type="UtvidetType" />
+    <xs:complexType name="BaseType">
+        <xs:sequence><xs:element name="navn" type="xs:string" /></xs:sequence>
+        <xs:attribute name="id" type="xs:string" />
+    </xs:complexType>
+    <xs:complexType name="UtvidetType">
+        <xs:complexContent>
+            <xs:extension base="BaseType">
+                <xs:attribute name="versjon" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>`;
+
+    assert.deepEqual([...fieldsByPath(xsd).keys()].sort(), ["id", "navn", "versjon"]);
+});
+
+test("lists a type that contains itself once per path rather than recursing forever", () => {
+    const xsd = `<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="rot" type="NodeType" />
+    <xs:complexType name="NodeType">
+        <xs:sequence>
+            <xs:element name="verdi" type="xs:int" />
+            <xs:element name="barn" type="NodeType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>`;
+
+    assert.deepEqual(
+        extractFields(xsd).fields.map((field) => field.path),
+        ["verdi", "barn"]
+    );
+});
+
+test("answers no root and no fields for something that is not a schema", () => {
+    assert.deepEqual(extractFields("<ikke-et-skjema />"), { rootElement: null, fields: [] });
+});
+
+test("follows simple content through a complex type it extends, keeping that type's attributes", () => {
+    const xsd = `<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="rot">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="beloep" type="NokType" />
+                <xs:element name="skjemaversjon" type="xs:string" fixed="2.0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="BeloepType">
+        <xs:simpleContent>
+            <xs:extension base="xs:decimal">
+                <xs:attribute name="valuta" type="xs:string" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="NokType">
+        <xs:simpleContent>
+            <xs:extension base="BeloepType">
+                <xs:attribute name="avrundet" type="xs:boolean" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>`;
+    const fields = fieldsByPath(xsd);
+
+    assert.equal(fields.get("beloep").type, "decimal");
+    assert.equal(extractValueKinds(xsd).get("rot.beloep"), "number");
+    assert.deepEqual([...fields.keys()].sort(), ["beloep", "beloep.avrundet", "beloep.valuta", "skjemaversjon"]);
+    assert.equal(fields.get("skjemaversjon").fixed, "2.0");
 });
