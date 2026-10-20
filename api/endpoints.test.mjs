@@ -141,6 +141,29 @@ describe("the routes that fan out to Altinn Studio", () => {
             "and each one reads as unresolved"
         );
     });
+
+    it("answers every app's copy of each subform's model, read from that app's repository", async () => {
+        const urls = stubUpstreams((url) =>
+            url.endsWith(".xsd")
+                ? `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:element name="Subform" type="xs:string" /></xs:schema>`
+                : null
+        );
+
+        const { status, body } = await call("/api/subformDataModels");
+
+        assert.equal(status, 200);
+        const declared = altinnStudioApps.flatMap((app) => (app.subForms ?? []).map((subForm) => `${app.appName} ${subForm.dataType}`));
+        assert.ok(declared.length > 0, "expected the catalogue to declare at least one subform");
+        assert.deepEqual(body.flatMap((entry) => entry.copies.map((copy) => `${copy.appName} ${entry.dataType}`)).sort(), [...declared].sort());
+        assert.ok(
+            body.every((entry) => entry.copies.every((copy) => copy.error === null && copy.rootElement === "Subform")),
+            "every copy was read"
+        );
+        assert.ok(
+            urls.every((url) => url.includes("/App/models/")),
+            "only models were fetched"
+        );
+    });
 });
 
 describe("the language a caller asks for", () => {

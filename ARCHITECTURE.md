@@ -54,6 +54,7 @@ All routes are `GET` under `/api` and return JSON. They are registered in `api/a
 | `/api/altinnStudioForms`     | The configured list of tracked Altinn apps / forms.                                                                                                                                           |
 | `/api/exampleData`           | Example form + subform data, converted from XML to JSON. One entry per tracked app and one per subform each app declares. An entry carries an `error` when its examples could not be fetched. |
 | `/api/applicationMetadata`   | `applicationmetadata.json` for the tracked apps.                                                                                                                                              |
+| `/api/subformDataModels`     | Each app's copy of every subform's model (`App/models/<dataType>.xsd`), read into fields. A copy carries an `error` when its schema could not be read or parsed.                              |
 | `/api/diagnostics`           | What the data endpoints above last ran into — counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches.                                               |
 
 The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`), bound to `API_HOST` (default `127.0.0.1`).

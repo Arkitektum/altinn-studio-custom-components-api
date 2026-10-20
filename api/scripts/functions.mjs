@@ -14,6 +14,7 @@ import { fetchTestmotorApps, fetchTestmotorFormXml, fetchTestmotorSubformXml } f
 import { isTransientError, isTransientStatus, noteTransientFailure } from "../utils/cache.mjs";
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
+import { extractFields } from "../utils/xsdValueTypes.mjs";
 import { log } from "../utils/logger.mjs";
 import { requestTimeoutMs } from "../utils/settings.mjs";
 import { stripJsonComments } from "../utils/stripJsonComments.mjs";
@@ -679,6 +680,87 @@ export async function getApplicationMetadata() {
 
     const metadataArray = await Promise.all(metadataPromises);
     return metadataArray.filter((metadata) => metadata !== null);
+}
+
+/**
+ * @typedef {Object} SubformDataModelCopy
+ * @property {string} appOwner - The app holding this copy of the subform's model.
+ * @property {string} appName - As above.
+ * @property {string|null} error - Why `fields` is empty: the schema could not be read or parsed. The dashboard has to
+ *   tell "this app holds no model" from "this app's model declares nothing".
+ * @property {string|null} rootElement - The schema's root element.
+ * @property {import("../utils/xsdValueTypes.mjs").XsdField[]} fields - As `extractFields` reads them.
+ */
+
+/**
+ * @typedef {Object} SubformDataModels
+ * @property {string} dataType - The subform's data type.
+ * @property {SubformDataModelCopy[]} copies - One per app declaring the subform, in catalogue order.
+ */
+
+/**
+ * Reads one app's copy of a subform's model. Nothing thrown escapes: a copy that cannot be read is answered with the
+ * reason, so one app cannot cost the others theirs.
+ *
+ * @async
+ * @param {string} appOwner
+ * @param {string} appName
+ * @param {string} dataType
+ * @returns {Promise<SubformDataModelCopy>}
+ */
+async function subformDataModelCopy(appOwner, appName, dataType) {
+    const scope = `${appOwner}/${appName}`;
+    const filePath = xmlSchemaFilePath(dataType);
+    const failed = (error) => {
+        log.error({ scope, category: "Subform data model not read", message: filePath, detail: error });
+        return { appOwner, appName, error, rootElement: null, fields: [] };
+    };
+    let xmlSchema;
+    try {
+        xmlSchema = await fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType);
+    } catch (error) {
+        return failed(`${filePath} could not be fetched from Altinn Studio (${error.message}).`);
+    }
+    if (!xmlSchema) {
+        return failed(`${filePath} could not be read from Altinn Studio.`);
+    }
+    let parsed;
+    try {
+        parsed = extractFields(xmlSchema);
+    } catch (error) {
+        return failed(`${filePath} could not be parsed as a schema (${error.message}).`);
+    }
+    if (!parsed.rootElement) {
+        return failed(`${filePath} declares no root element, so it could not be read as a schema.`);
+    }
+    log.ok({ scope, category: "Subform data model", message: dataType });
+    return { appOwner, appName, error: null, ...parsed };
+}
+
+/**
+ * Every app's copy of each subform's data model, so the dashboard can show where the copies have drifted apart.
+ *
+ * A subform's model is saved in each app that carries it, at `App/models/<dataType>.xsd` in that app's repository.
+ * There is no master copy to read instead: the subform app names in the catalogue are not repositories of their own.
+ *
+ * @async
+ * @returns {Promise<SubformDataModels[]>} One entry per subform data type, in the order the catalogue first declares
+ *   each.
+ */
+export async function getSubformDataModels() {
+    const declarers = new Map();
+    for (const { appOwner, appName, subForms } of altinnStudioApps) {
+        for (const { dataType } of subForms ?? []) {
+            if (!declarers.has(dataType)) declarers.set(dataType, []);
+            declarers.get(dataType).push({ appOwner, appName });
+        }
+    }
+    return Promise.all(
+        [...declarers].map(async ([dataType, apps]) => ({
+            dataType,
+            copies: await Promise.all(apps.map(({ appOwner, appName }) => subformDataModelCopy(appOwner, appName, dataType)))
+        }))
+    );
 }
 
 /**

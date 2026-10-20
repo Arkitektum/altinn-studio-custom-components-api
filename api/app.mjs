@@ -14,6 +14,7 @@ import {
     getJsonExampleData,
     getLatestPackageVersions,
     getPackageVersions,
+    getSubformDataModels,
     supportedResourceLanguage
 } from "./scripts/functions.mjs";
 import { getDiagnostics, withRunLog } from "./utils/logger.mjs";
@@ -43,6 +44,7 @@ export function createApp() {
     const cachedGetAppResourceValues = createCachedFunction(getAppResourceValues, { ttlMs: cacheTtlMs });
     const cachedGetApplicationMetadata = createCachedFunction(getApplicationMetadata, { ttlMs: cacheTtlMs });
     const cachedGetJsonExampleData = createCachedFunction(getJsonExampleData, { ttlMs: cacheTtlMs });
+    const cachedGetSubformDataModels = createCachedFunction(getSubformDataModels, { ttlMs: cacheTtlMs });
 
     // Warn loudly at startup if the Gitea token is missing — every Altinn Studio fetch depends on it.
     if (!process.env.GITEA_TOKEN || !process.env.GITEA_TOKEN.trim()) {
@@ -140,6 +142,12 @@ export function createApp() {
         runLog: "Application metadata",
         failure: "Failed to fetch application metadata",
         get: () => cachedGetApplicationMetadata()
+    });
+
+    jsonEndpoint("/api/subformDataModels", {
+        runLog: "Subform data models",
+        failure: "Failed to fetch subform data models",
+        get: () => cachedGetSubformDataModels()
     });
 
     // Reports what the data endpoints last ran into. Nothing fetches this yet — the Statistics dashboard does not call it,

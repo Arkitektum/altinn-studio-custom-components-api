@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { getAppResourceValues, getJsonExampleData, getLatestPackageVersions, supportedResourceLanguage } from "./functions.mjs";
+import { getAppResourceValues, getJsonExampleData, getLatestPackageVersions, getSubformDataModels, supportedResourceLanguage } from "./functions.mjs";
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
 import { clearTestmotorCache } from "../utils/testmotorClient.mjs";
 import { createCachedFunction } from "../utils/cache.mjs";
@@ -784,4 +784,143 @@ test("answers in catalogue order, each app's subforms after its main form, and e
         result.map((entry) => `${entry.appOwner}/${entry.appName}:${entry.dataType}`),
         expected
     );
+});
+
+/**
+ * A minimal Altinn-shaped model whose one field is named after the app holding it, so a test can tell whose copy it got.
+ *
+ * @param {string} fieldName
+ * @returns {string}
+ */
+function subformXsd(fieldName) {
+    return `<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="Subform">
+        <xs:complexType>
+            <xs:sequence><xs:element name="${fieldName}" type="xs:string" /></xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>`;
+}
+
+/**
+ * @param {string} url - A Gitea raw URL.
+ * @returns {{appName: string, fileName: string} | null}
+ */
+function modelRequest(url) {
+    const match = url.match(/\/repos\/[^/]+\/([^/]+)\/raw\/branch\/[^/]+\/App\/models\/([^/]+)\.xsd$/);
+    return match ? { appName: match[1], dataType: match[2] } : null;
+}
+
+/** The apps the catalogue says declare each subform data type, in the order it first declares each. */
+function catalogueSubformDeclarers() {
+    const declarers = new Map();
+    for (const app of altinnStudioApps) {
+        for (const { dataType } of app.subForms ?? []) {
+            declarers.set(dataType, [...(declarers.get(dataType) ?? []), app.appName]);
+        }
+    }
+    return declarers;
+}
+
+test("answers each subform data type once, with a copy from every app declaring it, in catalogue order", async () => {
+    stubFetch((url) => {
+        const request = modelRequest(url);
+        return request ? subformXsd(`felt_${request.appName}`) : null;
+    });
+
+    const result = await getSubformDataModels();
+
+    const declarers = catalogueSubformDeclarers();
+    assert.ok(
+        [...declarers.values()].some((apps) => apps.length > 1),
+        "expected the catalogue to share at least one subform"
+    );
+    assert.deepEqual(
+        result.map((entry) => [entry.dataType, entry.copies.map((copy) => copy.appName)]),
+        [...declarers]
+    );
+    for (const entry of result) {
+        for (const copy of entry.copies) {
+            assert.equal(copy.error, null);
+            assert.equal(copy.rootElement, "Subform");
+            assert.deepEqual(
+                copy.fields.map((field) => field.path),
+                [`felt_${copy.appName}`],
+                `${copy.appName} was answered with another app's copy`
+            );
+        }
+    }
+});
+
+test("reads each copy from the app holding it, once, by the subform's data type", async () => {
+    const requested = [];
+    stubFetch((url) => {
+        const request = modelRequest(url);
+        if (request) requested.push(`${request.appName} ${request.dataType}`);
+        return request ? subformXsd("felt") : null;
+    });
+
+    await getSubformDataModels();
+
+    const expected = [...catalogueSubformDeclarers()].flatMap(([dataType, apps]) => apps.map((appName) => `${appName} ${dataType}`));
+    assert.deepEqual([...requested].sort(), [...expected].sort());
+});
+
+test("carries the reason on a copy that could not be read, and keeps the other copies", async () => {
+    const [dataType, [missingApp, keptApp]] = [...catalogueSubformDeclarers()].find(([, apps]) => apps.length > 1);
+    stubFetch((url) => {
+        const request = modelRequest(url);
+        if (!request || request.appName === missingApp) return null;
+        return subformXsd("felt");
+    });
+
+    const entry = (await getSubformDataModels()).find((candidate) => candidate.dataType === dataType);
+    const missing = entry.copies.find((copy) => copy.appName === missingApp);
+    const kept = entry.copies.find((copy) => copy.appName === keptApp);
+
+    assert.deepEqual(missing, {
+        appOwner: "dibk",
+        appName: missingApp,
+        error: `App/models/${dataType}.xsd could not be read from Altinn Studio.`,
+        rootElement: null,
+        fields: []
+    });
+    assert.equal(kept.error, null);
+    assert.equal(kept.fields.length, 1);
+});
+
+test("tells a schema that is not one apart from one that could not be read", async () => {
+    const [dataType, [loginPageApp, brokenApp]] = [...catalogueSubformDeclarers()].find(([, apps]) => apps.length > 1);
+    stubFetch((url) => {
+        const request = modelRequest(url);
+        if (!request) return null;
+        if (request.appName === loginPageApp) return "<html><body>Logg inn</body></html>";
+        if (request.appName === brokenApp) return "<xs:schema";
+        return subformXsd("felt");
+    });
+
+    const entry = (await getSubformDataModels()).find((candidate) => candidate.dataType === dataType);
+    const copyFor = (appName) => entry.copies.find((copy) => copy.appName === appName);
+
+    assert.equal(copyFor(loginPageApp).error, `App/models/${dataType}.xsd declares no root element, so it could not be read as a schema.`);
+    assert.match(copyFor(brokenApp).error, new RegExp(`^App/models/${dataType}\\.xsd could not be parsed as a schema \\(.+\\)\\.$`));
+    assert.deepEqual(copyFor(brokenApp).fields, []);
+});
+
+test("carries the reason on a copy whose request failed outright, and keeps the other copies", async () => {
+    const [dataType, [failingApp, keptApp]] = [...catalogueSubformDeclarers()].find(([, apps]) => apps.length > 1);
+    globalThis.fetch = async (url) => {
+        const request = modelRequest(String(url));
+        if (request?.appName === failingApp) return { ok: false, status: 500, text: async () => "" };
+        return { ok: true, status: 200, text: async () => subformXsd("felt") };
+    };
+
+    const entry = (await getSubformDataModels()).find((candidate) => candidate.dataType === dataType);
+
+    assert.match(
+        entry.copies.find((copy) => copy.appName === failingApp).error,
+        new RegExp(`^App/models/${dataType}\\.xsd could not be fetched from Altinn Studio \\(.*status 500.*\\)\\.$`)
+    );
+    assert.equal(entry.copies.find((copy) => copy.appName === keptApp).error, null);
 });
