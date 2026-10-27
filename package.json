@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "@arkitektum/altinn-studio-custom-components": "^17.9.2",
-        "@arkitektum/ftpb-app-catalogue": "^1.0.4",
+        "@arkitektum/ftpb-app-catalogue": "^1.0.5",
         "@arkitektum/ftpb-testmotor-client": "^1.2.2",
         "cors": "^2.8.6",
         "dotenv": "^18.0.9",
