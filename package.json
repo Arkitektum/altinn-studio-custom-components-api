@@ -21,7 +21,7 @@
         "prettier": "^3.9.10"
     },
     "dependencies": {
-        "@arkitektum/altinn-studio-custom-components": "^17.8.1",
+        "@arkitektum/altinn-studio-custom-components": "^17.9.2",
         "@arkitektum/ftpb-app-catalogue": "^1.0.4",
         "@arkitektum/ftpb-testmotor-client": "^1.2.2",
         "cors": "^2.8.6",
