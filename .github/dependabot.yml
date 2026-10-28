@@ -1,0 +1,13 @@
+# Keeps the SHA-pinned actions in the workflows current. Each pin carries its version as a comment, which Dependabot
+# reads and updates along with the SHA. Only actions on purpose: npm dependencies are updated by hand.
+version: 2
+updates:
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly
+      # One pull request for all action updates rather than one per action.
+      groups:
+          github-actions:
+              patterns:
+                  - "*"
