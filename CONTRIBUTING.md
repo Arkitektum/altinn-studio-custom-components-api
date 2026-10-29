@@ -49,8 +49,8 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 
     To generate a Gitea token:
     - Go to <https://altinn.studio/repos/user/settings/applications>
-    - Create a token with the **`read:repository`** scope
-    - Put it in `.env` as `GITEA_TOKEN` (replacing `your_token_here`)
+    - Create a token with the **`read:repository`** scope and an expiry date
+    - Put it in `.env` as `GITEA_TOKEN` (replacing `your_token_here`), or keep the file outside the project as the README describes under "Keeping the token out of the project folder"
 
     > ⚠️ `.env` is git-ignored. Never commit tokens or secrets.
 

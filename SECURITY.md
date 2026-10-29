@@ -36,7 +36,7 @@ A few properties are relevant when assessing security:
 
 - **Gitea token.**
   The API reads files from Altinn Studio's Gitea using a `GITEA_TOKEN` (a `read:repository` scoped token).
-  It is read from a git-ignored `.env` file and sent only to `https://altinn.studio`.
+  It is read from a git-ignored `.env` file, or from the file `DOTENV_PATH` names outside the project (see the README), and sent only to `https://altinn.studio`.
   Never commit the token, and prefer a least-privilege (read-only) scope.
 - **Not for public deployment.**
   There is no authentication on the endpoints, and CORS only keeps other origins' browsers out: it allows `CLIENT_ORIGIN`

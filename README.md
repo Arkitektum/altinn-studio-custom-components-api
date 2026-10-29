@@ -36,9 +36,19 @@ cp .env.sample .env
 
 See `.env.sample` for the rest.
 
-Generate a Gitea token at <https://altinn.studio/repos/user/settings/applications> with the **`read:repository`** scope, then put it in `.env` (replacing `your_token_here`).
+Generate a Gitea token at <https://altinn.studio/repos/user/settings/applications> with the **`read:repository`** scope and an expiry date, then put it in `.env` (replacing `your_token_here`).
 
 > ⚠️ `.env` is git-ignored. Never commit tokens or secrets.
+
+#### Keeping the token out of the project folder
+
+`.env` is read from the project folder by default, which leaves the token next to the code. It can live anywhere else instead, for example `~/.env/altinn-studio-custom-components-api`, with `DOTENV_PATH` pointing at it when the API starts:
+
+```bash
+DOTENV_PATH="$HOME/.env/altinn-studio-custom-components-api" yarn start
+```
+
+Every entry point loads its settings through `dotenv/config`, which reads `DOTENV_PATH`, so nothing else needs to change. While it is set, only that file is read and a `.env` in the project is ignored. Set it per command or per project (an alias, or a tool such as direnv) rather than exporting it from your shell profile: every project that loads its settings with dotenv reads the same variable, and would load this file too.
 
 ### 3. Run
 
