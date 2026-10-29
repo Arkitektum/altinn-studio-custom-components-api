@@ -3,7 +3,7 @@ import { XMLParser } from "fast-xml-parser";
 import { createRequire } from "node:module";
 
 // Utils
-import { extractValueKinds, typedValue } from "./xsdValueTypes.mjs";
+import { externalSchemaReferences, extractValueKinds, typedValue } from "./xsdValueTypes.mjs";
 
 /**
  * libxmljs2, loaded the first time XML is actually handled rather than when this module is imported.
@@ -74,9 +74,14 @@ function extractArrayPaths(xsdDoc) {
  *
  * @param {string} xsdContent - The XSD schema content as a string.
  * @returns {CompiledXmlSchema} The schema, ready to validate against.
- * @throws {Error} If the XSD itself cannot be parsed.
+ * @throws {Error} If the XSD itself cannot be parsed, or refers to other schema files.
  */
 export function compileXmlSchema(xsdContent) {
+    // Checked before libxml sees the schema at all: compiling it would read every file it refers to.
+    const references = externalSchemaReferences(xsdContent);
+    if (references.length > 0) {
+        throw new Error(`it refers to other schema files (${references.join(", ")}), which are not read`);
+    }
     const document = libxml().parseXml(xsdContent);
     return { document, arrayPaths: [...extractArrayPaths(document)], valueKinds: extractValueKinds(xsdContent) };
 }

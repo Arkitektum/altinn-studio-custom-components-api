@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { extractFields, extractValueKinds, typedValue } from "./xsdValueTypes.mjs";
+import { externalSchemaReferences, extractFields, extractValueKinds, typedValue } from "./xsdValueTypes.mjs";
 
 /**
  * Shaped like the schemas Altinn Studio generates: one root element typed by a named complex type, the rest declared
@@ -345,4 +345,28 @@ test("follows simple content through a complex type it extends, keeping that typ
     assert.equal(extractValueKinds(xsd).get("rot.beloep"), "number");
     assert.deepEqual([...fields.keys()].sort(), ["beloep", "beloep.avrundet", "beloep.valuta", "skjemaversjon"]);
     assert.equal(fields.get("skjemaversjon").fixed, "2.0");
+});
+
+test("finds no schema references in a self-contained schema, as Altinn Studio generates them", () => {
+    assert.deepEqual(externalSchemaReferences(XSD), []);
+});
+
+test("lists every schema the XSD pulls in, whatever the prefix and however deep", () => {
+    const xsd = `<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:other="urn:other">
+    <xs:include schemaLocation="/etc/passwd" />
+    <xs:import namespace="urn:other" schemaLocation="https://example.test/other.xsd" />
+    <xs:import namespace="urn:no-location" />
+    <xs:redefine schemaLocation="/dev/stdin"><xs:simpleType name="T"><xs:restriction base="xs:string" /></xs:simpleType></xs:redefine>
+    <xs:override schemaLocation="base.xsd" />
+    <xs:element name="root" type="xs:string" />
+</xs:schema>`;
+
+    // An import that names only a namespace reads nothing, so it is not listed.
+    assert.deepEqual(externalSchemaReferences(xsd), ["/etc/passwd", "https://example.test/other.xsd", "/dev/stdin", "base.xsd"]);
+});
+
+test("finds a reference written without a prefix", () => {
+    const xsd = `<schema xmlns="http://www.w3.org/2001/XMLSchema"><include schemaLocation="local.xsd" /></schema>`;
+    assert.deepEqual(externalSchemaReferences(xsd), ["local.xsd"]);
 });

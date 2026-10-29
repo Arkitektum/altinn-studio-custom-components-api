@@ -163,6 +163,41 @@ function complexTypeContent(complexType, index) {
     return { childElements, attributes, valueType };
 }
 
+/** The XSD elements that pull in another schema file by its `schemaLocation`. */
+const SCHEMA_REFERENCE_ELEMENTS = new Set(["include", "import", "redefine", "override"]);
+
+/**
+ * Lists the other schema files an XSD pulls in through `include`, `import`, `redefine` or `override`.
+ *
+ * libxml2 reads each of those when the schema is compiled for validation, from wherever `schemaLocation` points,
+ * including a path on this machine, and it reads them with entity substitution on. A schema from a repository could
+ * therefore read local files, or hang the whole server on a blocking one such as `/dev/stdin`. The data models Altinn
+ * Studio generates are self-contained, so any reference at all is a reason not to compile the schema.
+ *
+ * @param {string} xsdContent - The XSD schema content as a string.
+ * @returns {string[]} The `schemaLocation` of every reference, in document order. Empty for a self-contained schema.
+ */
+export function externalSchemaReferences(xsdContent) {
+    const locations = [];
+    const visit = (node) => {
+        if (Array.isArray(node)) {
+            node.forEach(visit);
+            return;
+        }
+        if (node === null || typeof node !== "object") return;
+        for (const [key, value] of Object.entries(node)) {
+            if (SCHEMA_REFERENCE_ELEMENTS.has(key)) {
+                for (const reference of value) {
+                    if (typeof reference?.schemaLocation === "string") locations.push(reference.schemaLocation);
+                }
+            }
+            visit(value);
+        }
+    };
+    visit(xsdParser.parse(xsdContent));
+    return locations;
+}
+
 /**
  * Reads, from an XSD, which element paths an Altinn app's data model holds as numbers or booleans.
  *

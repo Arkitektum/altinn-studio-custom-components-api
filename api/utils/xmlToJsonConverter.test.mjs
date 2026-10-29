@@ -143,6 +143,14 @@ test("throws rather than returning half a document when the XML is malformed", (
     assert.throws(() => convertXmlToJson("<skjema><tittel>ikke lukket", schema));
 });
 
+// Compiling a schema reads every file it refers to, and /dev/stdin would block the server for good. The check runs
+// before libxml is even loaded, which is also why this test runs where the native addon cannot.
+test("refuses a schema that refers to other schema files, naming them", () => {
+    const xsd = `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:include schemaLocation="/dev/stdin" /></xs:schema>`;
+
+    assert.throws(() => compileXmlSchema(xsd), /other schema files \(\/dev\/stdin\)/);
+});
+
 test("throws when the schema itself is not a schema", () => {
     assert.throws(() => compileXmlSchema("this is not a schema"));
 });
