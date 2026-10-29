@@ -8,6 +8,7 @@ import altinnStudioApps from "../data/altinnStudioApps.mjs";
 import packageSources from "../data/packageSources.mjs";
 
 // Utils
+import { BodyTooLargeError, readBoundedJson, readBoundedText } from "../utils/boundedBody.mjs";
 import { compileXmlSchema, convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { exampleDataDir, readExampleFilesFromDisk } from "../utils/exampleFiles.mjs";
 import { fetchTestmotorApps, fetchTestmotorFormXml, fetchTestmotorSubformXml } from "../utils/testmotorClient.mjs";
@@ -64,7 +65,7 @@ async function fetchLatestVersionFromNpm(packageName) {
             if (isTransientStatus(response.status)) noteTransientFailure();
             return null;
         }
-        const data = await response.json();
+        const data = await readBoundedJson(response);
         return data.version ?? null;
     } catch (error) {
         if (isTransientError(error)) noteTransientFailure();
@@ -89,7 +90,7 @@ async function fetchLatestVersionFromGithub(repo) {
             if (isTransientStatus(response.status)) noteTransientFailure();
             return null;
         }
-        const data = await response.json();
+        const data = await readBoundedJson(response);
         return data.tag_name?.replace(/^v/, "") ?? null;
     } catch (error) {
         if (isTransientError(error)) noteTransientFailure();
@@ -176,7 +177,7 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
                 // The status stays in it because the catch below reads a 5xx or a 429 from it as a transient failure.
                 throw new Error(`Failed to fetch ${filePath} (status ${response.status}) from ${url}`);
             }
-            let content = await response.text();
+            let content = await readBoundedText(response);
 
             // If it's a JSON file, strip comments to prevent JSON.parse() failures
             if (filePath.toLowerCase().endsWith(".json")) {
@@ -193,6 +194,9 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
         // The abort says only "The operation was aborted due to timeout", and the caller reports the message without the url.
         if (error?.name === "TimeoutError") {
             throw new Error(`${filePath} was not answered within ${timeoutMs} ms by ${url}`, { cause: error });
+        }
+        if (error instanceof BodyTooLargeError) {
+            throw new Error(`${filePath} from ${url}: ${error.message}`, { cause: error });
         }
         throw error;
     }

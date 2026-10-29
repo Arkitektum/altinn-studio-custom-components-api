@@ -102,6 +102,29 @@ test("keeps the languages that parse when one resource file has no resources arr
     assert.deepEqual(result[0].resourceValues, [{ id: "a", values: { nn: "nynorsk" } }]);
 });
 
+test("does not read a resource file Altinn Studio says is larger than the limit, and keeps the other language", async () => {
+    let oversizedRead = false;
+    globalThis.fetch = async (url) => {
+        if (String(url).includes("resource.nb.json")) {
+            return {
+                ok: true,
+                status: 200,
+                headers: new Headers({ "content-length": String(21 * 1024 * 1024) }),
+                text: async () => {
+                    oversizedRead = true;
+                    return "{}";
+                }
+            };
+        }
+        return { ok: true, status: 200, text: async () => JSON.stringify({ resources: [{ id: "a", value: "nynorsk" }] }) };
+    };
+
+    const result = await getAppResourceValues();
+
+    assert.equal(oversizedRead, false);
+    assert.deepEqual(result[0].resourceValues, [{ id: "a", values: { nn: "nynorsk" } }]);
+});
+
 test("keeps the languages that parse when one resource file is missing", async () => {
     stubFetch((url) => (url.includes("resource.nb.json") ? null : JSON.stringify({ resources: [{ id: "a", value: "nynorsk" }] })));
 
