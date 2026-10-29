@@ -6,9 +6,9 @@ __metadata:
   cacheKey: 10c0
 
 "@arkitektum/altinn-studio-custom-components-utils@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:2.0.5"
-  checksum: 10c0/68deb42419c606bb32f397da5a8d8f97044c8585fd44465c1cfa2208b7aa1a841bf38f39fd009e63c1ed80ea2c647ffc9ce81461627cdeaee5926698fe581974
+  version: 2.0.6
+  resolution: "@arkitektum/altinn-studio-custom-components-utils@npm:2.0.6"
+  checksum: 10c0/cd38db1f30be073e3040a6f1b6e5e2d05f18cd17b12261be4cbcdedd0005bd87c71d73138133892ce648f0cad4d54677aede573d7069a4075b9ed5487e7d01b0
   languageName: node
   linkType: hard
 
@@ -36,10 +36,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@arkitektum/ftpb-testmotor-client@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.2.2"
-  checksum: 10c0/72a6cb13b963b920734165d8f8504ccb066b0a338b5ec55605b69ba5567782a18038c0e52cd001cdccf6c9a980dd8ab622515747d40338e8534f13f6c38425c4
+"@arkitektum/ftpb-testmotor-client@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@arkitektum/ftpb-testmotor-client@npm:1.3.0"
+  checksum: 10c0/01fc92d69a8a3d72e89bf4d3f81b46aca08d1ca7027861577881e9c9f750d112d5463713ad4741b2f42121bb4dacf1c6252285c87742c9a875bcde362dab4879
   languageName: node
   linkType: hard
 
@@ -436,7 +436,7 @@ __metadata:
   dependencies:
     "@arkitektum/altinn-studio-custom-components": "npm:^17.9.2"
     "@arkitektum/ftpb-app-catalogue": "npm:^1.0.5"
-    "@arkitektum/ftpb-testmotor-client": "npm:^1.2.2"
+    "@arkitektum/ftpb-testmotor-client": "npm:^1.3.0"
     "@eslint/js": "npm:^10.0.1"
     "@microsoft/eslint-formatter-sarif": "npm:^3.1.0"
     cors: "npm:^2.8.6"
