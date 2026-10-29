@@ -385,21 +385,23 @@ async function fetchAppResourceFile(appOwner, appName, language = "nb") {
  *   mapping language codes to their respective values.
  */
 function mergeResourceFiles(...files) {
-    const resultMap = {};
+    // A Map, because the ids come from the app's own files: on a plain object an id such as "constructor" or
+    // "__proto__" finds a property every object already has, and the merge either throws or writes onto it.
+    const resultMap = new Map();
 
     files.forEach((file) => {
         const { language, resources } = file;
 
         resources.forEach(({ id, value }) => {
-            if (!resultMap[id]) {
-                resultMap[id] = { id, values: {} };
+            if (!resultMap.has(id)) {
+                resultMap.set(id, { id, values: {} });
             }
 
-            resultMap[id].values[language] = value;
+            resultMap.get(id).values[language] = value;
         });
     });
 
-    return Object.values(resultMap);
+    return [...resultMap.values()];
 }
 
 /**

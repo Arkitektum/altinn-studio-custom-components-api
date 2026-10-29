@@ -69,6 +69,25 @@ test("merges values per language when every resource file parses", async () => {
     assert.deepEqual(result[0].resourceValues, [{ id: "a", values: { nb: "bokmål", nn: "nynorsk" } }]);
 });
 
+test("merges resources whose ids name a property every object has", async () => {
+    // The ids come from the app's resource files, so they can be anything. These used to throw, or write onto
+    // Object.values itself, and drop the app's resources.
+    const ids = ["constructor", "__proto__", "toString", "a"];
+    stubFetch((url) => {
+        const value = url.includes("resource.nb.json") ? "bokmål" : "nynorsk";
+        return JSON.stringify({ resources: ids.map((id) => ({ id, value })) });
+    });
+
+    const result = await getAppResourceValues();
+
+    assert.equal(result.length, altinnStudioApps.length);
+    assert.deepEqual(
+        result[0].resourceValues.map((resource) => [resource.id, resource.values.nb, resource.values.nn]),
+        ids.map((id) => [id, "bokmål", "nynorsk"])
+    );
+    assert.equal(Object.hasOwn(Object.values, "nb"), false);
+});
+
 test("keeps the languages that parse when one resource file has no resources array", async () => {
     stubFetch((url) => {
         // A file that is valid JSON but carries no "resources" array used to throw inside mergeResourceFiles and
