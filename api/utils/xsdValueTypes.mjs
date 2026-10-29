@@ -108,15 +108,39 @@ function kindOf(builtInName) {
 }
 
 /**
+ * The most element paths one schema may describe. A type used in several places is walked once for each, so a few
+ * kilobytes of nested, repeated types can describe millions of paths, and walking them blocks the server and can run
+ * it out of memory. A real data model has a few thousand at most.
+ */
+const MAX_SCHEMA_PATHS = 100_000;
+
+/**
+ * Counts the paths a walk visits, and stops the walk once there are more than any data model has.
+ *
+ * @returns {() => void} Call once per path; it throws past the limit.
+ */
+function pathBudget() {
+    let left = MAX_SCHEMA_PATHS;
+    return () => {
+        left -= 1;
+        if (left < 0) throw new Error(`the schema describes more than ${MAX_SCHEMA_PATHS} element paths, more than any data model has`);
+    };
+}
+
+/**
  * Collects the element and attribute declarations a complex type contributes, through its sequences, choices and
  * groups, and through the type it extends.
  *
  * @param {Object} complexType - A `complexType` node, named or inline.
  * @param {ReturnType<typeof indexSchema>} index
+ * @param {Set<Object>} [basesOnPath] - The types already being collected further down, so a type that extends itself,
+ *   directly or through others, ends rather than recursing until the stack runs out.
  * @returns {{ childElements: Object[], attributes: Object[], valueType: string | undefined }} The child element and
  *   attribute declarations, and for simple content (text with attributes), the built-in type of that text.
  */
-function complexTypeContent(complexType, index) {
+function complexTypeContent(complexType, index, basesOnPath = new Set()) {
+    if (basesOnPath.has(complexType)) return { childElements: [], attributes: [], valueType: undefined };
+    const nextBasesOnPath = new Set(basesOnPath).add(complexType);
     const childElements = [];
     const attributes = [...(complexType.attribute ?? [])];
     let valueType;
@@ -138,7 +162,7 @@ function complexTypeContent(complexType, index) {
         // A restriction restates the content it keeps, so only an extension inherits its base's elements.
         const base = complexContent.extension?.[0] && index.complexTypes.get(localName(derivation.base));
         if (base) {
-            const baseContent = complexTypeContent(base, index);
+            const baseContent = complexTypeContent(base, index, nextBasesOnPath);
             childElements.push(...baseContent.childElements);
             attributes.push(...baseContent.attributes);
         }
@@ -151,7 +175,7 @@ function complexTypeContent(complexType, index) {
     if (simpleDerivation?.base) {
         const baseComplexType = index.complexTypes.get(localName(simpleDerivation.base));
         if (baseComplexType) {
-            const baseContent = complexTypeContent(baseComplexType, index);
+            const baseContent = complexTypeContent(baseComplexType, index, nextBasesOnPath);
             valueType = baseContent.valueType;
             if (simpleContent.extension?.[0]) attributes.push(...baseContent.attributes);
         } else {
@@ -216,17 +240,21 @@ export function extractValueKinds(xsdContent) {
     const kinds = new Map();
     if (!schemaNode) return kinds;
     const index = indexSchema(schemaNode);
+    const countPath = pathBudget();
 
+    // typesOnPath holds the type nodes, not their names: an element that refers back to itself through its own inline
+    // type has no type name to recognise, but it does arrive at the same node.
     const visit = (element, parentPath, typesOnPath) => {
         const declaration = element.ref ? index.elements.get(localName(element.ref)) : element;
         if (!declaration?.name) return;
+        countPath();
         const path = parentPath ? `${parentPath}.${declaration.name}` : declaration.name;
 
         const typeName = localName(declaration.type);
         const complexType = declaration.complexType?.[0] ?? (typeName && index.complexTypes.get(typeName));
         if (complexType) {
-            if (typeName && typesOnPath.has(typeName)) return;
-            const nextTypesOnPath = typeName ? new Set(typesOnPath).add(typeName) : typesOnPath;
+            if (typesOnPath.has(complexType)) return;
+            const nextTypesOnPath = new Set(typesOnPath).add(complexType);
             const { childElements, valueType } = complexTypeContent(complexType, index);
             const valueKind = kindOf(valueType);
             if (valueKind) kinds.set(path, valueKind);
@@ -282,6 +310,7 @@ export function extractFields(xsdContent) {
     if (!root) return { rootElement: null, fields: [] };
     const index = indexSchema(schemaNode);
     const fields = [];
+    const countPath = pathBudget();
     const join = (parentPath, name) => (parentPath ? `${parentPath}.${name}` : name);
 
     const visitAttributes = (attributes, parentPath) => {
@@ -303,8 +332,9 @@ export function extractFields(xsdContent) {
         const typeName = localName(declaration.type);
         const complexType = declaration.complexType?.[0] ?? (typeName && index.complexTypes.get(typeName));
         if (complexType) {
-            if (typeName && typesOnPath.has(typeName)) return null;
-            const nextTypesOnPath = typeName ? new Set(typesOnPath).add(typeName) : typesOnPath;
+            // Type nodes rather than names, as in extractValueKinds, so a reference back through an inline type ends.
+            if (typesOnPath.has(complexType)) return null;
+            const nextTypesOnPath = new Set(typesOnPath).add(complexType);
             const { childElements, attributes, valueType } = complexTypeContent(complexType, index);
             visitAttributes(attributes, path);
             for (const child of childElements) visitElement(child, path, nextTypesOnPath);
@@ -317,6 +347,7 @@ export function extractFields(xsdContent) {
     const visitElement = (element, parentPath, typesOnPath) => {
         const declaration = element.ref ? index.elements.get(localName(element.ref)) : element;
         if (!declaration?.name) return;
+        countPath();
         const field = {
             path: join(parentPath, declaration.name),
             node: "element",

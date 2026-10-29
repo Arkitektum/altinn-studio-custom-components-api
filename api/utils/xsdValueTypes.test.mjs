@@ -370,3 +370,67 @@ test("finds a reference written without a prefix", () => {
     const xsd = `<schema xmlns="http://www.w3.org/2001/XMLSchema"><include schemaLocation="local.xsd" /></schema>`;
     assert.deepEqual(externalSchemaReferences(xsd), ["local.xsd"]);
 });
+
+/** Each level holds two elements of the next, so the paths double with every level: 2^25 of them here, in 3 KB. */
+function doublingXsd(levels) {
+    const types = Array.from({ length: levels }, (_, i) =>
+        i === levels - 1
+            ? `<xs:complexType name="T${i}"><xs:sequence><xs:element name="v" type="xs:int" /></xs:sequence></xs:complexType>`
+            : `<xs:complexType name="T${i}"><xs:sequence><xs:element name="a" type="T${i + 1}" /><xs:element name="b" type="T${i + 1}" /></xs:sequence></xs:complexType>`
+    );
+    return `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:element name="root" type="T0" />${types.join("")}</xs:schema>`;
+}
+
+test("stops a schema whose repeated types describe more paths than any data model has", () => {
+    const xsd = doublingXsd(25);
+
+    assert.throws(() => extractValueKinds(xsd), /more than 100000 element paths/);
+    assert.throws(() => extractFields(xsd), /more than 100000 element paths/);
+});
+
+test("still walks every path of repeated types below the limit", () => {
+    // 2^10 leaves, each reached through its own path.
+    const kinds = extractValueKinds(doublingXsd(11));
+
+    assert.equal(kinds.size, 1024);
+    assert.equal(kinds.get("root.a.b.a.b.a.b.a.b.a.b.v"), "number");
+});
+
+test("ends an element that refers back to itself through its own inline type", () => {
+    const xsd = `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="node">
+        <xs:complexType><xs:sequence><xs:element name="n" type="xs:int" /><xs:element ref="node" minOccurs="0" /></xs:sequence></xs:complexType>
+    </xs:element>
+</xs:schema>`;
+
+    assert.deepEqual([...extractValueKinds(xsd)], [["node.n", "number"]]);
+    assert.deepEqual(
+        extractFields(xsd).fields.map((field) => field.path),
+        ["n", "node"]
+    );
+});
+
+test("ends a type that extends itself, directly or through another", () => {
+    const xsd = `<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="root" type="A" />
+    <xs:complexType name="A"><xs:complexContent><xs:extension base="B"><xs:sequence><xs:element name="x" type="xs:int" /></xs:sequence></xs:extension></xs:complexContent></xs:complexType>
+    <xs:complexType name="B"><xs:complexContent><xs:extension base="A"><xs:sequence><xs:element name="y" type="xs:boolean" /></xs:sequence></xs:extension></xs:complexContent></xs:complexType>
+    <xs:complexType name="C"><xs:complexContent><xs:extension base="C"><xs:sequence><xs:element name="z" type="xs:int" /></xs:sequence></xs:extension></xs:complexContent></xs:complexType>
+    <xs:element name="self" type="C" />
+</xs:schema>`;
+
+    assert.deepEqual(
+        new Map(extractValueKinds(xsd)),
+        new Map([
+            ["root.y", "boolean"],
+            ["root.x", "number"],
+            ["self.z", "number"]
+        ])
+    );
+    assert.deepEqual(
+        extractFields(xsd)
+            .fields.map((field) => field.path)
+            .sort(),
+        ["x", "y"]
+    );
+});
