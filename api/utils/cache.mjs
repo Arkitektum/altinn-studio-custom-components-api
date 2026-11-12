@@ -59,7 +59,7 @@ export function isTransientStatus(status) {
  * Statistics dashboard is the only consumer and re-runs "Synchronize" repeatedly during a session, so without
  * caching every sync re-fetches everything. This wrapper collapses repeated identical calls into a single upstream
  * fetch for `ttlMs`, and de-duplicates concurrent in-flight calls (they share one promise). It is deliberately
- * simple and process-local — appropriate for this dev-only tool, not a distributed cache.
+ * simple and process-local, which suits for this dev-only tool, not a distributed cache.
  *
  * Failures are not cached: if the wrapped call rejects, the entry is evicted so the next call retries. Neither is a
  * result that was only partly fetched because of a transient failure (see `noteTransientFailure`). The getters catch
@@ -85,7 +85,7 @@ export function createCachedFunction(fn, { ttlMs = 60000 } = {}) {
         const entry = cache.get(key);
 
         // Share a call that is still running whatever the TTL says, so concurrent callers never trigger the same
-        // upstream fetch twice. Only once it has settled does freshness decide — which for a ttlMs of 0 is never,
+        // upstream fetch twice. Only once it has settled does freshness decide, which for a ttlMs of 0 is never,
         // since expiresAt is then the moment the call started.
         if (entry && (!entry.settled || entry.expiresAt > now)) {
             // Reusing a call means the request logs nothing of its own. Say why, so a report with no events reads as

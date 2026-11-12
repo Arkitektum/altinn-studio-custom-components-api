@@ -28,8 +28,8 @@ const repoRoot = path.resolve(moduleDir, "../..");
 const defaultTextResourcesFilePath = path.join(repoRoot, "node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json");
 const resourceValueLanguages = ["nb", "nn"];
 
-// Loaded lazily and cached on first successful read (see getDefaultTextResources), so a missing/malformed
-// resources.json degrades gracefully instead of crashing the server at import time.
+// Loaded lazily and cached on first successful read (see getDefaultTextResources), so a missing or malformed
+// resources.json costs that endpoint only, and the server still starts.
 let defaultTextResourcesCache;
 
 // Every endpoint fans out over all tracked apps at once, and the dashboard calls several endpoints together, so
@@ -42,11 +42,11 @@ const altinnStudioConcurrency = Number.isInteger(parsedConcurrency) && parsedCon
 const limitAltinnStudioRequest = createConcurrencyLimiter(altinnStudioConcurrency);
 
 // Example data is assembled per app, and an app's work is nearly all waiting: one request to the testmotor, one
-// schema fetch per data type. Taking the catalogue one app at a time meant every one of those round trips happened
-// after the one before it. Running the apps together collapses that into a few waves instead.
+// schema fetch per data type. Running the apps together turns those round trips into a few waves rather than one
+// long queue.
 //
-// Bounded rather than unbounded because one testmotor answer carries every example file for an app — the largest
-// runs to several megabytes — and there is nothing to gain from holding twenty-six of those in memory at once.
+// Bounded rather than unbounded because one testmotor answer carries every example file for an app (the largest
+// runs to several megabytes), and there is nothing to gain from holding every app's at once.
 // Altinn Studio requests stay inside their own budget above whatever this is set to.
 const EXAMPLE_DATA_APP_CONCURRENCY = 8;
 const limitExampleDataApp = createConcurrencyLimiter(EXAMPLE_DATA_APP_CONCURRENCY);
@@ -166,7 +166,7 @@ export async function getLatestPackageVersions() {
  * @param {boolean} [options.optional=false] - Set when a missing file is either expected (not every app ships a
  *   nynorsk resource file) or already reported by the caller with better context. A 404 is then recorded as progress
  *   instead of a warning, so the report only warns about files that are actually supposed to be there.
- * @returns {Promise<string>} The content of the requested file as a string.
+ * @returns {Promise<string|null>} The content of the requested file, or null when it is not there (a 404).
  * @throws {Error} If the fetch operation fails or the response is not OK.
  */
 async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = false } = {}) {
@@ -177,7 +177,7 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
     // Fail fast with a clear message when the token is missing. Without it Altinn Studio returns an HTML login page,
     // which otherwise surfaces later as a confusing "Premature end of data in tag div" XML parse error.
     if (!token || !token.trim()) {
-        throw new Error("GITEA_TOKEN is not set — add it to your .env (see .env.sample) to fetch Altinn Studio data.");
+        throw new Error("GITEA_TOKEN is not set. Add it to your .env (see .env.sample) to fetch Altinn Studio data.");
     }
     const timeoutMs = requestTimeoutMs();
     try {
@@ -403,11 +403,11 @@ async function fetchPackageLockFromAltinnStudio(appOwner, appName) {
  * @param {string} appOwner - The owner of the app repository.
  * @param {string} appName - The name of the app repository.
  * @param {string} [language="nb"] - The language code for the resource file (default is "nb").
- * @returns {Promise<Object>} The parsed JSON content of the resource file.
+ * @returns {Promise<Object|null>} The parsed JSON content of the resource file, or null when the app has none in that language.
  */
 async function fetchAppResourceFile(appOwner, appName, language = "nb") {
     const filePath = `App/config/texts/resource.${language}.json`;
-    // Apps are not required to ship every language — most have no nynorsk file — so a missing one is normal and not
+    // Apps are not required to ship every language (most have no nynorsk file), so a missing one is normal and not
     // worth a warning. getAppResourceValues still warns about an app with no readable resource file at all.
     const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath, { optional: true });
     if (!fileContent) {
@@ -451,7 +451,7 @@ function mergeResourceFiles(...files) {
  *
  * Exported so the endpoint can reduce what arrives in the query string to one of three answers *before* it reaches
  * the cache. The cached getter is keyed on its arguments, so an un-narrowed value would give `?language=xx` and
- * `?language=yy` a cache entry each, despite both meaning the same thing and doing the same work — a full fan-out
+ * `?language=yy` a cache entry each, despite both meaning the same thing and doing the same work: a full fan-out
  * to Altinn Studio per distinct spelling, and an entry per spelling in a map that only evicts on failure.
  *
  * Anything that is not one of the supported languages means "all of them", which is what an absent parameter means.
@@ -565,7 +565,7 @@ export async function getDefaultTextResources() {
  * This function is used to extract the versions of the altinn-app-frontend CSS and JS files referenced in the Index.cshtml.
  * @param {string} appOwner - The owner of the application repository.
  * @param {string} appName - The name of the application repository.
- * @returns {Promise<string>} The content of the Index.cshtml file as a string.
+ * @returns {Promise<string|null>} The content of the Index.cshtml file, or null when the app has none.
  * @throws {Error} If fetching the Index.cshtml file fails.
  */
 async function fetchAltinnAppIndexHtml(appOwner, appName) {
@@ -602,8 +602,8 @@ async function fetchDibkFtpbCommonAltinnAppsVersion(appOwner, appName) {
  * @throws {Error} If the package-lock.json is missing, or does not list the altinn-studio-custom-components package.
  */
 function extractAltinnStudioCustomComponentsVersion(packageLock) {
-    // Distinguish "no lockfile in the repo" from "lockfile without the package" — the fetch no longer reports the
-    // missing file itself, so this message is the only explanation the report gets.
+    // Distinguishes "no lockfile in the repo" from "lockfile without the package". The lockfile is fetched as optional,
+    // so this message is the only explanation the report gets.
     if (!packageLock) {
         throw new Error("App/package-lock.json not found in the repository");
     }
@@ -687,7 +687,7 @@ function xmlSchemaFilePath(dataType) {
  * @param {string} appOwner - The owner of the Altinn Studio app.
  * @param {string} appName - The name of the Altinn Studio app.
  * @param {string} dataType - The data type whose XML schema should be fetched.
- * @returns {Promise<string>} The content of the XML schema file as a string.
+ * @returns {Promise<string|null>} The content of the XML schema file, or null when the app has none for that data type.
  */
 async function fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType) {
     // Reported once by the caller, which then skips the affected example files rather than failing each of them with
@@ -725,7 +725,6 @@ async function fetchApplicationMetadataFromAltinnStudio(appOwner, appName) {
  * @async
  * @function
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of application metadata objects for each app.
- * @throws {Error} If fetching or parsing any of the application metadata fails.
  */
 export async function getApplicationMetadata() {
     const metadataPromises = altinnStudioApps.map(async ({ appOwner, appName }) => {
@@ -912,7 +911,7 @@ async function readMainFormExampleFiles(app, { testmotorApps, testmotorError }) 
     }
 
     // Nothing anywhere. That is a plain absence for an app the testmotor holds no data for, and a failure only if
-    // the testmotor could not be asked — in which case we never learnt whether it holds this app at all.
+    // the testmotor could not be asked, in which case we never learnt whether it holds this app at all.
     return { files: [], error: testmotorError };
 }
 
@@ -970,7 +969,7 @@ async function convertExampleFiles({ appOwner, appName, dataType, files, label =
  * One app's main form examples, as a single entry naming the app.
  *
  * Nothing thrown escapes: individual files are handled by convertExampleFile, so this catches what fails for the app
- * as a whole — an unreadable directory, or a schema fetch that threw instead of answering null — and turns it into an
+ * as a whole (an unreadable directory, or a schema fetch that threw instead of answering null) and turns it into an
  * entry carrying the reason.
  *
  * @async
@@ -1047,7 +1046,7 @@ async function appExampleEntries(app, sources) {
  * Every example the dashboard can offer: each tracked app's main form, and each subform as each app declaring it holds it.
  *
  * The main forms come from the FtPB testmotor rather than from disk, because it re-stamps the date fields on every
- * request and a copy committed here goes stale within a fortnight — see `api/utils/testmotorClient.mjs`. The
+ * request and a copy committed here goes stale within a fortnight (see `api/utils/testmotorClient.mjs`). The
  * testmotor is keyed by app id, which is why an entry names the app and not only the data type: fa-v3 and fa-v5
  * are both filed under FA and hold different files.
  *
@@ -1069,7 +1068,7 @@ export async function getJsonExampleData() {
     try {
         testmotorApps = await fetchTestmotorApps();
     } catch (error) {
-        // One report for the run, rather than the same message repeated under all 25 apps. The apps carry it too,
+        // One report for the run, rather than the same message repeated under every app. The apps carry it too,
         // because that is the copy the dashboard can put next to the picker that has nothing in it.
         testmotorError = error.message;
         log.error({ scope: "testmotor", category: "Testmotor not reached", detail: error.message });

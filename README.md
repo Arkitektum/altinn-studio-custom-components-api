@@ -4,7 +4,7 @@ A small **Express (Node.js) API** that backs the **Statistics** dashboard in [`a
 The dashboard calls this API to analyze component usage and text-resource coverage across the DiBK Altinn apps.
 
 > ℹ️ This is a **development-only tool**.
-> It is not published or deployed — you run it locally alongside the components dev server.
+> It is not published or deployed: you run it locally alongside the components dev server.
 
 ---
 
@@ -13,7 +13,7 @@ The dashboard calls this API to analyze component usage and text-resource covera
 ### Prerequisites
 
 - **Node.js** (current LTS; the ecosystem targets Node 24)
-- **Yarn 4** via [Corepack](https://nodejs.org/api/corepack.html) — run `corepack enable` once.
+- **Yarn 4** via [Corepack](https://nodejs.org/api/corepack.html): run `corepack enable` once.
 
 ### 1. Install
 
@@ -29,16 +29,16 @@ yarn install
 cp .env.sample .env
 ```
 
-- `API_PORT` — the port to listen on (use `9001`, which the Statistics dashboard expects).
-- `GITEA_TOKEN` — a token for reading files from Altinn Studio's Gitea.
-- `TESTMOTOR_URL` — the FtPB testmotor, which serves the main form and subform example data. The default is the hosted instance; override it to work against your own.
-- `EXAMPLE_DATA_DIR` — where the one main form the testmotor holds no data for lives. Defaults to `api/data/exampleData`.
+- `API_PORT`: the port to listen on (use `9001`, which the Statistics dashboard expects).
+- `GITEA_TOKEN`: a token for reading files from Altinn Studio's Gitea.
+- `TESTMOTOR_URL`: the FtPB testmotor, which serves the main form and subform example data. The default is the hosted instance; override it to work against your own.
+- `EXAMPLE_DATA_DIR`: where the one main form the testmotor holds no data for lives. Defaults to `api/data/exampleData`.
 
 See `.env.sample` for the rest.
 
 Generate a Gitea token at <https://altinn.studio/repos/user/settings/applications> with the **`read:repository`** scope and an expiry date, then put it in `.env` (replacing `your_token_here`).
 
-> ⚠️ `.env` is git-ignored. Never commit tokens or secrets.
+> `.env` is git-ignored. Never commit tokens or secrets.
 
 #### Keeping the token out of the project folder
 
@@ -69,7 +69,7 @@ All routes are `GET` under `/api` and return JSON:
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/api/displayLayouts`        | Layout JSON for the tracked apps (used to compute component usage).                                                                                                        |
 | `/api/packageVersions`       | The custom-components, app-frontend and Dibk.Ftpb.Common.AltinnApps versions each tracked app currently uses.                                                              |
-| `/api/latestPackageVersions` | Latest versions from npm / GitHub for the configured sources.                                                                                                              |
+| `/api/latestPackageVersions` | Latest versions from npm, GitHub and DIBK's NuGet feed for the configured sources.                                                                                         |
 | `/api/appResources`          | App-level text-resource values (accepts a `language` query param).                                                                                                         |
 | `/api/resources`             | The package's default text resources.                                                                                                                                      |
 | `/api/altinnStudioForms`     | The configured list of tracked Altinn apps / forms.                                                                                                                        |
@@ -87,10 +87,10 @@ Which apps are tracked comes from `@arkitektum/ftpb-app-catalogue`, a package sh
 - [Architecture overview](./ARCHITECTURE.md)
 - [Contributing guide](./CONTRIBUTING.md)
 - [Security policy](./SECURITY.md)
-- [Custom components](https://github.com/Arkitektum/altinn-studio-custom-components) — the dashboard this API backs lives there
+- [Custom components](https://github.com/Arkitektum/altinn-studio-custom-components), where the dashboard this API backs lives there
 - [Component documentation & gallery](https://arkitektum.github.io/altinn-studio-custom-components-docs/)
-- [FtPB testmotor client](https://github.com/Arkitektum/ftpb-testmotor-client) — shared with the API tools
-- [FtPB app catalogue](https://github.com/Arkitektum/ftpb-app-catalogue) — shared with the API tools; add a tracked app there
+- [FtPB testmotor client](https://github.com/Arkitektum/ftpb-testmotor-client), shared with the API tools
+- [FtPB app catalogue](https://github.com/Arkitektum/ftpb-app-catalogue), shared with the API tools. Add a tracked app there.
 
 ## Licence
 

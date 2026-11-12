@@ -21,7 +21,7 @@ test("preserves // that appears inside a string value", () => {
 
 test("handles an escaped backslash before a closing quote (does not misread the quote as escaped)", () => {
     const input = '{"path": "C:\\\\", "x": 1} // trailing';
-    // The value is the two-character string  C:\  — the \\ must not swallow the closing quote.
+    // The value is the two-character string  C:\ , and the \\ must not swallow the closing quote.
     assert.deepEqual(JSON.parse(stripJsonComments(input)), { path: "C:\\", x: 1 });
 });
 

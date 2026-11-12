@@ -4,11 +4,10 @@ import { AsyncLocalStorage } from "node:async_hooks";
 /**
  * Run-scoped logging for the fan-out endpoints.
  *
- * Every endpoint in this API fans out to Altinn Studio / npm / disk once per tracked app, and each step used to log a
- * line of its own. A single "Synchronize" therefore produced hundreds of interleaved lines in which the few real
- * problems were impossible to spot.
+ * Every endpoint in this API fans out to Altinn Studio / npm / disk once per tracked app, so a line per step would
+ * bury the few real problems among hundreds of interleaved lines.
  *
- * Instead, callers *record* events (`log.ok` / `log.warn` / `log.error`) into the run that is currently active, and the
+ * So callers *record* events (`log.ok` / `log.warn` / `log.error`) into the run that is currently active, and the
  * run prints a single report when it finishes: a per-app summary table, followed by the full text of the warnings and
  * errors grouped by cause. The report is assembled into one string and written with one call, so reports from
  * concurrent requests never interleave.
@@ -17,8 +16,8 @@ import { AsyncLocalStorage } from "node:async_hooks";
  * argument threaded through them. Events recorded outside any run (module init, startup checks) fall back to plain
  * console output, so nothing is ever silently swallowed.
  *
- * Set `LOG_VERBOSE=1` to also print every event as it happens — the old line-per-step behaviour, useful when following
- * a single failing app.
+ * Set `LOG_VERBOSE=1` to also print every event as it happens, a line per step, which is useful when following a
+ * single failing app.
  */
 
 const runStorage = new AsyncLocalStorage();
@@ -45,8 +44,8 @@ const red = paint(31);
 const levelColors = { ok: green, warn: yellow, error: red };
 
 /**
- * Records an event outside any active run. Keeps the pre-aggregation behaviour for one-off logging that has no report
- * to be summarised into.
+ * Records an event outside any active run, printed as it happens, for one-off logging that has no report to be
+ * summarised into.
  *
  * @param {"ok"|"warn"|"error"} level
  * @param {{scope?: string, category?: string, message?: string, detail?: string}} event
@@ -71,7 +70,7 @@ function logWithoutRun(level, { scope, category, message, detail }) {
  *
  * @param {"ok"|"warn"|"error"} level - Severity. `ok` events are counted only; warnings and errors are also detailed.
  * @param {Object} event
- * @param {string} [event.scope] - What the event is about — normally `appOwner/appName`. Becomes a row in the table.
+ * @param {string} [event.scope] - What the event is about, normally `appOwner/appName`. Becomes a row in the table.
  * @param {string} [event.category] - Short, reusable cause ("Missing file", "XSD validation failed"). Groups details.
  * @param {string} [event.message] - The specific subject, e.g. the file or data type involved.
  * @param {string} [event.detail] - Longer explanation (an error message, validation output) shown under the message.
@@ -110,7 +109,7 @@ function record(level, event) {
 export const log = {
     /** Records a successful step. Counted in the summary table, never detailed. */
     ok: (event) => record("ok", event),
-    /** Records an expected-but-notable outcome, such as an optional file that is missing. */
+    /** Records a problem that did not stop the run, such as a required file that is missing. */
     warn: (event) => record("warn", event),
     /** Records a failure that made the API skip data. */
     error: (event) => record("error", event),
@@ -126,7 +125,7 @@ export const log = {
         }
     },
     /**
-     * Annotates the active run's headline with a fact about the run itself rather than an event within it — why it
+     * Annotates the active run's headline with a fact about the run itself rather than an event within it: why it
      * did no work, for instance. A no-op outside a run, since there is no headline to annotate.
      *
      * @param {string} note
@@ -137,7 +136,7 @@ export const log = {
 };
 
 /**
- * Truncates a string from the left, keeping the tail — app names differ in their suffix (`rs-v4` vs `rs-v3`), so the
+ * Truncates a string from the left, keeping the tail, since app names differ in their suffix (`rs-v4` vs `rs-v3`), so the
  * end is the informative part.
  *
  * @param {string} text
@@ -186,8 +185,8 @@ function wrapList(names, indent) {
 /**
  * Renders the per-scope summary table: one column per severity, plus a totals row.
  *
- * Sources that had nothing but successes are collapsed into a single row. With 26 tracked apps, listing the clean ones
- * pushes the rows that need attention off the screen — which is the problem the report exists to solve. `LOG_VERBOSE=1`
+ * Sources that had nothing but successes are collapsed into a single row. With a couple of dozen tracked apps, listing the clean ones
+ * pushes the rows that need attention off the screen, which is the problem the report exists to solve. `LOG_VERBOSE=1`
  * lists every source.
  *
  * @param {Map<string, {ok: number, warn: number, error: number}>} counts
@@ -227,7 +226,7 @@ function renderTable(counts) {
     const columns = ["ok", "warn", "error"];
     const columnWidths = columns.map((column) => Math.max(levelLabels[column].length, String(totals[column]).length));
 
-    // A zero reads as noise in a table of counts — show it as an empty marker so the numbers that matter stand out.
+    // A zero reads as noise in a table of counts, so it is shown as an empty marker so the numbers that matter stand out.
     const cell = (value, level, width) => (value ? levelColors[level](String(value)).padStart(width + (useColor ? 9 : 0)) : dim("·".padStart(width)));
 
     const line = (label, tally, colorLabel = (text) => text) =>
@@ -240,8 +239,8 @@ function renderTable(counts) {
 }
 
 /**
- * Groups a category's entries by what actually happened (message + detail), so the same missing file across 26 apps
- * becomes one entry listing 26 sources rather than 26 near-identical lines.
+ * Groups a category's entries by what actually happened (message + detail), so the same missing file across every app
+ * becomes one entry listing every source rather than a near-identical line per app.
  *
  * @param {Object[]} entries
  * @returns {Array<{message?: string, detail?: string, sources: Array<{source: string, count: number}>, total: number}>}
@@ -302,7 +301,7 @@ function summariseRun(run) {
 }
 
 /**
- * Renders the detail sections — the full text of every warning and error, grouped by cause and then by outcome.
+ * Renders the detail sections: the full text of every warning and error, grouped by cause and then by outcome.
  *
  * @param {Array<{level: string, category: string, count: number, outcomes: Object[]}>} issues - From summariseRun.
  * @returns {string[]} The rendered lines.
@@ -319,7 +318,7 @@ function renderGroups(issues) {
             if (labels.length === 1) {
                 lines.push(`   ${bold(labels[0])}${outcome.message ? dim(" · ") + outcome.message : ""}`);
             } else {
-                // Without a message there is nothing to head the list with — repeating the category would just echo
+                // Without a message there is nothing to head the list with, and repeating the category would just echo
                 // the group heading directly above.
                 const count = `${labels.length} sources`;
                 lines.push(outcome.message ? `   ${outcome.message} ${dim(`— ${count}`)}` : `   ${dim(count)}`);
@@ -381,14 +380,14 @@ function printReport(counts, summary) {
     console.log(lines.join("\n"));
 }
 
-// The most recent summary per run name, so the console report is not the only place the outcome exists — see
+// The most recent summary per run name, so the console report is not the only place the outcome exists (see
 // getDiagnostics. Bounded by the number of endpoints, so it can't grow.
 const retainedSummaries = new Map();
 
 /**
  * Retains a finished run's summary for `getDiagnostics`.
  *
- * A run that recorded nothing did no work — the cache answered it — so it must not overwrite the summary of the run
+ * A run that recorded nothing did no work (the cache answered it), so it must not overwrite the summary of the run
  * that did. Its timestamp is still recorded, which is what distinguishes "checked a moment ago and all is well" from
  * "these numbers are from twenty minutes ago".
  *
@@ -415,9 +414,8 @@ function retainSummary(run, summary) {
 /**
  * The most recent outcome of each run, for serving over HTTP.
  *
- * The console report is fine when you are watching the terminal, but the Statistics dashboard is the consumer that
- * actually cares whether an app failed to load. This exposes the same summary the report is rendered from, so the
- * dashboard can show the problems instead of the developer having to notice them scroll past.
+ * The same summary the console report is rendered from, so a client can show the problems rather than a developer
+ * having to notice them scroll past in the terminal.
  *
  * @returns {{generatedAt: string, totals: {ok: number, warn: number, error: number}, runs: Object[]}} The retained
  *   summaries, worst first, with totals across all of them.

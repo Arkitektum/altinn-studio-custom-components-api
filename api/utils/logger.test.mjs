@@ -253,7 +253,7 @@ test("keeps the last real outcome when a later request did no work", async () =>
     });
     const afterCacheHit = findRun("diagnostics-cached");
 
-    // A cache hit must not erase what the run that did the work found — otherwise a second Synchronize within the TTL
+    // A cache hit must not erase what the run that did the work found, or a second Synchronize within the TTL
     // would report a clean bill of health.
     assert.deepEqual(afterCacheHit.totals, { ok: 0, warn: 0, error: 1 });
     assert.equal(afterCacheHit.observedAt, observed.observedAt);

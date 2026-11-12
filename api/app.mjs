@@ -46,10 +46,10 @@ export function createApp() {
     const cachedGetJsonExampleData = createCachedFunction(getJsonExampleData, { ttlMs: cacheTtlMs });
     const cachedGetSubformDataModels = createCachedFunction(getSubformDataModels, { ttlMs: cacheTtlMs });
 
-    // Warn loudly at startup if the Gitea token is missing — every Altinn Studio fetch depends on it.
+    // Warn loudly at startup if the Gitea token is missing, since every Altinn Studio fetch depends on it.
     if (!process.env.GITEA_TOKEN || !process.env.GITEA_TOKEN.trim()) {
         console.warn(
-            "⚠️ GITEA_TOKEN is not set. Requests for Altinn Studio data (layouts, metadata, resources, schemas) will fail. Add it to .env — see .env.sample."
+            "⚠️ GITEA_TOKEN is not set. Requests for Altinn Studio data (layouts, metadata, resources, schemas) will fail. Add it to .env (see .env.sample)."
         );
     }
 
@@ -64,7 +64,7 @@ export function createApp() {
     });
 
     // This API proxies private Altinn Studio content using a Gitea token, so restrict CORS to the local dev client
-    // (default: the webpack dev server on port 9000) instead of allowing every origin. Override with CLIENT_ORIGIN.
+    // (default: the webpack dev server on port 9000). Override with CLIENT_ORIGIN.
     const allowedOrigin = process.env.CLIENT_ORIGIN || "http://localhost:9000";
     app.use(cors({ origin: allowedOrigin }));
 
@@ -150,7 +150,7 @@ export function createApp() {
         get: () => cachedGetSubformDataModels()
     });
 
-    // Reports what the data endpoints last ran into. Nothing fetches this yet — the Statistics dashboard does not call it,
+    // Reports what the data endpoints last ran into. Nothing fetches this yet: the Statistics dashboard does not call it,
     // so a failure reaches a person only through the terminal, or through the `error` that /api/exampleData carries on the
     // entries it could not fill. Deliberately given no runLog: it does no work of its own, and polling it would otherwise
     // print a report line per request.

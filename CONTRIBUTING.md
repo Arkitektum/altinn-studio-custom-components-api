@@ -44,15 +44,15 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
     cp .env.sample .env
     ```
 
-    - `API_PORT` — the port to listen on (use `9001`, which the Statistics dashboard expects).
-    - `GITEA_TOKEN` — a token for reading files from Altinn Studio's Gitea.
+    - `API_PORT`: the port to listen on (use `9001`, which the Statistics dashboard expects).
+    - `GITEA_TOKEN`: a token for reading files from Altinn Studio's Gitea.
 
     To generate a Gitea token:
     - Go to <https://altinn.studio/repos/user/settings/applications>
     - Create a token with the **`read:repository`** scope and an expiry date
     - Put it in `.env` as `GITEA_TOKEN` (replacing `your_token_here`), or keep the file outside the project as the README describes under "Keeping the token out of the project folder"
 
-    > ⚠️ `.env` is git-ignored. Never commit tokens or secrets.
+    > `.env` is git-ignored. Never commit tokens or secrets.
 
 3. **Start the API**
 
@@ -67,35 +67,35 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 
 ## Everyday commands
 
-| Command      | What it does                                                                                  |
-| ------------ | --------------------------------------------------------------------------------------------- |
-| `yarn start` | Run the Express API (`node api/index.mjs`).                                                   |
-| `yarn test`  | Run the tests with the built-in Node test runner (`node --test`).                             |
-| `yarn lint`  | Lint the source (ESLint flat config in `eslint.config.mjs`).                                  |
-| `yarn drift` | Where the app catalogue and the testmotor have drifted apart. Needs the network, not a token. |
+| Command             | What it does                                                                                  |
+| ------------------- | --------------------------------------------------------------------------------------------- |
+| `yarn start`        | Run the Express API (`node api/index.mjs`).                                                   |
+| `yarn test`         | Run the tests with the built-in Node test runner (`node --test`).                             |
+| `yarn lint`         | Lint the source (ESLint flat config in `eslint.config.mjs`).                                  |
+| `yarn format`       | Format every file with Prettier.                                                              |
+| `yarn format:check` | Check the formatting without changing anything, as CI does.                                   |
+| `yarn drift`        | Where the app catalogue and the testmotor have drifted apart. Needs the network, not a token. |
 
 ---
 
 ## Working on the API
 
 - **Routes** live in `api/app.mjs`. `api/index.mjs` only starts the server.
-  Keep each route thin — delegate the actual work to a function in `api/scripts/functions.mjs`.
+  Keep each route thin, and delegate the actual work to a function in `api/scripts/functions.mjs`.
 - **Data fetching/parsing** belongs in `api/scripts/functions.mjs`.
   Wrap external calls in `try/catch` and return a `500` with a clear message, matching the existing routes.
-- **Logging** goes through `api/utils/logger.mjs` — record `log.ok` / `log.warn` / `log.error` instead of calling
+- **Logging** goes through `api/utils/logger.mjs`: record `log.ok` / `log.warn` / `log.error` instead of calling
   `console.*`, so the events end up in the request's summary report (see
   [ARCHITECTURE § Logging](./ARCHITECTURE.md#6-logging)). Wrap a new fan-out route in `withRunLog("<name>", …)`.
   Run with `LOG_VERBOSE=1` to see every event as it happens while debugging.
-- **Tracked apps** come from `@arkitektum/ftpb-app-catalogue`; add one there and bump the dependency. `api/data/altinnStudioApps.mjs` only renames the fields for this repository. Subform layouts are not kept here: each is read from the repository of the app that carries it.
-  Add an app there to include it in the statistics.
-- **Version sources** for `latestPackageVersions` are configured in `api/data/packageSources.mjs` (`npm` or `github`).
+- **Tracked apps** come from `@arkitektum/ftpb-app-catalogue`; add one there and bump the dependency. `api/data/altinnStudioApps.mjs` only renames the fields for this repository. Subform layouts are read from the repository of the app that carries each one.
+- **Version sources** for `latestPackageVersions` are configured in `api/data/packageSources.mjs` (`npm`, `github` or `nuget`).
 - **Example data** for the main forms and the subforms is read from the FtPB testmotor at request time, not from this repo. For main forms that is because it re-stamps the date fields on every request, and a committed copy goes stale within a fortnight. For subforms it is because the testmotor files them per app, and the same subform can hold different files under different apps (see [ARCHITECTURE § External data sources](./ARCHITECTURE.md#5-external-data-sources)). To add or change one, change it on the testmotor's Azure file share instead.
   What is still on disk is `api/data/exampleData/forms`: `hoeringettersynuttalelse-v2`, the one main form the testmotor has no data for. It is converted to JSON by `api/utils/xmlToJsonConverter.mjs` like the rest. The directory name is the data type and the numeric prefix orders the files while being stripped from the label, so `01_Maksimumsversjon.xml` reads as `Maksimumsversjon`.
-  Use synthetic/example data only — never commit real or personal data.
+  Use synthetic/example data only, and never commit real or personal data.
 - **Which apps have example data at all** is answered by `yarn drift`. The catalogue and the testmotor keep separate
   lists of the same apps and nothing reconciles them, so they drift silently. It reports apps the testmotor holds that
-  the catalogue does not name, apps with no example data from either source, and — the one that would actually break
-  something — apps the two file under different data types. It is a report, not a gate, and exits 0 whatever it finds.
+  the catalogue does not name, apps with no example data from either source, and apps the two file under different data types, which is the one that would actually break something. It is a report, not a gate, and exits 0 whatever it finds.
   It also lists the declared subforms with no example files under an app declaring them, asking the testmotor per app since that is how it files them, and any it could not check.
 - **A reply form's example data** cannot be a file here. `nabovarsel-svar-v5`, `ts-v1` and `varselplanoppstartuttalelse-v3`
   reference the submission they reply to by instance, so a static file would point at a parent that exists in nobody's
@@ -118,6 +118,6 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
 ## Pull requests
 
 1. Branch off `main`.
-2. Keep changes focused, and make sure `yarn lint` and `yarn test` both pass — CI runs both on every pull request.
+2. Keep changes focused, and make sure `yarn lint`, `yarn format:check` and `yarn test` pass. CI runs all three on every pull request.
 3. Verify the affected endpoints respond correctly and the Statistics dashboard still loads against your local API.
 4. Open a PR against `main`.

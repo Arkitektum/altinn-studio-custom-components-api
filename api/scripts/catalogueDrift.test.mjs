@@ -77,7 +77,7 @@ test("gives every catalogue app exactly one coverage entry", () => {
 });
 
 test("does not credit a disk folder that two apps claim", () => {
-    // A folder named FA cannot say whether it is fa-v3's or fa-v5's, so it counts for neither — the same rule
+    // A folder named FA cannot say whether it is fa-v3's or fa-v5's, so it counts for neither, the same rule
     // getJsonExampleData applies, so this report matches what the dashboard actually shows.
     const drift = compare({
         testmotorApps: [{ appId: "an-v2", mainFormId: "AN" }],
@@ -194,7 +194,7 @@ test("copes with a testmotor that answered nothing", () => {
 });
 
 test("runs over the real catalogue without losing or duplicating an app", () => {
-    // Fixtures cannot go wrong the way the real catalogue does — three of its data types are claimed twice.
+    // Fixtures cannot go wrong the way the real catalogue does: three of its data types are claimed twice.
     const drift = compareCatalogueWithTestmotor({
         catalogue: altinnStudioApps,
         testmotorApps: [],

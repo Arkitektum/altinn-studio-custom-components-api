@@ -42,7 +42,7 @@ test("de-duplicates concurrent in-flight calls into a single invocation", async 
     assert.equal(calls, 1);
 });
 
-test("does not cache failures — the next call retries", async () => {
+test("does not cache failures, so the next call retries", async () => {
     let calls = 0;
     const cached = createCachedFunction(async () => {
         calls++;

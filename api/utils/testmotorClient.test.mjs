@@ -206,7 +206,7 @@ test("shares one request between concurrent callers", async (t) => {
     assert.deepEqual(first, second);
 });
 
-test("does not cache a failure — the next call tries again", async (t) => {
+test("does not cache a failure, so the next call tries again", async (t) => {
     // A five-minute cache over a rejection would let a moment of the host being down outlast the outage.
     const urls = stubFetch(t, (url, callCount) => {
         if (callCount === 1) {

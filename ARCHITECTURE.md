@@ -13,7 +13,7 @@ A small **Express (Node.js) API** that backs the **Statistics** dashboard shippe
 The dashboard calls this API to analyze component usage and text-resource coverage across the DiBK Altinn apps.
 
 It is a **development-only tool**.
-It is not published to npm and is not deployed — each developer runs it locally alongside the components dev server.
+It is not published to npm and is not deployed: each developer runs it locally alongside the components dev server.
 
 ---
 
@@ -48,14 +48,14 @@ All routes are `GET` under `/api` and return JSON. They are registered in `api/a
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/api/displayLayouts`        | Layout JSON for the tracked apps (used to compute component usage).                                                                                                                           |
 | `/api/packageVersions`       | The custom-components, app-frontend and Dibk.Ftpb.Common.AltinnApps versions each tracked app currently uses.                                                                                 |
-| `/api/latestPackageVersions` | Latest versions from npm / GitHub for the sources in `packageSources.mjs`.                                                                                                                    |
+| `/api/latestPackageVersions` | Latest versions from npm, GitHub and DIBK's NuGet feed for the sources in `packageSources.mjs`.                                                                                               |
 | `/api/appResources`          | App-level text-resource values (accepts a `language` query param).                                                                                                                            |
 | `/api/resources`             | The package's default text resources.                                                                                                                                                         |
 | `/api/altinnStudioForms`     | The configured list of tracked Altinn apps / forms.                                                                                                                                           |
 | `/api/exampleData`           | Example form + subform data, converted from XML to JSON. One entry per tracked app and one per subform each app declares. An entry carries an `error` when its examples could not be fetched. |
 | `/api/applicationMetadata`   | `applicationmetadata.json` for the tracked apps.                                                                                                                                              |
 | `/api/subformDataModels`     | Each app's copy of every subform's model (`App/models/<dataType>.xsd`), read into fields. A copy carries an `error` when its schema could not be read or parsed.                              |
-| `/api/diagnostics`           | What the data endpoints above last ran into — counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches.                                               |
+| `/api/diagnostics`           | What the data endpoints above last ran into: counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches.                                                |
 
 The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`), bound to `API_HOST` (default `127.0.0.1`).
 CORS is restricted to a single origin (`CLIENT_ORIGIN`, default `http://localhost:9000`).
@@ -95,7 +95,7 @@ api/
 │   └── *.test.mjs
 └── data/
     ├── altinnStudioApps.mjs         # @arkitektum/ftpb-app-catalogue, spelled appOwner / appName
-    ├── packageSources.mjs           # Which packages to look up latest versions for (npm / GitHub)
+    ├── packageSources.mjs           # Which packages to look up latest versions for (npm / GitHub / NuGet)
     └── exampleData/                 # Example XML the testmotor does not serve (one form, under forms/)
 ```
 
@@ -109,15 +109,15 @@ api/
   This is how layouts, app resources, and application metadata are retrieved.
   A missing token fails fast with a clear message, because Altinn Studio otherwise answers with an HTML login page that surfaces later as a confusing XML parse error.
   Requests go through a shared concurrency gate (`api/utils/concurrencyLimiter.mjs`), because each endpoint fans out over
-  every tracked app and the dashboard calls several endpoints at once — uncapped, one sync peaks at ~160 simultaneous
+  every tracked app and the dashboard calls several endpoints at once. Uncapped, one sync peaks at ~160 simultaneous
   connections. The limit is **`ALTINN_STUDIO_CONCURRENCY`** (default `16`): raise it for a faster cold sync, lower it if
   Altinn Studio starts refusing connections. The gate is around the request helper rather than each fan-out, so the
   budget is shared however many endpoints are in flight.
   Each request, to Altinn Studio, npm, GitHub and the testmotor alike, is abandoned after **`REQUEST_TIMEOUT_MS`** (default `30000`), body included and counted from when an Altinn Studio request gets its slot rather than from when it was queued, so an upstream that never answers cannot hold an endpoint or a slot for undici's five minutes.
 - **npm registry & GitHub releases.**
-  `getLatestPackageVersions` resolves the latest version for each entry in `packageSources.mjs` — from `registry.npmjs.org` for `npm` sources and from the GitHub releases API for `github` sources.
+  `getLatestPackageVersions` resolves the latest version for each entry in `packageSources.mjs`: from `registry.npmjs.org` for `npm` sources, from the GitHub releases API for `github` sources, and from the named feed's package base address for `nuget` sources (DIBK's own feed for `Dibk.Ftpb.Common.AltinnApps`).
 - **FtPB testmotor.**
-  `api/utils/testmotorClient.mjs` reads the main form and subform example data from `TESTMOTOR_URL` (default `https://app-ftpb-testmotor.azurewebsites.net`). No token is sent, and all four endpoints are open.
+  `api/utils/testmotorClient.mjs` reads the main form and subform example data from `TESTMOTOR_URL` (default `https://app-ftpb-testmotor.azurewebsites.net`). No token is sent, and every endpoint it reads is open.
 
     | Endpoint                                 | Answers                                                                                                                   |
     | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -132,13 +132,11 @@ api/
 
     Subforms are keyed by app id as well. The testmotor files them per app, as predefined attachments, and the same subform can hold different files under different apps: `DispensasjonssoeknadDataV1` does under `disp-v1` and `fts-v1`. So each app gets an entry per subform it declares, read through that app and validated against the schema in that app's repository, and the dashboard reads a subform's examples only through the app it is viewing.
 
-    Answers are reused for `CACHE_TTL_MS`, the same as the endpoints, and requests are abandoned after `REQUEST_TIMEOUT_MS`, the same as every other upstream. File names arrive as bare stems — `01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon` — and are **not sorted**, because the prefix that carried the order is already gone.
-
-    There is a third endpoint, `GET /api/altinn-app/{appId}`, which answers the same files alongside parties, metadata and attachments. It is deliberately unused: it makes Altinn calls this API has no use for.
+    Answers are reused for `CACHE_TTL_MS`, the same as the endpoints, and requests are abandoned after `REQUEST_TIMEOUT_MS`, the same as every other upstream. File names arrive as bare stems (`01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon`) and are **not sorted**, because the prefix that carried the order is already gone.
 
     If it cannot be reached there is **no fallback to disk**; the affected entries carry the reason instead, so the dashboard can tell "no examples" from "could not fetch the examples".
 
-    The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types — the last being the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land. It also asks the testmotor, per app, which declared subforms have no example files under that app, and names any it could not check.
+    The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types. The last is the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land. It also asks the testmotor, per app, which declared subforms have no example files under that app, and names any it could not check.
 
 - **Local files.**
   Default text resources are read from the installed package at `node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json`. The one main form the testmotor has no data for, `hoeringettersynuttalelse-v2`, is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml`.
@@ -149,8 +147,7 @@ api/
 
 ## 6. Logging
 
-Each fan-out endpoint runs inside a **logging run** (`api/utils/logger.mjs`). Instead of logging a line per step —
-which made a single "Synchronize" produce hundreds of interleaved lines — the fetch/parse helpers _record_ events
+Each fan-out endpoint runs inside a **logging run** (`api/utils/logger.mjs`). The fetch/parse helpers _record_ events
 (`log.ok` / `log.warn` / `log.error`), and the run prints one report when the request finishes:
 
 ```text
@@ -168,12 +165,12 @@ Example data · 4.2s · 1 error
      Element 'Dispensasjon': No matching global declaration available for the validation root.
 ```
 
-Successes are counted only. A file whose absence is expected — not every app ships a nynorsk resource file — or which
+Successes are counted only. A file whose absence is expected (not every app ships a nynorsk resource file), or which
 the caller already reports with better context is fetched with `{ optional: true }` and does not warn, so the warning
 list stays worth reading. Warnings and errors keep their full text, grouped by cause, and within a cause the
 sources that failed the same way are listed together instead of one line each. Sources with nothing to flag are
 folded into a single table row, and a run with no warnings or errors at all collapses to one line. A run that did no
-work of its own prints one line saying why — `served from cache (fresh for another 43s)` when the TTL cache answered,
+work of its own prints one line saying why: `served from cache (fresh for another 43s)` when the TTL cache answered,
 or `joined a request already in flight` when it shared a concurrent call.
 
 The report is assembled into a single string and written with one call, so reports from concurrent requests never
@@ -181,16 +178,16 @@ interleave, and it is printed even if the run throws.
 
 The active run is tracked with `AsyncLocalStorage`, so the nested helpers need no context argument. Events recorded
 outside a run (startup checks) fall back to plain `console` output. Set **`LOG_VERBOSE=1`** to also
-print every event as it happens — the old line-per-step behaviour, useful when following one failing app.
+print every event as it happens, a line per step, which is useful when following one failing app.
 
 Because of this, code in `api/scripts/functions.mjs` should record events rather than call `console.*` directly, and
-leaf utilities such as `xmlToJsonConverter.mjs` stay silent and report through the error they throw — the caller knows
+leaf utilities such as `xmlToJsonConverter.mjs` stay silent and report through the error they throw, and the caller knows
 which app and file the failure belongs to.
 
 ### Diagnostics over HTTP
 
 The console report is only useful while you are watching the terminal, so each run's summary is also retained in
-memory and served by **`/api/diagnostics`** — the same structure the report is rendered from, so the two cannot drift:
+memory and served by **`/api/diagnostics`**, the same structure the report is rendered from, so the two cannot drift:
 
 ```jsonc
 {
@@ -210,8 +207,8 @@ memory and served by **`/api/diagnostics`** — the same structure the report is
 ```
 
 Runs are worst-first, one entry per endpoint, so the map is bounded. A request that did no work does **not** overwrite
-the summary of the run that did — otherwise a second "Synchronize" within the cache TTL would report a clean bill of
-health — it only updates `requestedAt` and `requestNotes`.
+the summary of the run that did, since a second "Synchronize" within the cache TTL would otherwise report a clean bill
+of health. It only updates `requestedAt` and `requestNotes`.
 
 Nothing consumes this yet: the Statistics dashboard in the components repo would need to call it to show the problems
 it reports.
@@ -225,17 +222,17 @@ it reports.
 - **Yarn 4** via Corepack (pinned through `packageManager`).
 - XML parsing via **fast-xml-parser** and **libxmljs2**.
 - **ESLint** (flat config) for linting.
-- **`node --test`** (the built-in Node test runner) for tests — no test framework is installed.
+- **`node --test`** (the built-in Node test runner) for tests, and no test framework is installed.
 
 Tests live next to the code they cover as `*.test.mjs`. Most target the leaf utilities, which are pure and need no
-network; `functions.test.mjs` stubs global `fetch` — for both Altinn Studio and the testmotor — and points
+network; `functions.test.mjs` stubs global `fetch`, for both Altinn Studio and the testmotor, and points
 `EXAMPLE_DATA_DIR` at a temporary directory, so the example-data assembly runs end to end without either upstream.
 `smoke.test.mjs` boots the server in a child process to check it starts and accepts connections.
 
-Two GitHub Actions workflows cover `main`: `ci.yml` runs `yarn lint` and `yarn test` on every push and pull request,
+Two GitHub Actions workflows cover `main`: `ci.yml` runs `yarn lint`, `yarn format:check` and `yarn test` on every push and pull request,
 and `eslint.yml` uploads ESLint results to the repository's security tab on the same events plus a weekly schedule.
 
 Note that `libxmljs2` is a native module, so its binding is built for the platform that installed it, and a
 `node_modules` tree copied between platforms fails to load it. It is loaded on first use rather than at import (see
 `api/utils/xmlToJsonConverter.mjs`), so a tree like that still starts the server and still runs everything that does
-not convert XML — what fails is the example data conversion, and the tests covering it.
+not convert XML. What fails is the example data conversion, and the tests covering it.

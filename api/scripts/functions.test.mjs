@@ -78,8 +78,7 @@ test("merges values per language when every resource file parses", async () => {
 });
 
 test("merges resources whose ids name a property every object has", async () => {
-    // The ids come from the app's resource files, so they can be anything. These used to throw, or write onto
-    // Object.values itself, and drop the app's resources.
+    // The ids come from the app's resource files, so they can be anything, including names every object already has.
     const ids = ["constructor", "__proto__", "toString", "a"];
     stubFetch((url) => {
         const value = url.includes("resource.nb.json") ? "bokmål" : "nynorsk";
@@ -98,8 +97,7 @@ test("merges resources whose ids name a property every object has", async () => 
 
 test("keeps the languages that parse when one resource file has no resources array", async () => {
     stubFetch((url) => {
-        // A file that is valid JSON but carries no "resources" array used to throw inside mergeResourceFiles and
-        // drop the app entirely — including the language that parsed fine.
+        // Valid JSON with no "resources" array. The app keeps the language that parsed fine.
         if (url.includes("resource.nb.json")) return JSON.stringify({ language: "nb" });
         return JSON.stringify({ resources: [{ id: "a", value: "nynorsk" }] });
     });
@@ -378,7 +376,7 @@ test("caches latest versions when a lookup answers 404, which asking again will 
 /**
  * Example data, assembled from the testmotor and from disk.
  *
- * These run against the real app catalogue, because which apps share a data type is exactly what is under test —
+ * These run against the real app catalogue, because which apps share a data type is exactly what is under test:
  * a fixture catalogue could not go wrong in the way the real one does. Everything else is stubbed: the testmotor,
  * the schemas fetched from Altinn Studio, and the example directory.
  */

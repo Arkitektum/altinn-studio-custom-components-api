@@ -32,8 +32,8 @@ export function exampleDataDir() {
 /**
  * The label an example file is offered under: its stem, without the ordering prefix or the file extension.
  *
- * The testmotor strips both before answering — `01_Maksimumsversjon.xml` on its Azure share arrives as
- * `Maksimumsversjon` — so disk files are stripped the same way rather than leaving one dropdown mixing two
+ * The testmotor strips both before answering (`01_Maksimumsversjon.xml` on its Azure share arrives as
+ * `Maksimumsversjon`), so disk files are stripped the same way rather than leaving one dropdown mixing two
  * conventions. Nothing downstream reads the extension: the name is a label and a selection key, nothing more.
  *
  * @param {string} fileName - The file name as it is on disk, e.g. "01_Maksimumsversjon.xml".
@@ -62,7 +62,7 @@ export async function readExampleFilesFromDisk(folderPath) {
     try {
         entries = await fs.readdir(folderPath, { withFileTypes: true });
     } catch (error) {
-        // A missing folder is expected — it means no examples. Anything else is a real problem worth reporting.
+        // A missing folder is expected: it means no examples. Anything else is a real problem worth reporting.
         if (error.code === "ENOENT") {
             return [];
         }

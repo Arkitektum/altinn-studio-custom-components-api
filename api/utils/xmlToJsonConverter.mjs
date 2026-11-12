@@ -10,9 +10,9 @@ import { externalSchemaReferences, extractValueKinds, typedValue } from "./xsdVa
  *
  * It is a native addon: its binding is compiled for the platform it was installed on, and loading it is the one
  * thing here that can fail for a reason that has nothing to do with this code. `functions.mjs` imports this module
- * for the sake of two functions, so at import time that failure used to reach everything importing *it* — including
- * the fetching and parsing that never goes near XML. Deferring the load keeps that cost, and that failure, with the
- * code that needs the parser.
+ * for the sake of two functions, and loading the addon at import time would make everything importing *it* fail with
+ * it, including the fetching and parsing that never goes near XML. Deferring the load keeps that cost, and that
+ * failure, with the code that needs the parser.
  *
  * Required rather than imported because it is CommonJS and the load has to be synchronous: the converter is called
  * from a synchronous map over an app's example files.
@@ -64,11 +64,10 @@ function extractArrayPaths(xsdDoc) {
 /**
  * Parses an XSD once, so the files validated against it don't each pay for it.
  *
- * A data type's examples all share one schema, and parsing it is the expensive half of the work: an app with eight
- * examples used to parse the same XSD eight times and walk it eight times looking for `maxOccurs`. Separating the
- * schema from the file means that happens once per data type instead of once per file.
+ * A data type's examples all share one schema, and parsing it is the expensive half of the work, along with walking
+ * it for `maxOccurs`. Separating the schema from the file means both happen once per data type, not once per file.
  *
- * The parsed document is reused across validations, which is safe — validating reads the schema, it does not consume
+ * The parsed document is reused across validations, which is safe: validating reads the schema, it does not consume
  * it. It holds native memory for as long as it is referenced, so callers should let it go once their files are done
  * rather than keeping it around.
  *
@@ -99,11 +98,11 @@ export function convertXmlToJson(xmlContent, schema) {
     const xmlDoc = libxml().parseXml(xmlContent);
 
     // Validate XML. This converter has no idea which app or file it was handed, so it stays silent and reports through
-    // the thrown error — the caller knows the context and records it (see api/utils/logger.mjs).
+    // the thrown error, and the caller knows the context and records it (see api/utils/logger.mjs).
     if (!xmlDoc.validate(schema.document)) {
         // One error per line: the logger indents multi-line details under the file they belong to.
         const validationMessages = xmlDoc.validationErrors.map((e) => e.message.trim()).join("\n");
-        // Throw instead of process.exit so a single invalid example doesn't take down the whole dev server.
+        // Thrown, so the caller skips this one example and the server carries on.
         throw new Error(`XML does not conform to XSD:\n${validationMessages}`);
     }
 

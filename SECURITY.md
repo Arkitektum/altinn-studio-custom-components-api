@@ -49,14 +49,14 @@ A few properties are relevant when assessing security:
   the API answers only to `localhost`, to IP addresses, and to the names in `ALLOWED_HOSTS`, and refuses anything else
   with a 403 before any endpoint runs.
 - **FtPB testmotor.**
-  The main form and subform example data is fetched from `TESTMOTOR_URL` over open endpoints, with **no token attached** — the
+  The main form and subform example data is fetched from `TESTMOTOR_URL` over open endpoints, with **no token attached**, and the
   `GITEA_TOKEN` above must never be sent there. The XML it answers is parsed and validated against a schema fetched
   from Altinn Studio, so treat it as remote input like any other.
 - **Untrusted input.**
   The API parses XML example data and remote files.
   Treat fetched/parsed content as untrusted and validate before use.
 - **No personal data.**
-  Example data and logs must use synthetic data only — never real or personal data. This applies to the files in this
+  Example data and logs must use synthetic data only, never real or personal data. This applies to the files in this
   repository and to anything added to the testmotor's share.
 
 ## Dependencies

@@ -157,7 +157,7 @@ test("throws when the schema itself is not a schema", () => {
 
 test("reuses one compiled schema across files, including after one of them fails", () => {
     // The schema is parsed once per data type and handed to every file in the set, so validating must not consume or
-    // disturb it — and one invalid example must not spoil the files after it.
+    // disturb it, and one invalid example must not spoil the files after it.
     const schema = compileXmlSchema(XSD);
     const invalid = '<?xml version="1.0" encoding="utf-8"?><skjema><ukjentFelt>nei</ukjentFelt></skjema>';
 

@@ -60,7 +60,7 @@ export function compareCatalogueWithTestmotor({ catalogue, testmotorApps, formDa
     const catalogueAppNames = new Set(catalogue.map((app) => app.appName));
 
     // How many catalogue apps claim each data type. A forms/ folder is named after the data type rather than the
-    // app, so it only counts as an app's example data when that app is the only one claiming it — the same rule
+    // app, so it only counts as an app's example data when that app is the only one claiming it, the same rule
     // getJsonExampleData applies, so this report says what the dashboard will actually show.
     const claimsPerDataType = new Map();
     for (const app of catalogue) {
