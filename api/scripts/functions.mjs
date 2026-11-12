@@ -41,26 +41,41 @@ const EXAMPLE_DATA_APP_CONCURRENCY = 8;
 const limitExampleDataApp = createConcurrencyLimiter(EXAMPLE_DATA_APP_CONCURRENCY);
 
 /**
+ * Asks a registry for a package's latest version, and answers null when it cannot be had.
+ *
+ * Every failure answers null, and a failure that may not happen again (a timeout, a 5xx, a 429) is noted first, so the
+ * endpoint does not cache an answer that is missing a version only because a registry had a bad moment.
+ *
+ * @param {string} url - Where to ask.
+ * @param {(data: any) => string|null|undefined} pickVersion - Reads the version out of the parsed answer. It runs
+ *   inside the same guard, so an answer of an unexpected shape also answers null.
+ * @param {Object} [headers] - Extra request headers.
+ * @returns {Promise<string|null>} The version, or null.
+ */
+async function fetchLatestVersion(url, pickVersion, headers) {
+    try {
+        const response = await fetch(url, { headers, signal: AbortSignal.timeout(requestTimeoutMs()) });
+        if (!response.ok) {
+            if (isTransientStatus(response.status)) noteTransientFailure();
+            return null;
+        }
+        return pickVersion(await readBoundedJson(response)) ?? null;
+    } catch (error) {
+        if (isTransientError(error)) noteTransientFailure();
+        return null;
+    }
+}
+
+/**
  * Fetches the latest version of a package from the npm registry.
  *
  * @param {string} packageName - The name of the npm package to fetch the latest version for.
  * @returns {Promise<string|null>} The latest version of the package, or null if it cannot be fetched.
  */
 async function fetchLatestVersionFromNpm(packageName) {
-    try {
-        // Encode every "/" so scoped names like "@scope/name" become "@scope%2Fname" for the registry path.
-        const encodedName = packageName.replaceAll("/", "%2F");
-        const response = await fetch(`https://registry.npmjs.org/${encodedName}/latest`, { signal: AbortSignal.timeout(requestTimeoutMs()) });
-        if (!response.ok) {
-            if (isTransientStatus(response.status)) noteTransientFailure();
-            return null;
-        }
-        const data = await readBoundedJson(response);
-        return data.version ?? null;
-    } catch (error) {
-        if (isTransientError(error)) noteTransientFailure();
-        return null;
-    }
+    // Encode every "/" so scoped names like "@scope/name" become "@scope%2Fname" for the registry path.
+    const encodedName = packageName.replaceAll("/", "%2F");
+    return fetchLatestVersion(`https://registry.npmjs.org/${encodedName}/latest`, (data) => data.version);
 }
 
 /**
@@ -70,22 +85,11 @@ async function fetchLatestVersionFromNpm(packageName) {
  * @returns {Promise<string|null>} The latest version of the package, or null if it cannot be fetched.
  */
 async function fetchLatestVersionFromGithub(repo) {
-    try {
-        // GitHub's REST API rejects requests without a User-Agent header (HTTP 403), so one must be sent explicitly.
-        const response = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
-            headers: { "User-Agent": "altinn-studio-custom-components-api", Accept: "application/vnd.github+json" },
-            signal: AbortSignal.timeout(requestTimeoutMs())
-        });
-        if (!response.ok) {
-            if (isTransientStatus(response.status)) noteTransientFailure();
-            return null;
-        }
-        const data = await readBoundedJson(response);
-        return data.tag_name?.replace(/^v/, "") ?? null;
-    } catch (error) {
-        if (isTransientError(error)) noteTransientFailure();
-        return null;
-    }
+    // GitHub's REST API rejects requests without a User-Agent header (HTTP 403), so one must be sent explicitly.
+    return fetchLatestVersion(`https://api.github.com/repos/${repo}/releases/latest`, (data) => data.tag_name?.replace(/^v/, ""), {
+        "User-Agent": "altinn-studio-custom-components-api",
+        Accept: "application/vnd.github+json"
+    });
 }
 
 /**
@@ -99,20 +103,9 @@ async function fetchLatestVersionFromGithub(repo) {
  * @returns {Promise<string|null>} The latest stable version of the package, or null if it cannot be fetched.
  */
 async function fetchLatestVersionFromNuget(feed, packageName) {
-    try {
-        // The base address takes the id in lower case, as the NuGet v3 protocol requires.
-        const id = encodeURIComponent(packageName.toLowerCase());
-        const response = await fetch(`${feed}${id}/index.json`, { signal: AbortSignal.timeout(requestTimeoutMs()) });
-        if (!response.ok) {
-            if (isTransientStatus(response.status)) noteTransientFailure();
-            return null;
-        }
-        const data = await readBoundedJson(response);
-        return latestStableVersion(data.versions);
-    } catch (error) {
-        if (isTransientError(error)) noteTransientFailure();
-        return null;
-    }
+    // The base address takes the id in lower case, as the NuGet v3 protocol requires.
+    const id = encodeURIComponent(packageName.toLowerCase());
+    return fetchLatestVersion(`${feed}${id}/index.json`, (data) => latestStableVersion(data.versions));
 }
 
 /**
@@ -227,6 +220,22 @@ async function fetchGiteaFileContent(appOwner, appName, filePath, { optional = f
 const DEFAULT_DISPLAY_LAYOUT_FILE = { name: "DisplayLayout", path: "App/ui/form/layouts/DisplayLayout.json" };
 
 /**
+ * Fetches a JSON file from an Altinn Studio app repository and parses it.
+ *
+ * @async
+ * @param {string} appOwner - The owner of the application repository.
+ * @param {string} appName - The name of the application repository.
+ * @param {string} filePath - The path to the file within the repository.
+ * @param {Object} [options] - As for fetchGiteaFileContent.
+ * @returns {Promise<Object|null>} The parsed JSON, or null when the file is not there (a 404).
+ * @throws {Error} If the fetch fails or the content is not valid JSON.
+ */
+async function fetchGiteaJson(appOwner, appName, filePath, options) {
+    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath, options);
+    return fileContent ? JSON.parse(fileContent) : null;
+}
+
+/**
  * Fetches the display layout JSON from an Altinn Studio app repository.
  *
  * @async
@@ -238,12 +247,7 @@ const DEFAULT_DISPLAY_LAYOUT_FILE = { name: "DisplayLayout", path: "App/ui/form/
  * @throws {Error} If fetching or parsing the display layout fails.
  */
 async function fetchDisplayLayoutFromAltinnStudio(appOwner, appName, filePath) {
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
-    if (!fileContent) {
-        return null;
-    }
-    const jsonResponse = JSON.parse(fileContent);
-    return jsonResponse;
+    return fetchGiteaJson(appOwner, appName, filePath);
 }
 
 /**
@@ -261,12 +265,7 @@ async function fetchSubFormDisplayLayoutFromAltinnStudio(appOwner, appName, subF
     const filePath = `App/ui/subform-${subFormDataType}/layouts/${subFormDataType}.json`;
     // getSubFormLayout reports a missing layout as an error naming the subform, so a 404 warning here would only
     // report the same thing twice.
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath, { optional: true });
-    if (!fileContent) {
-        return null;
-    }
-    const jsonResponse = JSON.parse(fileContent);
-    return jsonResponse;
+    return fetchGiteaJson(appOwner, appName, filePath, { optional: true });
 }
 
 /**
@@ -377,12 +376,7 @@ async function fetchPackageLockFromAltinnStudio(appOwner, appName) {
     const filePath = "App/package-lock.json";
     // getPackageVersions reports the app as unresolved, which covers a missing lockfile as well as one that
     // doesn't list the components package.
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath, { optional: true });
-    if (!fileContent) {
-        return null;
-    }
-    const jsonResponse = JSON.parse(fileContent);
-    return jsonResponse;
+    return fetchGiteaJson(appOwner, appName, filePath, { optional: true });
 }
 
 /**
@@ -398,12 +392,7 @@ async function fetchAppResourceFile(appOwner, appName, language = "nb") {
     const filePath = `App/config/texts/resource.${language}.json`;
     // Apps are not required to ship every language (most have no nynorsk file), so a missing one is normal and not
     // worth a warning. getAppResourceValues still warns about an app with no readable resource file at all.
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath, { optional: true });
-    if (!fileContent) {
-        return null;
-    }
-    const jsonResponse = JSON.parse(fileContent);
-    return jsonResponse;
+    return fetchGiteaJson(appOwner, appName, filePath, { optional: true });
 }
 
 /**
@@ -672,12 +661,7 @@ async function fetchXmlSchemaFromAltinnStudio(appOwner, appName, dataType) {
  */
 async function fetchApplicationMetadataFromAltinnStudio(appOwner, appName) {
     const filePath = "App/config/applicationmetadata.json";
-    const fileContent = await fetchGiteaFileContent(appOwner, appName, filePath);
-    if (!fileContent) {
-        return null;
-    }
-    const jsonResponse = JSON.parse(fileContent);
-    return jsonResponse;
+    return fetchGiteaJson(appOwner, appName, filePath);
 }
 
 /**

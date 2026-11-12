@@ -232,6 +232,24 @@ test("takes the latest stable Dibk.Ftpb.Common.AltinnApps version from the NuGet
     assert.ok(requested.includes("https://nugetserver-api.ft.dibk.no/v3/package/dibk.ftpb.common.altinnapps/index.json"), requested.join(", "));
 });
 
+test("reads the npm version and the GitHub release tag, sending GitHub the User-Agent it requires", async () => {
+    const headersFor = {};
+    globalThis.fetch = async (url, init) => {
+        const target = String(url);
+        headersFor[new URL(target).host] = new Headers(init?.headers);
+        if (target.startsWith("https://registry.npmjs.org/"))
+            return { ok: true, status: 200, text: async () => JSON.stringify({ version: "17.11.1" }) };
+        if (target.startsWith("https://api.github.com/")) return { ok: true, status: 200, text: async () => JSON.stringify({ tag_name: "v4.29.0" }) };
+        return { ok: false, status: 404, text: async () => "" };
+    };
+
+    const versions = await getLatestPackageVersions();
+
+    assert.equal(versions.altinnStudioCustomComponents, "17.11.1");
+    assert.equal(versions.altinnAppFrontend, "4.29.0", "the leading v of the tag is dropped");
+    assert.equal(headersFor["api.github.com"].get("user-agent"), "altinn-studio-custom-components-api");
+});
+
 test("answers null for the NuGet version when the feed does not know the package", async () => {
     stubFetch(() => null);
     const versions = await getLatestPackageVersions();
