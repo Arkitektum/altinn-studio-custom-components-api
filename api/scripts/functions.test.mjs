@@ -820,8 +820,9 @@ test("carries the reason on the app when a schema request fails outright", async
     assert.equal(mainFormEntries(result).length, altinnStudioApps.length);
 });
 
-test("drops a subform that could not be processed, and nothing else", async () => {
-    // A schema request that fails outright throws, and costs that subform under that app rather than the app.
+test("carries the reason on a subform that could not be processed, and on nothing else", async () => {
+    // A schema request that fails outright throws, and costs that subform under that app rather than the app. The
+    // entry stays, so the dashboard can say the examples could not be fetched rather than that there are none.
     const gjennomfoeringsplan = { GjennomfoeringsplanDataV7: [{ fileName: "GjennomfoeringsplanDataV7.xml", contents: xml("plan") }] };
     stubExampleSources({
         apps: [{ appId: "fa-v5", mainFormId: "FA" }],
@@ -835,7 +836,9 @@ test("drops a subform that could not be processed, and nothing else", async () =
         result.every((entry) => entry !== null),
         "a subform that could not be processed must leave no hole in the result"
     );
-    assert.equal(subformEntry(result, "fa-v5", "GjennomfoeringsplanDataV7"), undefined);
+    const entry = subformEntry(result, "fa-v5", "GjennomfoeringsplanDataV7");
+    assert.deepEqual(entry.files, []);
+    assert.match(entry.error, /status 500/);
     assert.equal(mainFormEntries(result).length, altinnStudioApps.length);
 });
 

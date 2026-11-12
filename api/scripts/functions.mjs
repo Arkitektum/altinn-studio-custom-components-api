@@ -993,8 +993,8 @@ async function mainFormExampleEntry(app, sources) {
  * @param {Object} app - The catalogue entry declaring the subform.
  * @param {string} dataType - The subform's data type.
  * @param {Object} sources - As for readMainFormExampleFiles.
- * @returns {Promise<ExampleDataEntry|null>} Null when the subform could not be processed at all, which is reported
- *   and costs that one subform rather than the app it was reached through.
+ * @returns {Promise<ExampleDataEntry>} An entry carrying the reason when the subform could not be processed at all,
+ *   which costs that one subform rather than the app it was reached through.
  */
 async function subformExampleEntry(app, dataType, { testmotorApps, testmotorError }) {
     const { appOwner, appName } = app;
@@ -1018,7 +1018,7 @@ async function subformExampleEntry(app, dataType, { testmotorApps, testmotorErro
         return { appOwner, appName, dataType, error: converted.error, files: converted.files };
     } catch (error) {
         log.error({ scope, category: "Subform example data not processed", message: dataType, detail: error.message });
-        return null;
+        return { appOwner, appName, dataType, error: error.message, files: [] };
     }
 }
 
@@ -1028,7 +1028,7 @@ async function subformExampleEntry(app, dataType, { testmotorApps, testmotorErro
  * @async
  * @param {Object} app - The catalogue entry.
  * @param {Object} sources - As for readMainFormExampleFiles.
- * @returns {Promise<Array<ExampleDataEntry|null>>}
+ * @returns {Promise<ExampleDataEntry[]>}
  */
 async function appExampleEntries(app, sources) {
     const subForms = app.subForms ?? [];
@@ -1075,5 +1075,5 @@ export async function getJsonExampleData() {
     // nothing about what comes out of it.
     const entriesPerApp = await Promise.all(altinnStudioApps.map((app) => limitExampleDataApp(() => appExampleEntries(app, sources))));
 
-    return entriesPerApp.flat().filter((entry) => entry !== null);
+    return entriesPerApp.flat();
 }
