@@ -36,3 +36,45 @@ export function extractNugetPackageVersion(csproj, packageName) {
     const elementVersion = /<Version\s*>([^<]*)<\/Version\s*>/i.exec(reference[1] ?? "");
     return attributeVersion?.[1]?.trim() || elementVersion?.[1]?.trim() || null;
 }
+
+/**
+ * Splits a version into its numeric release parts, or answers null for a prerelease or anything that is not a version.
+ *
+ * NuGet versions can have a fourth part (`1.2.3.4`), and build metadata after a `+` does not count for ordering.
+ *
+ * @param {string} version - The version to split.
+ * @returns {number[]|null} The release parts, or null.
+ */
+function stableVersionParts(version) {
+    const match = /^(\d+(?:\.\d+){0,3})(?:\+.*)?$/.exec(String(version).trim());
+    return match ? match[1].split(".").map(Number) : null;
+}
+
+/**
+ * Picks the highest stable version from a list of versions, as a NuGet feed lists them.
+ *
+ * A feed lists versions in the order they were published, not by version, so the last one is not necessarily the
+ * highest. Prereleases are left out, the same way npm's `latest` tag and GitHub's latest release leave them out.
+ *
+ * @param {string[]} versions - The versions to choose from.
+ * @returns {string|null} The highest stable version, or null when there is none.
+ */
+export function latestStableVersion(versions) {
+    let latest = null;
+    let latestParts = null;
+    for (const version of Array.isArray(versions) ? versions : []) {
+        const parts = stableVersionParts(version);
+        if (!parts) continue;
+        // A missing part reads as zero. Comparing over this version's own parts is enough: parts only the current latest
+        // has can never make this one higher.
+        let comparison = latestParts ? 0 : 1;
+        for (let index = 0; comparison === 0 && index < parts.length; index++) {
+            comparison = Math.sign((parts[index] ?? 0) - (latestParts[index] ?? 0));
+        }
+        if (comparison > 0) {
+            latest = version;
+            latestParts = parts;
+        }
+    }
+    return latest;
+}

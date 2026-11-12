@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { extractNugetPackageVersion } from "./nugetPackageVersion.mjs";
+import { extractNugetPackageVersion, latestStableVersion } from "./nugetPackageVersion.mjs";
 
 const packageName = "Dibk.Ftpb.Common.AltinnApps";
 
@@ -75,4 +75,33 @@ test("returns null for an empty version", () => {
 test("returns null when given a non-string", () => {
     assert.equal(extractNugetPackageVersion(null, packageName), null);
     assert.equal(extractNugetPackageVersion(undefined, packageName), null);
+});
+
+test("picks the highest stable version, whatever order the feed lists them in", () => {
+    const versions = ["1.2.2", "1.2.9", "1.3.0-alpha", "1.2.10", "1.7.4", "2.0.0-alpha", "2.0.0-alpha.2", "1.7.5"];
+    assert.equal(latestStableVersion(versions), "1.7.5");
+});
+
+test("compares each part as a number, so 1.10.0 is above 1.9.0", () => {
+    assert.equal(latestStableVersion(["1.10.0", "1.9.0"]), "1.10.0");
+    assert.equal(latestStableVersion(["1.9.0", "1.10.0"]), "1.10.0");
+});
+
+test("reads a missing part as zero and orders a fourth part", () => {
+    assert.equal(latestStableVersion(["1.2.0.1", "1.2"]), "1.2.0.1");
+    assert.equal(latestStableVersion(["1.2", "1.1.9"]), "1.2");
+});
+
+test("keeps the first of two versions that are equal", () => {
+    assert.equal(latestStableVersion(["1.2.0", "1.2"]), "1.2.0");
+});
+
+test("ignores build metadata when deciding whether a version is stable", () => {
+    assert.equal(latestStableVersion(["1.0.0", "1.1.0+abc"]), "1.1.0+abc");
+});
+
+test("answers null when there is no stable version", () => {
+    assert.equal(latestStableVersion(["2.0.0-alpha"]), null);
+    assert.equal(latestStableVersion([]), null);
+    assert.equal(latestStableVersion(undefined), null);
 });

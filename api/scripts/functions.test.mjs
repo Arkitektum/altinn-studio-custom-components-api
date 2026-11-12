@@ -218,7 +218,28 @@ test("starts a request's timeout when it gets a slot, not while it waits for one
     assert.equal(result.length, altinnStudioApps.length);
 });
 
-test("abandons the npm and GitHub version lookups too, answering null for each", async (t) => {
+test("takes the latest stable Dibk.Ftpb.Common.AltinnApps version from the NuGet feed's version list", async () => {
+    const requested = [];
+    globalThis.fetch = async (url) => {
+        requested.push(String(url));
+        if (String(url).startsWith("https://nugetserver-api.ft.dibk.no/")) {
+            const body = JSON.stringify({ versions: ["1.7.5", "2.0.0-alpha", "1.7.4"] });
+            return { ok: true, status: 200, text: async () => body, json: async () => JSON.parse(body) };
+        }
+        return { ok: false, status: 404, text: async () => "" };
+    };
+    const versions = await getLatestPackageVersions();
+    assert.equal(versions.dibkFtpbCommonAltinnApps, "1.7.5");
+    assert.ok(requested.includes("https://nugetserver-api.ft.dibk.no/v3/package/dibk.ftpb.common.altinnapps/index.json"), requested.join(", "));
+});
+
+test("answers null for the NuGet version when the feed does not know the package", async () => {
+    stubFetch(() => null);
+    const versions = await getLatestPackageVersions();
+    assert.equal(versions.dibkFtpbCommonAltinnApps, null);
+});
+
+test("abandons the npm, GitHub and NuGet version lookups too, answering null for each", async (t) => {
     withRequestTimeout(t, "30");
     const signals = stubHangingFetch();
 

@@ -11,12 +11,12 @@ import packageSources from "../data/packageSources.mjs";
 import { BodyTooLargeError, readBoundedJson, readBoundedText } from "../utils/boundedBody.mjs";
 import { compileXmlSchema, convertXmlToJson } from "../utils/xmlToJsonConverter.mjs";
 import { exampleDataDir, readExampleFilesFromDisk } from "../utils/exampleFiles.mjs";
+import { extractNugetPackageVersion, latestStableVersion } from "../utils/nugetPackageVersion.mjs";
 import { fetchTestmotorApps, fetchTestmotorFormXml, fetchTestmotorSubformXml } from "../utils/testmotorClient.mjs";
 import { isTransientError, isTransientStatus, noteTransientFailure } from "../utils/cache.mjs";
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
 import { extractFields } from "../utils/xsdValueTypes.mjs";
-import { extractNugetPackageVersion } from "../utils/nugetPackageVersion.mjs";
 import { log } from "../utils/logger.mjs";
 import { requestTimeoutMs } from "../utils/settings.mjs";
 import { stripJsonComments } from "../utils/stripJsonComments.mjs";
@@ -100,6 +100,33 @@ async function fetchLatestVersionFromGithub(repo) {
 }
 
 /**
+ * Fetches the latest stable version of a package from a NuGet v3 feed.
+ *
+ * Reads the feed's version list for the package (its PackageBaseAddress `index.json`), which lists every version in
+ * the order it was published, and picks the highest stable one.
+ *
+ * @param {string} feed - The feed's package base address, ending in a slash.
+ * @param {string} packageName - The NuGet package id.
+ * @returns {Promise<string|null>} The latest stable version of the package, or null if it cannot be fetched.
+ */
+async function fetchLatestVersionFromNuget(feed, packageName) {
+    try {
+        // The base address takes the id in lower case, as the NuGet v3 protocol requires.
+        const id = encodeURIComponent(packageName.toLowerCase());
+        const response = await fetch(`${feed}${id}/index.json`, { signal: AbortSignal.timeout(requestTimeoutMs()) });
+        if (!response.ok) {
+            if (isTransientStatus(response.status)) noteTransientFailure();
+            return null;
+        }
+        const data = await readBoundedJson(response);
+        return latestStableVersion(data.versions);
+    } catch (error) {
+        if (isTransientError(error)) noteTransientFailure();
+        return null;
+    }
+}
+
+/**
  * Fetches the latest versions of all packages defined in the packageSources object.
  *
  * @returns {Promise<Object>} An object containing the latest versions of all packages.
@@ -112,6 +139,8 @@ export async function getLatestPackageVersions() {
             version = await fetchLatestVersionFromNpm(source.package);
         } else if (source.type === "github") {
             version = await fetchLatestVersionFromGithub(source.repo);
+        } else if (source.type === "nuget") {
+            version = await fetchLatestVersionFromNuget(source.feed, source.package);
         }
         // The fetch helpers swallow their errors and answer null, so this is the only place the outcome is visible.
         if (version) {
