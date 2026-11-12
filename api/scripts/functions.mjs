@@ -16,6 +16,7 @@ import { isTransientError, isTransientStatus, noteTransientFailure } from "../ut
 import { createConcurrencyLimiter } from "../utils/concurrencyLimiter.mjs";
 import { extractAltinnAppFrontendVersions } from "../utils/altinnAppFrontendVersions.mjs";
 import { extractFields } from "../utils/xsdValueTypes.mjs";
+import { extractNugetPackageVersion } from "../utils/nugetPackageVersion.mjs";
 import { log } from "../utils/logger.mjs";
 import { requestTimeoutMs } from "../utils/settings.mjs";
 import { stripJsonComments } from "../utils/stripJsonComments.mjs";
@@ -537,6 +538,27 @@ async function fetchAltinnAppIndexHtml(appOwner, appName) {
 }
 
 /**
+ * Fetches an app's App.csproj and reads the version of the Dibk.Ftpb.Common.AltinnApps NuGet package it references.
+ *
+ * Unlike the other package versions, a failure here does not drop the app from the report: the version is shown as
+ * missing and the failure is logged, since the other columns for the app are still worth seeing.
+ *
+ * @async
+ * @param {string} appOwner - The owner of the application repository.
+ * @param {string} appName - The name of the application repository.
+ * @returns {Promise<string|null>} The referenced version, or null when the file or the reference is missing.
+ */
+async function fetchDibkFtpbCommonAltinnAppsVersion(appOwner, appName) {
+    try {
+        const csproj = await fetchGiteaFileContent(appOwner, appName, "App/App.csproj");
+        return extractNugetPackageVersion(csproj, "Dibk.Ftpb.Common.AltinnApps");
+    } catch (error) {
+        log.warn({ scope: `${appOwner}/${appName}`, category: "Dibk.Ftpb.Common.AltinnApps version not resolved", message: error.message });
+        return null;
+    }
+}
+
+/**
  * Extracts the version of the altinn-studio-custom-components package from the given package-lock.json content.
  * @param {Object} packageLock - The parsed JSON content of the package-lock.json file.
  * @returns {string} The version of the altinn-studio-custom-components package.
@@ -557,9 +579,9 @@ function extractAltinnStudioCustomComponentsVersion(packageLock) {
 }
 
 /**
- * Fetches and returns the versions of the altinn-studio-custom-components package and the altinn-app-frontend assets for all Altinn Studio apps.
+ * Fetches and returns the versions of the altinn-studio-custom-components package, the altinn-app-frontend assets and the Dibk.Ftpb.Common.AltinnApps NuGet package for all Altinn Studio apps.
  *
- * Iterates over the list of Altinn Studio applications, fetches their package-lock.json files and Index.cshtml files to extract version information,
+ * Iterates over the list of Altinn Studio applications, fetches their package-lock.json, Index.cshtml and App.csproj files to extract version information,
  * and returns an array of objects containing the app owner, app name, and version details. If fetching version information fails for an app, it logs
  * the error and skips that app.
  *
@@ -570,9 +592,10 @@ function extractAltinnStudioCustomComponentsVersion(packageLock) {
 export async function getPackageVersions() {
     const versionPromises = altinnStudioApps.map(async ({ appOwner, appName }) => {
         try {
-            const [packageLock, indexHtml] = await Promise.all([
+            const [packageLock, indexHtml, dibkFtpbCommonAltinnAppsVersion] = await Promise.all([
                 fetchPackageLockFromAltinnStudio(appOwner, appName),
-                fetchAltinnAppIndexHtml(appOwner, appName)
+                fetchAltinnAppIndexHtml(appOwner, appName),
+                fetchDibkFtpbCommonAltinnAppsVersion(appOwner, appName)
             ]);
             const altinnStudioCustomComponentsVersion = extractAltinnStudioCustomComponentsVersion(packageLock);
             const altinnAppFrontendVersions = extractAltinnAppFrontendVersions(indexHtml);
@@ -583,7 +606,8 @@ export async function getPackageVersions() {
                 packageVersions: {
                     altinnStudioCustomComponents: altinnStudioCustomComponentsVersion,
                     altinnAppFrontendCSS: altinnAppFrontendVersions.css,
-                    altinnAppFrontendJS: altinnAppFrontendVersions.js
+                    altinnAppFrontendJS: altinnAppFrontendVersions.js,
+                    dibkFtpbCommonAltinnApps: dibkFtpbCommonAltinnAppsVersion
                 }
             };
         } catch (error) {

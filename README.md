@@ -68,7 +68,7 @@ All routes are `GET` under `/api` and return JSON:
 | Route                        | Purpose                                                                                                                                                                    |
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/api/displayLayouts`        | Layout JSON for the tracked apps (used to compute component usage).                                                                                                        |
-| `/api/packageVersions`       | The custom-components version each tracked app currently uses.                                                                                                             |
+| `/api/packageVersions`       | The custom-components, app-frontend and Dibk.Ftpb.Common.AltinnApps versions each tracked app currently uses.                                                              |
 | `/api/latestPackageVersions` | Latest versions from npm / GitHub for the configured sources.                                                                                                              |
 | `/api/appResources`          | App-level text-resource values (accepts a `language` query param).                                                                                                         |
 | `/api/resources`             | The package's default text resources.                                                                                                                                      |

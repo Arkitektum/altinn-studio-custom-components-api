@@ -4,7 +4,14 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { getAppResourceValues, getJsonExampleData, getLatestPackageVersions, getSubformDataModels, supportedResourceLanguage } from "./functions.mjs";
+import {
+    getAppResourceValues,
+    getJsonExampleData,
+    getLatestPackageVersions,
+    getPackageVersions,
+    getSubformDataModels,
+    supportedResourceLanguage
+} from "./functions.mjs";
 import altinnStudioApps from "../data/altinnStudioApps.mjs";
 import { clearTestmotorCache } from "../utils/testmotorClient.mjs";
 import { createCachedFunction } from "../utils/cache.mjs";
@@ -965,4 +972,55 @@ test("carries the reason on a copy whose request failed outright, and keeps the 
         new RegExp(`^App/models/${dataType}\\.xsd could not be fetched from Altinn Studio \\(.*status 500.*\\)\\.$`)
     );
     assert.equal(entry.copies.find((copy) => copy.appName === keptApp).error, null);
+});
+
+/** The three files getPackageVersions reads for every app, with the App.csproj answer left to the test. */
+function packageVersionFiles(csprojForUrl) {
+    return (url) => {
+        if (url.endsWith("App/package-lock.json")) {
+            return JSON.stringify({ packages: { "node_modules/@arkitektum/altinn-studio-custom-components": { version: "17.11.1" } } });
+        }
+        if (url.endsWith("App/views/Home/Index.cshtml")) {
+            return '<meta data-altinn-app-frontend-version="4.15.0" /><link href="/altinn-app-frontend/4/altinn-app-frontend.css" />';
+        }
+        if (url.endsWith("App/App.csproj")) {
+            return csprojForUrl(url);
+        }
+        return null;
+    };
+}
+
+test("reads the Dibk.Ftpb.Common.AltinnApps version from each app's App.csproj", async () => {
+    stubFetch(packageVersionFiles(() => '<PackageReference Include="Dibk.Ftpb.Common.AltinnApps" Version="0.7.1" />'));
+    const versions = await getPackageVersions();
+    assert.equal(versions.length, altinnStudioApps.length);
+    assert.deepEqual(versions[0].packageVersions, {
+        altinnStudioCustomComponents: "17.11.1",
+        altinnAppFrontendCSS: "4",
+        altinnAppFrontendJS: "4.15.0",
+        dibkFtpbCommonAltinnApps: "0.7.1"
+    });
+});
+
+test("keeps an app whose App.csproj is missing or fails, with no Dibk.Ftpb.Common.AltinnApps version", async () => {
+    const [missing, failing] = altinnStudioApps;
+    globalThis.fetch = async (url) => {
+        const text = String(url);
+        if (text.includes(`/${failing.appOwner}/${failing.appName}/`) && text.endsWith("App/App.csproj")) {
+            return { ok: false, status: 500, text: async () => "" };
+        }
+        const body = packageVersionFiles((csprojUrl) =>
+            csprojUrl.includes(`/${missing.appOwner}/${missing.appName}/`)
+                ? null
+                : '<PackageReference Include="Dibk.Ftpb.Common.AltinnApps" Version="1.0.0" />'
+        )(text);
+        return body === null ? { ok: false, status: 404, text: async () => "" } : { ok: true, status: 200, text: async () => body };
+    };
+    const versions = await getPackageVersions();
+    assert.equal(versions.length, altinnStudioApps.length);
+    const byApp = (app) => versions.find((version) => version.appOwner === app.appOwner && version.appName === app.appName);
+    assert.equal(byApp(missing).packageVersions.dibkFtpbCommonAltinnApps, null);
+    assert.equal(byApp(missing).packageVersions.altinnStudioCustomComponents, "17.11.1");
+    assert.equal(byApp(failing).packageVersions.dibkFtpbCommonAltinnApps, null);
+    assert.equal(byApp(altinnStudioApps[2]).packageVersions.dibkFtpbCommonAltinnApps, "1.0.0");
 });
