@@ -111,9 +111,7 @@ export function convertXmlToJson(xmlContent, schema) {
 
     const parser = new XMLParser({
         ignoreAttributes: true,
-        attributeNamePrefix: "@",
         parseTagValue: false,
-        parseAttributeValue: true,
         trimValues: true,
         // Values are typed from the schema rather than guessed from how they look: guessing turns a kommunenummer like
         // 0301 into 301, and any text that happens to look like a number into one. Undefined keeps the text as it is.
@@ -124,7 +122,7 @@ export function convertXmlToJson(xmlContent, schema) {
 
         isArray: (tagName, jpath) => {
             // Example jpath: Order.Item or Order.Item.Sku
-            const normalized = jpath.replace(/\.@.*$/, "").split(".");
+            const normalized = jpath.split(".");
 
             return arrayPathList.some((xsdPath) => {
                 const xsdParts = xsdPath.split(".");

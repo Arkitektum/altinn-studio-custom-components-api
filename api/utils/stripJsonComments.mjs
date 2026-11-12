@@ -33,9 +33,5 @@ export function stripJsonComments(jsonString) {
             }
             return line;
         })
-        .filter((line) => {
-            const trimmed = line.trim();
-            return !trimmed.startsWith("//");
-        })
         .join("\n");
 }
