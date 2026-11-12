@@ -9,7 +9,6 @@ import {
     getAltinnStudioForms,
     getAppResourceValues,
     getApplicationMetadata,
-    getDefaultTextResources,
     getDisplayLayouts,
     getJsonExampleData,
     getLatestPackageVersions,
@@ -120,11 +119,6 @@ export function createApp() {
         // Narrowed before it is cached, not after: the cache is keyed on the argument, so handing it the query value as
         // it arrived would give every spelling of an unsupported language a fan-out and an entry of its own.
         get: (req) => cachedGetAppResourceValues(supportedResourceLanguage(req.query.language))
-    });
-
-    jsonEndpoint("/api/resources", {
-        failure: "Failed to fetch default text resources",
-        get: () => getDefaultTextResources()
     });
 
     jsonEndpoint("/api/altinnStudioForms", {

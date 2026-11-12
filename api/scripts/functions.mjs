@@ -1,6 +1,4 @@
 // Dependencies
-import { fileURLToPath } from "node:url";
-import fs from "node:fs/promises";
 import path from "node:path";
 
 // Data
@@ -21,16 +19,7 @@ import { log } from "../utils/logger.mjs";
 import { requestTimeoutMs } from "../utils/settings.mjs";
 import { stripJsonComments } from "../utils/stripJsonComments.mjs";
 
-// Resolve paths relative to this module rather than the current working directory, so the server works
-// regardless of where it is launched from.
-const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(moduleDir, "../..");
-const defaultTextResourcesFilePath = path.join(repoRoot, "node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json");
 const resourceValueLanguages = ["nb", "nn"];
-
-// Loaded lazily and cached on first successful read (see getDefaultTextResources), so a missing or malformed
-// resources.json costs that endpoint only, and the server still starts.
-let defaultTextResourcesCache;
 
 // Every endpoint fans out over all tracked apps at once, and the dashboard calls several endpoints together, so
 // without a cap one "Synchronize" opens well over a hundred connections to Altinn Studio at the same time (measured:
@@ -534,30 +523,6 @@ export async function getAppResourceValues(language) {
 
     const resources = await Promise.all(appResourcePromises);
     return resources.filter((resource) => resource !== null);
-}
-
-/**
- * Fetches the default text resources from a local JSON file.
- *
- * Reads `dist/resources.json` out of the installed `@arkitektum/altinn-studio-custom-components` package, parses it,
- * and keeps it for the life of the process. A read that fails is not kept, so the next call tries again.
- *
- * @async
- * @function
- * @returns {Promise<Object>} A promise that resolves to the parsed default text resources.
- * @throws {Error} If the file cannot be read or parsed. The endpoint answers 500 for it rather than a 200 with nothing,
- *   which a caller could not tell from a package that ships no resources.
- */
-export async function getDefaultTextResources() {
-    if (defaultTextResourcesCache !== undefined) {
-        return defaultTextResourcesCache;
-    }
-    try {
-        defaultTextResourcesCache = JSON.parse(await fs.readFile(defaultTextResourcesFilePath, "utf8"));
-        return defaultTextResourcesCache;
-    } catch (error) {
-        throw new Error(`Default text resources unreadable at ${defaultTextResourcesFilePath}: ${error.message}`, { cause: error });
-    }
 }
 
 /**

@@ -26,9 +26,7 @@ It is not published to npm and is not deployed: each developer runs it locally a
                   ┌─────────────┬───────┴────────┬──────────────────────┐
                   ▼             ▼                ▼                      ▼
           Altinn Studio   npm registry     FtPB testmotor        local files
-          (Gitea repos)   / GitHub         (example data)        (one main form, and the
-                                                                  components package's
-                                                                  default text resources)
+          (Gitea repos)   / GitHub         (example data)        (one main form)
 
   Shared with altinn-studio-api-tools, which is otherwise unrelated to this repository:
      @arkitektum/ftpb-testmotor-client   reaching the testmotor
@@ -50,7 +48,6 @@ All routes are `GET` under `/api` and return JSON. They are registered in `api/a
 | `/api/packageVersions`       | The custom-components, app-frontend and Dibk.Ftpb.Common.AltinnApps versions each tracked app currently uses.                                                                                 |
 | `/api/latestPackageVersions` | Latest versions from npm, GitHub and DIBK's NuGet feed for the sources in `packageSources.mjs`.                                                                                               |
 | `/api/appResources`          | App-level text-resource values (accepts a `language` query param).                                                                                                                            |
-| `/api/resources`             | The package's default text resources.                                                                                                                                                         |
 | `/api/altinnStudioForms`     | The configured list of tracked Altinn apps / forms.                                                                                                                                           |
 | `/api/exampleData`           | Example form + subform data, converted from XML to JSON. One entry per tracked app and one per subform each app declares. An entry carries an `error` when its examples could not be fetched. |
 | `/api/applicationMetadata`   | `applicationmetadata.json` for the tracked apps.                                                                                                                                              |
@@ -139,7 +136,7 @@ api/
     The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types. The last is the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land. It also asks the testmotor, per app, which declared subforms have no example files under that app, and names any it could not check.
 
 - **Local files.**
-  Default text resources are read from the installed package at `node_modules/@arkitektum/altinn-studio-custom-components/dist/resources.json`. The one main form the testmotor has no data for, `hoeringettersynuttalelse-v2`, is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml`.
+  The one main form the testmotor has no data for, `hoeringettersynuttalelse-v2`, is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml`.
 
     A `forms/` folder is named after the data type rather than the app, so it is only read when exactly one tracked app claims that data type. A folder named `FA` could not say whether it was `fa-v3`'s or `fa-v5`'s.
 

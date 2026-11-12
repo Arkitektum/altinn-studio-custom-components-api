@@ -71,7 +71,6 @@ All routes are `GET` under `/api` and return JSON:
 | `/api/packageVersions`       | The custom-components, app-frontend and Dibk.Ftpb.Common.AltinnApps versions each tracked app currently uses.                                                              |
 | `/api/latestPackageVersions` | Latest versions from npm, GitHub and DIBK's NuGet feed for the configured sources.                                                                                         |
 | `/api/appResources`          | App-level text-resource values (accepts a `language` query param).                                                                                                         |
-| `/api/resources`             | The package's default text resources.                                                                                                                                      |
 | `/api/altinnStudioForms`     | The configured list of tracked Altinn apps / forms.                                                                                                                        |
 | `/api/exampleData`           | Example form + subform data, converted from XML to JSON. Main forms and subforms come from the FtPB testmotor, and the one main form it holds no data for comes from disk. |
 | `/api/applicationMetadata`   | `applicationmetadata.json` for the tracked apps.                                                                                                                           |

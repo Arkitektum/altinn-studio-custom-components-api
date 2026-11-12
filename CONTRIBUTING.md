@@ -30,9 +30,8 @@ For an overview of what the API does and how it is structured, read [ARCHITECTUR
     yarn install
     ```
 
-    Installing pulls in three Arkitektum packages:
+    Installing pulls in two Arkitektum packages:
 
-    - `@arkitektum/altinn-studio-custom-components`, whose `dist/resources.json` the API reads the default text resources from at runtime. It is read as a file, not imported.
     - `@arkitektum/ftpb-testmotor-client`, which fetches the main form and subform examples.
     - `@arkitektum/ftpb-app-catalogue`, which is the list of apps this API tracks.
 
