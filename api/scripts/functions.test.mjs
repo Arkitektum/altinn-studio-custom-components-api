@@ -6,6 +6,7 @@ import path from "node:path";
 
 import {
     getAppResourceValues,
+    getDisplayLayouts,
     getJsonExampleData,
     getLatestPackageVersions,
     getPackageVersions,
@@ -1047,4 +1048,50 @@ test("keeps an app whose App.csproj is missing or fails, with no Dibk.Ftpb.Commo
     assert.equal(byApp(missing).packageVersions.altinnStudioCustomComponents, "17.11.1");
     assert.equal(byApp(failing).packageVersions.dibkFtpbCommonAltinnApps, null);
     assert.equal(byApp(altinnStudioApps[2]).packageVersions.dibkFtpbCommonAltinnApps, "1.0.0");
+});
+
+/** Gitea answering every layout file with a small layout, a 500 for the paths in `failing`, and broken JSON for those in `broken`. */
+function stubLayouts({ failing = [], broken = [] } = {}) {
+    globalThis.fetch = async (url) => {
+        const target = String(url);
+        if (failing.some((path) => target.endsWith(path))) {
+            return { ok: false, status: 500, statusText: "Internal Server Error", text: async () => "" };
+        }
+        if (broken.some((path) => target.endsWith(path))) {
+            return { ok: true, status: 200, text: async () => "{ not json" };
+        }
+        if (target.includes("/layouts/") && target.endsWith(".json")) {
+            return { ok: true, status: 200, text: async () => JSON.stringify({ data: { layout: [{ id: target.split("/").at(-1) }] } }) };
+        }
+        return { ok: false, status: 404, text: async () => "" };
+    };
+}
+
+const displayLayoutsOf = (result, appName) => result.find((entry) => entry.appName === appName)?.displayLayouts.map((layout) => layout.name);
+
+test("keeps an app's other layouts when one of its layout files cannot be fetched", async () => {
+    stubLayouts({ failing: ["App/ui/form/layouts/UttalelsePdf.json"] });
+
+    const result = await getDisplayLayouts();
+
+    assert.deepEqual(displayLayoutsOf(result, "hoeringettersynuttalelse-v2"), ["Uttalelse"]);
+    assert.equal(result.length, altinnStudioApps.length, "every app still has a layout to show");
+});
+
+test("keeps an app's other layouts when one of its layout files is not valid JSON", async () => {
+    stubLayouts({ broken: ["App/ui/eiendommerIPlanomraadet/layouts/eiendommerSomInngaarIPlanomraadet.json"] });
+
+    const result = await getDisplayLayouts();
+
+    assert.deepEqual(displayLayoutsOf(result, "hoeringettersyn-v2"), ["DisplayLayout"]);
+});
+
+test("leaves out an app none of whose layout files could be read", async () => {
+    stubLayouts({ failing: ["App/ui/form/layouts/Uttalelse.json", "App/ui/form/layouts/UttalelsePdf.json"] });
+
+    const result = await getDisplayLayouts();
+
+    assert.equal(displayLayoutsOf(result, "hoeringettersynuttalelse-v2"), undefined);
+    assert.equal(displayLayoutsOf(result, "varselplanoppstartuttalelse-v4"), undefined);
+    assert.equal(result.length, altinnStudioApps.length - 2);
 });

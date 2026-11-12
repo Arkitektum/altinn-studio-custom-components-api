@@ -1,4 +1,5 @@
 // Dependencies
+import "dotenv/config";
 import { pathToFileURL } from "node:url";
 
 // Data

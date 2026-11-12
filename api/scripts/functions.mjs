@@ -314,22 +314,30 @@ async function getSubFormLayout(appOwner, appName, subFormDataType) {
  * The resulting array holds one object per app, with the app owner, app name, data type, an array of named display layouts, and the subforms it
  * carries, each with the layout fetched from that app's repository. A subform is not an entry of its own: it is only ever seen through an app.
  *
+ * A layout file that cannot be fetched or parsed is left out and reported. An app none of whose layout files could be read is left out
+ * as well, so the array can be shorter than the catalogue.
+ *
  * @async
  * @function
- * @returns {Promise<Array<Object>>} A promise that resolves to an array of display layout objects, one per Altinn Studio app.
- * @throws {Error} If fetching or parsing any of the display layouts fails.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of display layout objects, one per Altinn Studio app that has one.
  */
 export async function getDisplayLayouts() {
     const layoutPromises = altinnStudioApps.map(({ appOwner, appName, dataType, layoutFiles, subForms }) => {
         const layoutFilesToFetch = layoutFiles?.length ? layoutFiles : [DEFAULT_DISPLAY_LAYOUT_FILE];
         return Promise.all(
+            // One file that cannot be read costs that file, not the app's other layouts.
             layoutFilesToFetch.map(async ({ name, path }) => {
-                const layout = await fetchDisplayLayoutFromAltinnStudio(appOwner, appName, path);
-                if (!layout) {
+                try {
+                    const layout = await fetchDisplayLayoutFromAltinnStudio(appOwner, appName, path);
+                    if (!layout) {
+                        return null;
+                    }
+                    log.ok({ scope: `${appOwner}/${appName}`, category: "Display layout", message: name });
+                    return { name, path, layout };
+                } catch (error) {
+                    log.error({ scope: `${appOwner}/${appName}`, category: "Display layout not fetched", message: name, detail: error.message });
                     return null;
                 }
-                log.ok({ scope: `${appOwner}/${appName}`, category: "Display layout", message: name });
-                return { name, path, layout };
             })
         )
             .then(async (fetchedLayouts) => {
