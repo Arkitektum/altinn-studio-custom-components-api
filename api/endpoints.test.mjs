@@ -1,5 +1,7 @@
 import { after, afterEach, before, describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import { request as httpRequest } from "node:http";
 
 import altinnStudioApps from "./data/altinnStudioApps.mjs";
@@ -229,6 +231,89 @@ describe("the language a caller asks for", () => {
             assert.ok(afterFirst > 0, "the first request fetched something");
             assert.equal(urls.length, afterFirst, "and the three that mean the same thing fetched nothing more");
         });
+    });
+});
+
+describe("the files of a published version of the package", () => {
+    /** A one-file tar archive, as npm packs one. */
+    function tarOf(name, content) {
+        const body = Buffer.from(content);
+        const header = Buffer.alloc(512);
+        header.write(name, 0);
+        header.write(`${body.length.toString(8).padStart(11, "0")}\0`, 124);
+        header.write("0", 156);
+        return Buffer.concat([header, body, Buffer.alloc((512 - (body.length % 512)) % 512), Buffer.alloc(1024)]);
+    }
+
+    /** Answers the npm registry for one version, with the given files in its dist folder, and records the urls asked for. */
+    function stubRegistry(version, files, { metadataStatus = 200 } = {}) {
+        const tarball = gzipSync(
+            Buffer.concat(
+                Object.entries(files)
+                    .map(([name, content]) => tarOf(`package/dist/${name}`, content).subarray(0, -1024))
+                    .concat(Buffer.alloc(1024))
+            )
+        );
+        const tarballUrl = `https://registry.npmjs.org/@arkitektum/altinn-studio-custom-components/-/altinn-studio-custom-components-${version}.tgz`;
+        const integrity = `sha512-${createHash("sha512").update(tarball).digest("base64")}`;
+        const urls = [];
+        globalThis.fetch = async (url) => {
+            urls.push(String(url));
+            if (String(url) === tarballUrl) return new Response(tarball);
+            return new Response(JSON.stringify({ dist: { tarball: tarballUrl, integrity } }), { status: metadataStatus });
+        };
+        return urls;
+    }
+
+    it("answers a file with its content type, cached for good, and with the CORS origin the client is served from", async () => {
+        stubRegistry("16.0.1", { "main.js": "console.log('16.0.1');", "49c816770b639989d28b.woff2": "font" });
+        const response = await originalFetch(`${base}/api/packageFiles/16.0.1/main.js`, { headers: { origin: "http://localhost:9000" } });
+        assert.equal(response.status, 200);
+        assert.equal(await response.text(), "console.log('16.0.1');");
+        assert.equal(response.headers.get("content-type"), "text/javascript; charset=utf-8");
+        assert.equal(response.headers.get("cache-control"), "public, max-age=31536000, immutable");
+        assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+        assert.equal(response.headers.get("access-control-allow-origin"), "http://localhost:9000");
+        const font = await originalFetch(`${base}/api/packageFiles/16.0.1/49c816770b639989d28b.woff2`);
+        assert.equal(font.headers.get("content-type"), "font/woff2");
+    });
+
+    it("refuses a version or file it does not serve without asking npm", async () => {
+        const urls = stubRegistry("16.0.2", { "main.js": "x" });
+        for (const path of [
+            "/api/packageFiles/latest/main.js",
+            "/api/packageFiles/16.0.2/package.json",
+            "/api/packageFiles/16.0.2/..%2Fpackage.json"
+        ]) {
+            assert.equal((await originalFetch(`${base}${path}`)).status, 404, path);
+        }
+        assert.deepEqual(urls, []);
+    });
+
+    it("answers 404 for a file the version does not have, and for a version npm does not have", async () => {
+        stubRegistry("16.0.3", { "main.js": "x" });
+        const missingFile = await call("/api/packageFiles/16.0.3/main.css");
+        assert.equal(missingFile.status, 404);
+        assert.deepEqual(missingFile.body, { error: "Version 16.0.3 of the package has no main.css" });
+        stubRegistry("0.0.9", {}, { metadataStatus: 404 });
+        const missingVersion = await call("/api/packageFiles/0.0.9/main.js");
+        assert.equal(missingVersion.status, 404);
+        assert.match(missingVersion.body.error, /has no version 0\.0\.9 on npm/);
+    });
+
+    it("answers 502 when npm cannot be reached, without taking the process down", async () => {
+        const originalConsoleError = console.error;
+        console.error = () => {};
+        try {
+            globalThis.fetch = async () => {
+                throw new TypeError("fetch failed");
+            };
+            const { status, body } = await call("/api/packageFiles/16.0.4/main.js");
+            assert.equal(status, 502);
+            assert.deepEqual(body, { error: "Failed to fetch package files" });
+        } finally {
+            console.error = originalConsoleError;
+        }
     });
 });
 

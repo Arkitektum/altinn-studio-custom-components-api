@@ -64,3 +64,37 @@ export async function readBoundedText(response, maxBytes = MAX_BODY_BYTES) {
 export async function readBoundedJson(response, maxBytes = MAX_BODY_BYTES) {
     return JSON.parse(await readBoundedText(response, maxBytes));
 }
+
+/**
+ * Reads a response body as bytes, giving up as soon as it passes `maxBytes`, like `readBoundedText`.
+ *
+ * @param {Response} response - The response to read.
+ * @param {number} [maxBytes] - The limit.
+ * @returns {Promise<Buffer>} The body.
+ * @throws {BodyTooLargeError} When the body is larger than the limit.
+ */
+export async function readBoundedBytes(response, maxBytes = MAX_BODY_BYTES) {
+    if (Number(response.headers?.get?.("content-length")) > maxBytes) {
+        await response.body?.cancel?.();
+        throw new BodyTooLargeError(maxBytes);
+    }
+    if (typeof response.body?.getReader !== "function") {
+        const bytes = Buffer.from(await response.arrayBuffer());
+        if (bytes.byteLength > maxBytes) throw new BodyTooLargeError(maxBytes);
+        return bytes;
+    }
+    const reader = response.body.getReader();
+    const chunks = [];
+    let size = 0;
+    for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > maxBytes) {
+            await reader.cancel();
+            throw new BodyTooLargeError(maxBytes);
+        }
+        chunks.push(value);
+    }
+    return Buffer.concat(chunks);
+}

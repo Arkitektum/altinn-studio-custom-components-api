@@ -40,19 +40,20 @@ It is not published to npm and is not deployed: each developer runs it locally a
 
 ## 3. Endpoints
 
-All routes are `GET` under `/api` and return JSON. They are registered in `api/app.mjs`, which builds the app and holds the caches; `api/index.mjs` only starts it listening.
+All routes are `GET` under `/api` and return JSON, except `/api/packageFiles`. They are registered in `api/app.mjs`, which builds the app and holds the caches; `api/index.mjs` only starts it listening.
 
-| Route                        | Purpose                                                                                                                                                                                       |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/api/displayLayouts`        | Layout JSON for the tracked apps (used to compute component usage).                                                                                                                           |
-| `/api/packageVersions`       | The custom-components, app-frontend and Dibk.Ftpb.Common.AltinnApps versions each tracked app currently uses.                                                                                 |
-| `/api/latestPackageVersions` | Latest versions from npm, GitHub and DIBK's NuGet feed for the sources in `packageSources.mjs`.                                                                                               |
-| `/api/appResources`          | App-level text-resource values (accepts a `language` query param).                                                                                                                            |
-| `/api/altinnStudioForms`     | The configured list of tracked Altinn apps / forms.                                                                                                                                           |
-| `/api/exampleData`           | Example form + subform data, converted from XML to JSON. One entry per tracked app and one per subform each app declares. An entry carries an `error` when its examples could not be fetched. |
-| `/api/applicationMetadata`   | `applicationmetadata.json` for the tracked apps.                                                                                                                                              |
-| `/api/subformDataModels`     | Each app's copy of every subform's model (`App/models/<dataType>.xsd`), read into fields. A copy carries an `error` when its schema could not be read or parsed.                              |
-| `/api/diagnostics`           | What the data endpoints above last ran into: counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches.                                                |
+| Route                                | Purpose                                                                                                                                                                                       |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/displayLayouts`                | Layout JSON for the tracked apps (used to compute component usage).                                                                                                                           |
+| `/api/packageVersions`               | The custom-components, app-frontend and Dibk.Ftpb.Common.AltinnApps versions each tracked app currently uses.                                                                                 |
+| `/api/latestPackageVersions`         | Latest versions from npm, GitHub and DIBK's NuGet feed for the sources in `packageSources.mjs`.                                                                                               |
+| `/api/appResources`                  | App-level text-resource values (accepts a `language` query param).                                                                                                                            |
+| `/api/altinnStudioForms`             | The configured list of tracked Altinn apps / forms.                                                                                                                                           |
+| `/api/exampleData`                   | Example form + subform data, converted from XML to JSON. One entry per tracked app and one per subform each app declares. An entry carries an `error` when its examples could not be fetched. |
+| `/api/applicationMetadata`           | `applicationmetadata.json` for the tracked apps.                                                                                                                                              |
+| `/api/subformDataModels`             | Each app's copy of every subform's model (`App/models/<dataType>.xsd`), read into fields. A copy carries an `error` when its schema could not be read or parsed.                              |
+| `/api/diagnostics`                   | What the data endpoints above last ran into: counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches.                                                |
+| `/api/packageFiles/<version>/<file>` | A file of a published version of the components package, for the upgrade preview on the Display layouts page. Not JSON. See below.                                                            |
 
 The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`), bound to `API_HOST` (default `127.0.0.1`).
 CORS is restricted to a single origin (`CLIENT_ORIGIN`, default `http://localhost:9000`).
@@ -63,6 +64,8 @@ short-lived in-memory TTL cache (`api/utils/cache.mjs`) so repeated "Synchronize
 Altinn Studio / npm / disk. Concurrent identical requests share one in-flight fetch, and failures are not cached. Nor is an answer that is only partial because something it fetched failed for a reason that may pass (the network, a timeout, a 5xx or a 429): the getters catch one app's failure and answer the rest, so without this a blip would be served for the whole TTL. A fetch says so with `noteTransientFailure()`, which reaches the cached call it runs inside. An answer whose only failures are permanent (a 404, an example that does not validate) is cached as usual, or one broken file would switch the cache off for that endpoint. Reusing
 a call is noted on the request's log report (see [§ Logging](#6-logging)), so a request that logged nothing says why. The TTL
 defaults to 60s and is configurable via `CACHE_TTL_MS` (`0` disables caching).
+
+`/api/packageFiles/<version>/<file>` serves `main.js`, `main.css`, `resource.nb.json` and the hashed `.woff2` fonts older versions keep beside their styles, for a full version number such as `17.2.0`. Anything else is a 404 before npm is asked. The version's tarball is read from the npm registry once (`api/utils/packageFiles.mjs`): its metadata must name a tarball on `registry.npmjs.org` with a sha512 integrity, the download is bounded, and it is refused unless it matches that integrity. A published version never changes, so its files are kept with no expiry, the last five versions asked for, and answered as `immutable`. A version npm does not have is a 404, and npm being unreachable is a 502.
 
 ---
 
@@ -85,6 +88,7 @@ api/
 │   ├── hostCheck.mjs                # Refuses a request by a host name that is not ours (DNS rebinding)
 │   ├── exampleFiles.mjs             # Reading the example XML still kept on disk
 │   ├── logger.mjs                   # Run-scoped logging: one aggregated report per request
+│   ├── packageFiles.mjs             # Files of a published version of the components package, from npm
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
 │   ├── testmotorClient.mjs          # Thin wrapper over @arkitektum/ftpb-testmotor-client
 │   ├── xmlToJsonConverter.mjs       # Converts example form XML into JSON

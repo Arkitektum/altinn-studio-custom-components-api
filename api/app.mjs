@@ -4,6 +4,13 @@ import cors from "cors";
 import express from "express";
 
 // Local functions
+import {
+    PackageVersionNotFoundError,
+    createPackageFileStore,
+    isPackageVersion,
+    isServedPackageFile,
+    packageFileContentType
+} from "./utils/packageFiles.mjs";
 import { allowedHostsSetting, isAllowedHost } from "./utils/hostCheck.mjs";
 import {
     getAltinnStudioForms,
@@ -142,6 +149,38 @@ export function createApp() {
         runLog: "Subform data models",
         failure: "Failed to fetch subform data models",
         get: () => cachedGetSubformDataModels()
+    });
+
+    // The files of a published version of the components package, for the upgrade preview on the Display layouts page,
+    // which draws a form with the version an app has installed. Not JSON, so not a jsonEndpoint. Only full version
+    // numbers and the few files the preview loads are answered; see utils/packageFiles.mjs.
+    const packageFiles = createPackageFileStore();
+    app.get("/api/packageFiles/:version/:fileName", async (req, res) => {
+        const { version, fileName } = req.params;
+        if (!isPackageVersion(version) || !isServedPackageFile(fileName)) {
+            res.status(404).json({ error: "No such package file" });
+            return;
+        }
+        try {
+            const content = await packageFiles.getFile(version, fileName);
+            if (!content) {
+                res.status(404).json({ error: `Version ${version} of the package has no ${fileName}` });
+                return;
+            }
+            res.set({
+                "Content-Type": packageFileContentType(fileName),
+                "Cache-Control": "public, max-age=31536000, immutable",
+                "X-Content-Type-Options": "nosniff"
+            });
+            res.send(content);
+        } catch (error) {
+            if (error instanceof PackageVersionNotFoundError) {
+                res.status(404).json({ error: error.message });
+                return;
+            }
+            console.error("Failed to fetch package files:", error);
+            res.status(502).json({ error: "Failed to fetch package files" });
+        }
     });
 
     // Reports what the data endpoints last ran into. Nothing fetches this yet: the Statistics dashboard does not call it,

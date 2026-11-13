@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { BodyTooLargeError, MAX_BODY_BYTES, readBoundedJson, readBoundedText } from "./boundedBody.mjs";
+import { BodyTooLargeError, MAX_BODY_BYTES, readBoundedBytes, readBoundedJson, readBoundedText } from "./boundedBody.mjs";
 
 /** A body that keeps sending 100-byte chunks for as long as it is read, and says when it was told to stop. */
 function endlessBody() {
@@ -77,4 +77,38 @@ test("has a limit of 20 MB by default", async () => {
 
     assert.equal(MAX_BODY_BYTES, 20 * 1024 * 1024);
     await assert.rejects(() => readBoundedText(response), /larger than 20971520 bytes/);
+});
+
+test("readBoundedBytes reads a body under the limit as the bytes it sent", async () => {
+    const bytes = new Uint8Array([0, 1, 2, 255]);
+    const read = await readBoundedBytes(new Response(bytes), 10);
+    assert.ok(Buffer.isBuffer(read));
+    assert.deepEqual([...read], [0, 1, 2, 255]);
+});
+
+test("readBoundedBytes stops reading, and cancels the body, as soon as it passes the limit", async () => {
+    const { state, response } = endlessBody();
+    await assert.rejects(readBoundedBytes(response, 250), BodyTooLargeError);
+    assert.equal(state.chunks, 3);
+    assert.equal(state.cancelled, true);
+});
+
+test("readBoundedBytes refuses a declared length over the limit before reading anything", async () => {
+    const { state, response } = endlessBody();
+    const declared = new Response(response.body, { headers: { "content-length": "1000" } });
+    await assert.rejects(readBoundedBytes(declared, 250), BodyTooLargeError);
+    assert.equal(state.chunks <= 1, true);
+});
+
+test("readBoundedBytes checks a body it cannot stream against the limit too", async () => {
+    const standIn = { headers: new Headers(), arrayBuffer: async () => new Uint8Array(300).buffer };
+    await assert.rejects(readBoundedBytes(standIn, 250), BodyTooLargeError);
+    const small = { headers: new Headers(), arrayBuffer: async () => new Uint8Array([7]).buffer };
+    assert.deepEqual([...(await readBoundedBytes(small, 250))], [7]);
+});
+
+test("readBoundedBytes reads up to the default limit", async () => {
+    const read = await readBoundedBytes(new Response(new Uint8Array(1024)));
+    assert.equal(read.length, 1024);
+    assert.equal(MAX_BODY_BYTES > 1024, true);
 });
