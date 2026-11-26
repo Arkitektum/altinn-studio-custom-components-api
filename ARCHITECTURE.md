@@ -1,23 +1,8 @@
 # Architecture
 
-This document explains what `altinn-studio-custom-components-api` does, how it is structured, and how it fits into the wider custom-components ecosystem.
-It is aimed at developers who maintain or extend the API.
+How `altinn-studio-custom-components-api` is structured and where its data comes from, for developers who maintain or extend it. What it is and how to run it is in the [README](./README.md), and how to contribute is in [CONTRIBUTING](./CONTRIBUTING.md).
 
-For how to run it and contribute, see [CONTRIBUTING](./CONTRIBUTING.md).
-
----
-
-## 1. What this package is
-
-A small **Express (Node.js) API** that backs the **Statistics** dashboard shipped in the [`altinn-studio-custom-components`](https://github.com/Arkitektum/altinn-studio-custom-components) repository (the `statistics.html` dev surface).
-The dashboard calls this API to analyze component usage and text-resource coverage across the DiBK Altinn apps.
-
-It is a **development-only tool**.
-It is not published to npm and is not deployed: each developer runs it locally alongside the components dev server.
-
----
-
-## 2. Where it fits
+## 1. Where it fits
 
 ```text
   altinn-studio-custom-components (dev server)
@@ -26,73 +11,58 @@ It is not published to npm and is not deployed: each developer runs it locally a
                   ┌─────────────┬───────┴────────┬──────────────────────┐
                   ▼             ▼                ▼                      ▼
           Altinn Studio   npm registry     FtPB testmotor        local files
-          (Gitea repos)   / GitHub         (example data)        (one main form)
+          (Gitea repos)   / GitHub / NuGet (example data)        (one main form)
 
-  Shared with altinn-studio-api-tools, which is otherwise unrelated to this repository:
+  Shared with altinn-studio-api-tools:
      @arkitektum/ftpb-testmotor-client   reaching the testmotor
      @arkitektum/ftpb-app-catalogue      which apps exist and what their data types are
 ```
 
-- The **Statistics** dashboard is the only consumer.
-- This API reads live data from **Altinn Studio's Gitea** (raw files via `https://altinn.studio/repos/...`), looks up **latest package versions** from the npm registry and GitHub releases, and reads **example data** for main forms and subforms from the FtPB testmotor. Only the one main form the testmotor has no data for is a file in this repo.
+The Statistics dashboard is the only consumer.
 
----
+## 2. Server
 
-## 3. Endpoints
+The routes (listed in the [README](./README.md#endpoints)) are registered in `api/app.mjs`, which builds the app and holds the caches. `api/index.mjs` starts it listening. Each JSON route is registered through `jsonEndpoint`, which catches a failure, logs it and answers a 500 with an `error` message.
 
-All routes are `GET` under `/api` and return JSON, except `/api/packageFiles`. They are registered in `api/app.mjs`, which builds the app and holds the caches; `api/index.mjs` only starts it listening.
+The server listens on `API_PORT` (default `3000`, the Statistics dashboard expects `9001`), bound to `API_HOST` (default `127.0.0.1`). CORS allows a single origin, `CLIENT_ORIGIN` (default `http://localhost:9000`). A request whose `Host` header is not `localhost`, a `.localhost` name, an IP address or a name in `ALLOWED_HOSTS` is refused with a 403 before any route runs (`api/utils/hostCheck.mjs`), which keeps a web page from reaching the API through DNS rebinding.
 
-| Route                                | Purpose                                                                                                                                                                                       |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/api/displayLayouts`                | Layout JSON for the tracked apps (used to compute component usage).                                                                                                                           |
-| `/api/packageVersions`               | The custom-components, app-frontend and Dibk.Ftpb.Common.AltinnApps versions each tracked app currently uses.                                                                                 |
-| `/api/latestPackageVersions`         | Latest versions from npm, GitHub and DIBK's NuGet feed for the sources in `packageSources.mjs`.                                                                                               |
-| `/api/appResources`                  | App-level text-resource values (accepts a `language` query param).                                                                                                                            |
-| `/api/altinnStudioForms`             | The configured list of tracked Altinn apps / forms.                                                                                                                                           |
-| `/api/exampleData`                   | Example form + subform data, converted from XML to JSON. One entry per tracked app and one per subform each app declares. An entry carries an `error` when its examples could not be fetched. |
-| `/api/applicationMetadata`           | `applicationmetadata.json` for the tracked apps.                                                                                                                                              |
-| `/api/subformDataModels`             | Each app's copy of every subform's model (`App/models/<dataType>.xsd`), read into fields. A copy carries an `error` when its schema could not be read or parsed.                              |
-| `/api/diagnostics`                   | What the data endpoints above last ran into: counts per app plus the grouped warnings and errors. Reads retained state only; it never fetches.                                                |
-| `/api/packageFiles/<version>/<file>` | A file of a published version of the components package, for the upgrade preview on the Display layouts page. Not JSON. See below.                                                            |
+### Caching
 
-The server listens on `API_PORT` (default `3000`; the Statistics dashboard expects `9001`), bound to `API_HOST` (default `127.0.0.1`).
-CORS is restricted to a single origin (`CLIENT_ORIGIN`, default `http://localhost:9000`).
-A request whose `Host` header is not `localhost`, an IP address or a name in `ALLOWED_HOSTS` is refused with a 403 (`utils/hostCheck.mjs`), which keeps a web page from reaching the API through DNS rebinding.
+Every data getter except `/api/altinnStudioForms` and `/api/diagnostics` is wrapped in an in-memory TTL cache (`api/utils/cache.mjs`), so repeated "Synchronize" runs within a session do not fan out to Altinn Studio, npm and the testmotor again. The TTL is `CACHE_TTL_MS` (default `60000`, `0` disables caching). Concurrent identical requests share one in-flight fetch, and failures are not cached.
 
-The expensive getters (everything except the static forms list and the already-cached default resources) are wrapped in a
-short-lived in-memory TTL cache (`api/utils/cache.mjs`) so repeated "Synchronize" runs within a session don't re-fan-out to
-Altinn Studio / npm / disk. Concurrent identical requests share one in-flight fetch, and failures are not cached. Nor is an answer that is only partial because something it fetched failed for a reason that may pass (the network, a timeout, a 5xx or a 429): the getters catch one app's failure and answer the rest, so without this a blip would be served for the whole TTL. A fetch says so with `noteTransientFailure()`, which reaches the cached call it runs inside. An answer whose only failures are permanent (a 404, an example that does not validate) is cached as usual, or one broken file would switch the cache off for that endpoint. Reusing
-a call is noted on the request's log report (see [§ Logging](#6-logging)), so a request that logged nothing says why. The TTL
-defaults to 60s and is configurable via `CACHE_TTL_MS` (`0` disables caching).
+An answer that is only partial because a fetch failed for a reason that may pass (a network error, a timeout, a 5xx or a 429) is not cached either. Such a fetch calls `noteTransientFailure()`, which reaches the cached call it runs inside. An answer whose only failures are permanent (a 404, an example that does not validate) is cached as usual. A reused answer is noted on the request's log report (see [Logging](#5-logging)).
 
-`/api/packageFiles/<version>/<file>` serves `main.js`, `main.css`, `resource.nb.json` and the hashed `.woff2` fonts older versions keep beside their styles, for a full version number such as `17.2.0`. Anything else is a 404 before npm is asked. The version's tarball is read from the npm registry once (`api/utils/packageFiles.mjs`): its metadata must name a tarball on `registry.npmjs.org` with a sha512 integrity, the download is bounded, and it is refused unless it matches that integrity. A published version never changes, so its files are kept with no expiry, the last five versions asked for, and answered as `immutable`. A version npm does not have is a 404, and npm being unreachable is a 502.
+### Package files
 
----
+`/api/packageFiles/<version>/<file>` serves `main.js`, `main.css`, `resource.nb.json` and the hashed `.woff2` fonts older versions keep beside their styles, for a full version number such as `17.2.0`. Anything else is a 404 before npm is asked. The version's tarball is read from the npm registry once (`api/utils/packageFiles.mjs`): its metadata must name a tarball on `registry.npmjs.org` with a sha512 integrity, the download is bounded, and it is refused unless it matches that integrity. The files of the last five versions asked for are kept with no expiry and answered as `immutable`. A version npm does not have is a 404, and npm being unreachable is a 502.
 
-## 4. Source layout
+## 3. Source layout
 
 ```text
 api/
-├── app.mjs                          # Builds the Express app: caches, CORS, route definitions
-├── index.mjs                        # Reads the environment and starts the app listening
+├── app.mjs                          # Builds the Express app: caches, Host check, CORS, routes
+├── index.mjs                        # Reads API_PORT / API_HOST and starts the app listening
 ├── endpoints.test.mjs               # Boots the app on a free port and exercises the routes
 ├── smoke.test.mjs                   # Boots the server and checks it accepts connections
 ├── scripts/
 │   ├── catalogueDrift.mjs           # `yarn drift`: where the catalogue and the testmotor disagree
-│   ├── functions.mjs                # All data fetching/parsing (Gitea, npm, GitHub, testmotor, local files)
+│   ├── functions.mjs                # All data fetching/parsing (Gitea, npm, GitHub, NuGet, testmotor, local files)
 │   └── *.test.mjs
 ├── utils/
 │   ├── altinnAppFrontendVersions.mjs# Extracts frontend asset versions from Index.cshtml
+│   ├── boundedBody.mjs              # Reads an upstream body, refusing anything over 20 MB
 │   ├── cache.mjs                    # In-memory TTL cache used by the expensive endpoints
 │   ├── concurrencyLimiter.mjs       # Caps simultaneous Altinn Studio requests
+│   ├── exampleFiles.mjs             # Reads the example XML kept on disk
 │   ├── hostCheck.mjs                # Refuses a request by a host name that is not ours (DNS rebinding)
-│   ├── exampleFiles.mjs             # Reading the example XML still kept on disk
 │   ├── logger.mjs                   # Run-scoped logging: one aggregated report per request
+│   ├── nugetPackageVersion.mjs      # Reads a package version from a .csproj and picks the latest stable NuGet version
 │   ├── packageFiles.mjs             # Files of a published version of the components package, from npm
+│   ├── settings.mjs                 # CACHE_TTL_MS and REQUEST_TIMEOUT_MS, parsed in one place
 │   ├── stripJsonComments.mjs        # Strips comments so commented JSON still parses
 │   ├── testmotorClient.mjs          # Thin wrapper over @arkitektum/ftpb-testmotor-client
 │   ├── xmlToJsonConverter.mjs       # Converts example form XML into JSON
-│   ├── xsdValueTypes.mjs            # Which elements an XSD types as numbers or booleans; the rest stay text
+│   ├── xsdValueTypes.mjs            # Which elements an XSD types as numbers or booleans, the rest stay text
 │   └── *.test.mjs
 └── data/
     ├── altinnStudioApps.mjs         # @arkitektum/ftpb-app-catalogue, spelled appOwner / appName
@@ -100,56 +70,46 @@ api/
     └── exampleData/                 # Example XML the testmotor does not serve (one form, under forms/)
 ```
 
----
+## 4. External data sources
 
-## 5. External data sources
+### Altinn Studio (Gitea)
 
-- **Altinn Studio (Gitea).**
-  `fetchGiteaFileContent` reads raw files from `https://altinn.studio/repos/{owner}/{repo}/raw/branch/{branch}/{path}` using a **`GITEA_TOKEN`** (sent as `Authorization: Bearer …`).
-  The branch defaults to `master` and is configurable via **`GITEA_BRANCH`**, for apps that use `main`.
-  This is how layouts, app resources, and application metadata are retrieved.
-  A missing token fails fast with a clear message, because Altinn Studio otherwise answers with an HTML login page that surfaces later as a confusing XML parse error.
-  Requests go through a shared concurrency gate (`api/utils/concurrencyLimiter.mjs`), because each endpoint fans out over
-  every tracked app and the dashboard calls several endpoints at once. Uncapped, one sync peaks at ~160 simultaneous
-  connections. The limit is **`ALTINN_STUDIO_CONCURRENCY`** (default `16`): raise it for a faster cold sync, lower it if
-  Altinn Studio starts refusing connections. The gate is around the request helper rather than each fan-out, so the
-  budget is shared however many endpoints are in flight.
-  Each request, to Altinn Studio, npm, GitHub and the testmotor alike, is abandoned after **`REQUEST_TIMEOUT_MS`** (default `30000`), body included and counted from when an Altinn Studio request gets its slot rather than from when it was queued, so an upstream that never answers cannot hold an endpoint or a slot for undici's five minutes.
-- **npm registry & GitHub releases.**
-  `getLatestPackageVersions` resolves the latest version for each entry in `packageSources.mjs`: from `registry.npmjs.org` for `npm` sources, from the GitHub releases API for `github` sources, and from the named feed's package base address for `nuget` sources (DIBK's own feed for `Dibk.Ftpb.Common.AltinnApps`).
-- **FtPB testmotor.**
-  `api/utils/testmotorClient.mjs` reads the main form and subform example data from `TESTMOTOR_URL` (default `https://app-ftpb-testmotor.azurewebsites.net`). No token is sent, and every endpoint it reads is open.
+`fetchGiteaFileContent` reads raw files from `https://altinn.studio/repos/{owner}/{repo}/raw/branch/{branch}/{path}` with `GITEA_TOKEN` sent as `Authorization: Bearer …`. The branch is `GITEA_BRANCH` (default `master`). Layouts, app resources, application metadata, `package-lock.json`, `App.csproj`, `Index.cshtml` and subform schemas are read this way. A missing token fails fast with a clear message rather than letting Altinn Studio's HTML login page surface later as an XML parse error.
 
-    | Endpoint                                 | Answers                                                                                                                   |
-    | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-    | `GET /api/altinn-app`                    | The apps it holds data for, and each one's main form data type.                                                           |
-    | `GET /api/xml/{appId}`                   | That app's example files, contents and all.                                                                               |
-    | `GET /api/attachment/{appId}`            | That app's attachment types, each with the names of its predefined files. Subforms are among them, under their data type. |
-    | `GET /api/attachment/{appId}/{dataType}` | One predefined file, named by a `fileName` request header, answered as the XML itself.                                    |
+Requests go through one shared concurrency gate (`api/utils/concurrencyLimiter.mjs`), because each endpoint fans out over every tracked app and the dashboard calls several endpoints at once. The limit is `ALTINN_STUDIO_CONCURRENCY` (default `16`): raise it for a faster cold sync, lower it if Altinn Studio starts refusing connections.
 
-    It serves the copy the DiBK test team maintains out of an Azure file share, and **re-stamps the date fields on every request** with a date ten days out. That is the whole reason these examples are not files here: a ferdigattest example is only valid while its `bekreftelseInnen` and `utfoertInnen` fall inside the next fortnight, so a committed copy is right on the day it is committed and stale a couple of weeks later. Several other form types have a rule of that shape.
+Every outbound request (Altinn Studio, npm, GitHub, NuGet and the testmotor) is abandoned after `REQUEST_TIMEOUT_MS` (default `30000`), body included. For Altinn Studio the clock starts when the request gets its slot in the gate.
 
-    It is keyed by **app id**, and has to be: `fa-v3` and `fa-v5` are both filed under the data type `FA` and hold different files. This is why `/api/exampleData` names the app on each entry rather than only the data type.
+### npm registry, GitHub releases and NuGet
 
-    Subforms are keyed by app id as well. The testmotor files them per app, as predefined attachments, and the same subform can hold different files under different apps: `DispensasjonssoeknadDataV1` does under `disp-v1` and `fts-v1`. So each app gets an entry per subform it declares, read through that app and validated against the schema in that app's repository, and the dashboard reads a subform's examples only through the app it is viewing.
+`getLatestPackageVersions` resolves the latest version for each entry in `api/data/packageSources.mjs`: from `registry.npmjs.org` for `npm` sources, from the GitHub releases API for `github` sources, and from the named feed's package base address for `nuget` sources (DIBK's own feed for `Dibk.Ftpb.Common.AltinnApps`).
 
-    Answers are reused for `CACHE_TTL_MS`, the same as the endpoints, and requests are abandoned after `REQUEST_TIMEOUT_MS`, the same as every other upstream. File names arrive as bare stems (`01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon`) and are **not sorted**, because the prefix that carried the order is already gone.
+### FtPB testmotor
 
-    If it cannot be reached there is **no fallback to disk**; the affected entries carry the reason instead, so the dashboard can tell "no examples" from "could not fetch the examples".
+`api/utils/testmotorClient.mjs` reads the main form and subform example data from `TESTMOTOR_URL` (default `https://app-ftpb-testmotor.azurewebsites.net`). No token is sent, and every endpoint it reads is open.
 
-    The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps do not know about each other, so they drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, and apps the two file under different data types. The last is the one that would break something, since the catalogue's data type decides where the dashboard looks and the testmotor's decides where the examples land. It also asks the testmotor, per app, which declared subforms have no example files under that app, and names any it could not check.
+| Endpoint                                 | Answers                                                                                                                   |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `GET /api/altinn-app`                    | The apps it holds data for, and each one's main form data type.                                                           |
+| `GET /api/xml/{appId}`                   | That app's example files, contents and all.                                                                               |
+| `GET /api/attachment/{appId}`            | That app's attachment types, each with the names of its predefined files. Subforms are among them, under their data type. |
+| `GET /api/attachment/{appId}/{dataType}` | One predefined file, named by a `fileName` request header, answered as the XML itself.                                    |
 
-- **Local files.**
-  The one main form the testmotor has no data for, `hoeringettersynuttalelse-v2`, is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml`.
+The testmotor serves the copy the DiBK test team maintains on an Azure file share, and re-stamps the date fields on every request with a date ten days out, so examples with date rules (such as a ferdigattest's `bekreftelseInnen` and `utfoertInnen`) stay valid.
 
-    A `forms/` folder is named after the data type rather than the app, so it is only read when exactly one tracked app claims that data type. A folder named `FA` could not say whether it was `fa-v3`'s or `fa-v5`'s.
+It is keyed by app id: `fa-v3` and `fa-v5` are both filed under the data type `FA` and hold different files, so `/api/exampleData` names the app on each entry. Subforms are keyed by app id too, since the same subform can hold different files under different apps (`DispensasjonssoeknadDataV1` under `disp-v1` and `fts-v1`). Each app gets an entry per subform it declares, read through that app and validated against the schema in that app's repository.
 
----
+Answers are reused for `CACHE_TTL_MS` and requests are abandoned after `REQUEST_TIMEOUT_MS`, as for every other upstream. File names arrive as bare stems (`01_Maksimumsversjon.xml` on the share becomes `Maksimumsversjon`) in the order the testmotor answers them. If the testmotor cannot be reached, the affected entries carry the reason in `error`, so the dashboard can tell "no examples" from "could not fetch the examples".
 
-## 6. Logging
+The catalogue in `@arkitektum/ftpb-app-catalogue` and the testmotor's own list of the same apps are maintained separately, so they can drift. `yarn drift` (`api/scripts/catalogueDrift.mjs`) compares them and reports apps the testmotor holds that the catalogue does not name, apps with no example data from either source, apps the two file under different data types (the case that breaks something, since the catalogue's data type decides where the dashboard looks), declared subforms with no example files under an app declaring them, and any subform it could not check.
 
-Each fan-out endpoint runs inside a **logging run** (`api/utils/logger.mjs`). The fetch/parse helpers _record_ events
-(`log.ok` / `log.warn` / `log.error`), and the run prints one report when the request finishes:
+### Local files
+
+The one main form the testmotor has no data for, `hoeringettersynuttalelse-v2`, is read from `EXAMPLE_DATA_DIR` (default `api/data/exampleData`), laid out as `forms/{dataType}/*.xml`. Because a folder is named after the data type, it is only read when exactly one tracked app claims that data type.
+
+## 5. Logging
+
+Each fan-out endpoint runs inside a logging run (`withRunLog` in `api/utils/logger.mjs`). The fetch/parse helpers record events (`log.ok` / `log.warn` / `log.error`), and the run prints one report when the request finishes:
 
 ```text
 Example data · 4.2s · 1 error
@@ -166,29 +126,13 @@ Example data · 4.2s · 1 error
      Element 'Dispensasjon': No matching global declaration available for the validation root.
 ```
 
-Successes are counted only. A file whose absence is expected (not every app ships a nynorsk resource file), or which
-the caller already reports with better context is fetched with `{ optional: true }` and does not warn, so the warning
-list stays worth reading. Warnings and errors keep their full text, grouped by cause, and within a cause the
-sources that failed the same way are listed together instead of one line each. Sources with nothing to flag are
-folded into a single table row, and a run with no warnings or errors at all collapses to one line. A run that did no
-work of its own prints one line saying why: `served from cache (fresh for another 43s)` when the TTL cache answered,
-or `joined a request already in flight` when it shared a concurrent call.
+Successes are counted only. A file whose absence is expected (not every app ships a nynorsk resource file) is fetched with `{ optional: true }` and does not warn. Warnings and errors keep their full text, grouped by cause, with the sources that failed the same way listed together. Sources with nothing to flag are folded into one row, and a run with no warnings or errors collapses to one line. A run that did no work prints one line saying why: `served from cache (fresh for another 43s)` or `joined a request already in flight`.
 
-The report is assembled into a single string and written with one call, so reports from concurrent requests never
-interleave, and it is printed even if the run throws.
-
-The active run is tracked with `AsyncLocalStorage`, so the nested helpers need no context argument. Events recorded
-outside a run (startup checks) fall back to plain `console` output. Set **`LOG_VERBOSE=1`** to also
-print every event as it happens, a line per step, which is useful when following one failing app.
-
-Because of this, code in `api/scripts/functions.mjs` should record events rather than call `console.*` directly, and
-leaf utilities such as `xmlToJsonConverter.mjs` stay silent and report through the error they throw, and the caller knows
-which app and file the failure belongs to.
+Each report is written with one call, so reports from concurrent requests never interleave, and it is printed even if the run throws. The active run is tracked with `AsyncLocalStorage`, so the nested helpers need no context argument. Events recorded outside a run (startup checks) go to plain `console` output. Set `LOG_VERBOSE=1` to also print every event as it happens. Colours are used on a terminal unless `NO_COLOR` is set.
 
 ### Diagnostics over HTTP
 
-The console report is only useful while you are watching the terminal, so each run's summary is also retained in
-memory and served by **`/api/diagnostics`**, the same structure the report is rendered from, so the two cannot drift:
+Each run's summary is also kept in memory and served by `/api/diagnostics`, the same structure the console report is rendered from. The Statistics dashboard does not call it, so read it directly when you need it.
 
 ```jsonc
 {
@@ -207,33 +151,19 @@ memory and served by **`/api/diagnostics`**, the same structure the report is re
 }
 ```
 
-Runs are worst-first, one entry per endpoint, so the map is bounded. A request that did no work does **not** overwrite
-the summary of the run that did, since a second "Synchronize" within the cache TTL would otherwise report a clean bill
-of health. It only updates `requestedAt` and `requestNotes`.
+Runs are worst-first, one entry per endpoint. A request answered from the cache keeps the summary of the run that did the work and only updates `requestedAt` and `requestNotes`.
 
-Nothing consumes this yet: the Statistics dashboard in the components repo would need to call it to show the problems
-it reports.
+## 6. Tooling
 
----
+- Node.js 24 or later, with native ES modules (`.mjs`).
+- Express 5 and `cors`.
+- Yarn 4 via Corepack (pinned through `packageManager`).
+- XML parsing via `fast-xml-parser`, XSD validation via `libxmljs2`.
+- ESLint (flat config) and Prettier.
+- `node --test` (the built-in Node test runner) for tests.
 
-## 7. Tooling
+Tests live next to the code they cover as `*.test.mjs`. `functions.test.mjs` stubs global `fetch`, for both Altinn Studio and the testmotor, and points `EXAMPLE_DATA_DIR` at a temporary directory, so the example-data assembly runs end to end without either upstream. `smoke.test.mjs` boots the server in a child process to check it starts and accepts connections.
 
-- **Node.js** with native ES modules (`.mjs`).
-- **Express 5** + **cors**.
-- **Yarn 4** via Corepack (pinned through `packageManager`).
-- XML parsing via **fast-xml-parser** and **libxmljs2**.
-- **ESLint** (flat config) for linting.
-- **`node --test`** (the built-in Node test runner) for tests, and no test framework is installed.
+Two GitHub Actions workflows cover `main`: `ci.yml` runs `yarn lint`, `yarn format:check` and `yarn test` on every push and pull request, and `eslint.yml` uploads ESLint results to the repository's security tab on the same events plus a weekly schedule.
 
-Tests live next to the code they cover as `*.test.mjs`. Most target the leaf utilities, which are pure and need no
-network; `functions.test.mjs` stubs global `fetch`, for both Altinn Studio and the testmotor, and points
-`EXAMPLE_DATA_DIR` at a temporary directory, so the example-data assembly runs end to end without either upstream.
-`smoke.test.mjs` boots the server in a child process to check it starts and accepts connections.
-
-Two GitHub Actions workflows cover `main`: `ci.yml` runs `yarn lint`, `yarn format:check` and `yarn test` on every push and pull request,
-and `eslint.yml` uploads ESLint results to the repository's security tab on the same events plus a weekly schedule.
-
-Note that `libxmljs2` is a native module, so its binding is built for the platform that installed it, and a
-`node_modules` tree copied between platforms fails to load it. It is loaded on first use rather than at import (see
-`api/utils/xmlToJsonConverter.mjs`), so a tree like that still starts the server and still runs everything that does
-not convert XML. What fails is the example data conversion, and the tests covering it.
+`libxmljs2` is a native module, so a `node_modules` tree copied between platforms fails to load it. It is loaded on first use (see `api/utils/xmlToJsonConverter.mjs`), so such a tree still starts the server, and only the example data conversion and its tests fail.
