@@ -2,7 +2,40 @@
 
 How `altinn-studio-custom-components-api` is structured and where its data comes from, for developers who maintain or extend it. What it is and how to run it is in the [README](./README.md), and how to contribute is in [CONTRIBUTING](./CONTRIBUTING.md).
 
-## 1. Where it fits
+## 1. Related repositories
+
+Seven repositories work together. Two families of published packages, each with the applications that use them:
+
+```text
+A ──▶ B   A depends on the published package B
+A ┄┄▶ B   A calls B over HTTP while running
+
+  altinn-studio-custom-components-docs ───────────────────────────┐
+         │                                                        │
+         ▼                                                        ▼
+  altinn-studio-custom-components ─────────────────▶ altinn-studio-custom-components-utils
+     ▲          ┆
+     │          ┆ Statistics page
+     │          ▼
+  Altinn apps   altinn-studio-custom-components-api ──┬──▶ ftpb-app-catalogue    ◀──┬── altinn-studio-api-tools
+                                                      └──▶ ftpb-testmotor-client ◀──┘
+```
+
+| Repository                              | Published as                                        | Depends on                                                                 | Used by                                                                                                |
+| --------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `altinn-studio-custom-components-utils` | `@arkitektum/altinn-studio-custom-components-utils` |                                                                            | `altinn-studio-custom-components` (bundled into its `main.js`), `altinn-studio-custom-components-docs` |
+| `altinn-studio-custom-components`       | `@arkitektum/altinn-studio-custom-components`       | `altinn-studio-custom-components-utils`, `@arkitektum/client-logger`       | Altinn apps (copied into `App/wwwroot`), `altinn-studio-custom-components-docs`                        |
+| `altinn-studio-custom-components-docs`  | Not published, deployed to GitHub Pages             | `altinn-studio-custom-components`, `altinn-studio-custom-components-utils` |                                                                                                        |
+| `altinn-studio-custom-components-api`   | Not published, runs locally                         | `ftpb-app-catalogue`, `ftpb-testmotor-client`                              | The Statistics page in `altinn-studio-custom-components`, over HTTP                                    |
+| `altinn-studio-api-tools`               | Not published, runs locally                         | `ftpb-app-catalogue`, `ftpb-testmotor-client`                              |                                                                                                        |
+| `ftpb-app-catalogue`                    | `@arkitektum/ftpb-app-catalogue`                    |                                                                            | `altinn-studio-custom-components-api`, `altinn-studio-api-tools`                                       |
+| `ftpb-testmotor-client`                 | `@arkitektum/ftpb-testmotor-client`                 |                                                                            | `altinn-studio-custom-components-api`, `altinn-studio-api-tools`                                       |
+
+While running, `altinn-studio-custom-components-api` reads the Altinn apps' files from Altinn Studio and the components package's versions and files from npm, and `altinn-studio-api-tools` posts test data into Altinn apps running in LocalTest. Both read example data from the FtPB testmotor through `ftpb-testmotor-client`.
+
+Every dependency is installed from the registry, so a change that spans repositories is released in dependency order: `altinn-studio-custom-components-utils` before `altinn-studio-custom-components`, both before `altinn-studio-custom-components-docs`, and `ftpb-app-catalogue` or `ftpb-testmotor-client` before the two applications. Each consumer then takes the new version with `yarn up <package>`.
+
+### Where its data comes from
 
 ```text
   altinn-studio-custom-components (dev server)
@@ -12,10 +45,6 @@ How `altinn-studio-custom-components-api` is structured and where its data comes
                   ▼             ▼                ▼                      ▼
           Altinn Studio   npm registry     FtPB testmotor        local files
           (Gitea repos)   / GitHub / NuGet (example data)        (one main form)
-
-  Shared with altinn-studio-api-tools:
-     @arkitektum/ftpb-testmotor-client   reaching the testmotor
-     @arkitektum/ftpb-app-catalogue      which apps exist and what their data types are
 ```
 
 The Statistics dashboard is the only consumer.

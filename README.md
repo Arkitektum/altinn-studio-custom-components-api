@@ -30,7 +30,7 @@ cp .env.sample .env
 - `TESTMOTOR_URL`: the FtPB testmotor, which serves the main form and subform example data. The default is the hosted instance. Override it to work against your own.
 - `EXAMPLE_DATA_DIR`: where the one main form the testmotor holds no data for lives. Defaults to `api/data/exampleData`.
 
-The rest (`API_HOST`, `ALLOWED_HOSTS`, `CLIENT_ORIGIN`, `GITEA_BRANCH`, `CACHE_TTL_MS`, `LOG_VERBOSE`, `ALTINN_STUDIO_CONCURRENCY`, `REQUEST_TIMEOUT_MS`) are explained in `.env.sample`.
+The rest (`API_HOST`, `ALLOWED_HOSTS`, `CLIENT_ORIGIN`, `GITEA_BRANCH`, `CACHE_TTL_MS`, `LOG_VERBOSE`, `NO_COLOR`, `ALTINN_STUDIO_CONCURRENCY`, `REQUEST_TIMEOUT_MS`) are explained in `.env.sample`.
 
 Generate a Gitea token at <https://altinn.studio/repos/user/settings/applications> with the **`read:repository`** scope and an expiry date, then put it in `.env` (replacing `your_token_here`).
 
